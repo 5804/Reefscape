@@ -29,6 +29,9 @@ public final class Constants {
         public static final double l1ElevatorHeightInches = 0;
         public static final double groundElevatorHeightInches = 0;
         public static final double handoffElevatorHeightInches = 0;
+
+        // Used to shrink software limits to slightly smaller than the full elevator.
+        public static final double softwareLimitSafetyThreshold = 5;
     }
 
     public final class ArmConstants {

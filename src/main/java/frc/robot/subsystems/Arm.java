@@ -14,22 +14,22 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Arm extends SubsystemBase {
 
-public TalonFX wristMotor = new TalonFX(0);
-public TalonFX elbowMotor = new TalonFX(1); 
-public TalonFX intakeMotor = new TalonFX(2);
-public CANcoder wristEncoder = new CANcoder(3);
-public CANcoder elbowEncoder = new CANcoder(4);
-public TimeOfFlight timeOfFlight = new TimeOfFlight(5);
+public TalonFX wristMotor = new TalonFX(57);
+public TalonFX elbowMotor = new TalonFX(55); 
+public TalonFX intakeMotor = new TalonFX(58);
+public CANcoder wristEncoder = new CANcoder(59);
+public CANcoder elbowEncoder = new CANcoder(60);
+// public TimeOfFlight timeOfFlight = new TimeOfFlight(5);
 
 
   /** Creates a new ArmSubsystem. */
   public Arm() {}
 
   public void wristIntakePosition() {
-    wristMotor.setPosition(0);
+    wristMotor.setPosition(0.252);
     // horizontal coral (need to zero gyro and convert to degrees)
   }
-  public void wristDropPosition() {
+  public void wristDropPosition() { // change name to include handoff
     wristMotor.setPosition(0);
     // vertical coral
   }
@@ -42,18 +42,24 @@ public TimeOfFlight timeOfFlight = new TimeOfFlight(5);
     return run(() -> { wristDropPosition(); });
   }
 
-
-  public void elbowPosition(int position){
-    elbowMotor.setPosition(position);  
+  public double getWristPosition() {
+    return wristEncoder.getPosition().getValueAsDouble();
   }
 
-
-  public boolean hasCoral() {
-    return (timeOfFlight.getRange() <= 30.00);
+  public Command setElbowPosition(double position) {
+    return run(() -> { elbowMotor.setPosition(position); });
   }
+
+  public double getElbowPosition() {
+    return elbowEncoder.getPosition().getValueAsDouble();
+  }
+
+  // public boolean hasCoral() {
+  //   return (timeOfFlight.getRange() <= 30.00);
+  // }
 
   public void intakeCoral() {
-    intakeMotor.set(1);
+    intakeMotor.set(0.1);
     // Measure direction (could be the wrong way)
   }
 
@@ -61,14 +67,14 @@ public TimeOfFlight timeOfFlight = new TimeOfFlight(5);
     intakeMotor.set(0);
   }
 
-  public Command intakeCoralCommand() {
-    return run(() -> { intakeCoral(); })
-          .until(() -> { return hasCoral(); })
-          .finallyDo(() -> { stopIntakeMotor(); });
-  }
+  // public Command intakeCoralCommand() {
+  //   return run(() -> { intakeCoral(); })
+  //         .until(() -> { return hasCoral(); })
+  //         .finallyDo(() -> { stopIntakeMotor(); });
+  // }
 
   public void dropCoral() {
-    intakeMotor.set(-1);
+    intakeMotor.set(-0.1);
   }
 
   public Command dropCoralCommand() {

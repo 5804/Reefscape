@@ -12,13 +12,14 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.*;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Elevator extends SubsystemBase {
   /** Declare variables and assign values */
-  public TalonFX leftElevatorMotor = new TalonFX(0); // NEED TO ID
-  public TalonFX rightElevatorMotor = new TalonFX(0); // NEED TO ID
+  public TalonFX leftElevatorMotor = new TalonFX(52);
+  public TalonFX rightElevatorMotor = new TalonFX(51);
 
   public TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration(); // PROBABLY DOESN'T, BUT MIGHT NEED TO BE
                                                                            // ASSIGNED IN CONSTRUCTOR
@@ -26,16 +27,11 @@ public class Elevator extends SubsystemBase {
   // Motor config objects
   public Slot0Configs slot0Configs = talonFXConfigs.Slot0;
   public MotionMagicConfigs motionMagicConfigs = talonFXConfigs.MotionMagic;
+  public SoftwareLimitSwitchConfigs softwareLimitSwitch = talonFXConfigs.SoftwareLimitSwitch;
 
   /** Creates a new Elevator. */
   public Elevator() {
     /** Configure objects here */
-    // Applies motor configs
-    leftElevatorMotor.getConfigurator().apply(talonFXConfigs);
-    rightElevatorMotor.getConfigurator().apply(talonFXConfigs);
-    leftElevatorMotor.setNeutralMode(NeutralModeValue.Brake);
-    rightElevatorMotor.setNeutralMode(NeutralModeValue.Brake);
-
     /**
      * Sets rightElevator motor to follow all commands applied to leftElevatorMotor
      * and says if rightElevatorMotor should be inverted relative to
@@ -56,13 +52,24 @@ public class Elevator extends SubsystemBase {
     motionMagicConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
     motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
+    // Set software limit switches
+    softwareLimitSwitch.withForwardSoftLimitEnable(true)
+                      //  .withReverseSoftLimitEnable(true)
+                       .withForwardSoftLimitThreshold(37.942383 - Constants.ElevatorConstants.softwareLimitSafetyThreshold);
+                      //  .withReverseSoftLimitThreshold(0);
+
+    // Applies motor configs
+    leftElevatorMotor.getConfigurator().apply(talonFXConfigs);
+    rightElevatorMotor.getConfigurator().apply(talonFXConfigs);
+    leftElevatorMotor.setNeutralMode(NeutralModeValue.Brake);
+    rightElevatorMotor.setNeutralMode(NeutralModeValue.Brake);
   }
 
   /**
    * Sets elevator positions based on the leftElevatorMotor's encoder position.
    * Should be used with Constants.ElevatorConstants.xElevatorPosition.
    */
-  public void setElevatorPosition(double position) {
+  public void setElevatorPosition(double position) { // Max pos: 37.942383
     MotionMagicVoltage request = new MotionMagicVoltage(position);
     leftElevatorMotor.setControl(request.withPosition(position));
 
@@ -82,34 +89,38 @@ public class Elevator extends SubsystemBase {
   /**
    * Methods to set elevator to placing positions.
    */
-  public void setElevatorGround() {
-    setElevatorPosition(Constants.ElevatorConstants.groundElevatorPosition);
+  public Command setElevatorGround() {
+    return run(() -> { setElevatorPosition(Constants.ElevatorConstants.groundElevatorPosition); });
   }
 
-  public void setElevatorHandoff() {
-    setElevatorPosition(Constants.ElevatorConstants.handoffElevatorPosition);
+  public Command setElevatorHandoff() {
+    return run(() -> {setElevatorPosition(Constants.ElevatorConstants.handoffElevatorPosition); });
   }
 
-  public void setElevatorl1() {
-    setElevatorPosition(Constants.ElevatorConstants.l1ElevatorPosition);
+  public Command setElevatorL1() {
+    return run(() -> {setElevatorPosition(Constants.ElevatorConstants.l1ElevatorPosition); });
   }
 
-  public void setElevatorl2() {
-    setElevatorPosition(Constants.ElevatorConstants.l2ElevatorPosition);
+  public Command setElevatorL2() {
+    return run(() -> {setElevatorPosition(Constants.ElevatorConstants.l2ElevatorPosition); });
   }
 
-  public void setElevatorl3() {
-    setElevatorPosition(Constants.ElevatorConstants.l3ElevatorPosition);
+  public Command setElevatorL3() {
+    return run(() -> {setElevatorPosition(Constants.ElevatorConstants.l3ElevatorPosition); });
   }
 
-  public void setElevatorl4() {
-    setElevatorPosition(Constants.ElevatorConstants.l4ElevatorPosition);
+  public Command setElevatorL4() {
+    return run(() -> {setElevatorPosition(Constants.ElevatorConstants.l4ElevatorPosition); });
+  }
+
+  public void voltageDebug(double voltage) {
+    leftElevatorMotor.setVoltage(voltage);
   }
 
   // Gets the position of the elevator based off of leftElevatorMotor, the leader
   // to rightElevatorMotor.
-  public void getElevatorPosition() {
-    leftElevatorMotor.getPosition();
+  public double getElevatorPosition() {
+    return leftElevatorMotor.getPosition().getValueAsDouble();
   }
 
   // PROBABLY WRONG, BUT MAYBE NOT
