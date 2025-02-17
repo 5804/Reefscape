@@ -86,6 +86,10 @@ public class Elevator extends SubsystemBase {
     setElevatorPosition(Constants.ElevatorConstants.groundElevatorPosition);
   }
 
+  public void setElevatorHandoff() {
+    setElevatorPosition(Constants.ElevatorConstants.handoffElevatorPosition);
+  }
+
   public void setElevatorl1() {
     setElevatorPosition(Constants.ElevatorConstants.l1ElevatorPosition);
   }
@@ -102,7 +106,8 @@ public class Elevator extends SubsystemBase {
     setElevatorPosition(Constants.ElevatorConstants.l4ElevatorPosition);
   }
 
-  // Gets the position of the elevator based off of leftElevatorMotor, the leader to rightElevatorMotor.
+  // Gets the position of the elevator based off of leftElevatorMotor, the leader
+  // to rightElevatorMotor.
   public void getElevatorPosition() {
     leftElevatorMotor.getPosition();
   }

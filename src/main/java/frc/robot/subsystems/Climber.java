@@ -51,7 +51,6 @@ public class Climber extends SubsystemBase {
         motionMagicConfigs.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
         motionMagicConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
         motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
-
     }
 
     public void setClimberPosition(double position) {
@@ -73,5 +72,4 @@ public class Climber extends SubsystemBase {
     public void setClimberStow() {
         setClimberPosition(Constants.ClimberConstants.stowClimberPosition);
     }
-
 }
