@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class RobotContainer {
@@ -43,6 +44,8 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private final SendableChooser<Command> chooser = new SendableChooser<>();
+
+    private Arm arm = new Arm();
 
     public RobotContainer() {
         configureBindings();
@@ -83,6 +86,11 @@ public class RobotContainer {
 
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+        joystick.leftTrigger(0.5).whileTrue(arm.intakeCoralCommand());
+        joystick.rightTrigger(0.5).whileTrue(arm.dropCoralCommand());
+
+        
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
