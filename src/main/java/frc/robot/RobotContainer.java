@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Elevator;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -46,9 +47,11 @@ public class RobotContainer {
     private final SendableChooser<Command> chooser = new SendableChooser<>();
 
     private Arm arm = new Arm();
+    private Elevator elevator = new Elevator();
 
     public RobotContainer() {
         configureBindings();
+        elevator.zeroElevatorPosition(); 
 
         chooser.addOption("oneMeter", oneMeterAuto());
         chooser.addOption("twoMeter", twoMeterAuto());
@@ -90,7 +93,7 @@ public class RobotContainer {
         joystick.leftTrigger(0.5).whileTrue(arm.intakeCoralCommand());
         joystick.rightTrigger(0.5).whileTrue(arm.dropCoralCommand());
 
-        
+
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
