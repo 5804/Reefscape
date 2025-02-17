@@ -35,8 +35,8 @@ public class Elevator extends SubsystemBase {
     leftElevatorMotor.setNeutralMode(NeutralModeValue.Brake);
     rightElevatorMotor.setNeutralMode(NeutralModeValue.Brake);
 
-    // Sets rightElevator motor to follow all commands applied to leftElevatorMotor and says if rightElevatorMotor should be inverted relative to leftElevatorMotor
-    rightElevatorMotor.setControl(new Follower(leftElevatorMotor.getDeviceID(), true)); // NEED TO CHECK IF THIS SHOULD BE INVERTED
+    // Sets rightElevator motor to follow all commands applied to leftElevatorMotor and says if rightElevatorMotor should be inverted relative to leftElevatorMotor, so all commands should be applied to leftElevatorMotor
+    rightElevatorMotor.setControl(new Follower(leftElevatorMotor.getDeviceID(), false));
 
     // Set slot 0 gains
     slot0Configs.kS = 0.25; // Add 0.25 V output to overcome static friction
