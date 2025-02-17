@@ -20,7 +20,8 @@ public class Elevator extends SubsystemBase {
   public TalonFX leftElevatorMotor = new TalonFX(0); // NEED TO ID
   public TalonFX rightElevatorMotor = new TalonFX(0); // NEED TO ID
 
-  public TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration(); // PROBABLY DOESN'T, BUT MIGHT NEED TO BE ASSIGNED IN CONSTRUCTOR
+  public TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration(); // PROBABLY DOESN'T, BUT MIGHT NEED TO BE
+                                                                           // ASSIGNED IN CONSTRUCTOR
 
   // Motor config objects
   public Slot0Configs slot0Configs = talonFXConfigs.Slot0;
@@ -35,7 +36,11 @@ public class Elevator extends SubsystemBase {
     leftElevatorMotor.setNeutralMode(NeutralModeValue.Brake);
     rightElevatorMotor.setNeutralMode(NeutralModeValue.Brake);
 
-    // Sets rightElevator motor to follow all commands applied to leftElevatorMotor and says if rightElevatorMotor should be inverted relative to leftElevatorMotor, so all commands should be applied to leftElevatorMotor
+    /**
+     * Sets rightElevator motor to follow all commands applied to leftElevatorMotor
+     * and says if rightElevatorMotor should be inverted relative to
+     * leftElevatorMotor, so all commands should be run on leftElevatorMotor.
+     */
     rightElevatorMotor.setControl(new Follower(leftElevatorMotor.getDeviceID(), false));
 
     // Set slot 0 gains
@@ -45,18 +50,18 @@ public class Elevator extends SubsystemBase {
     slot0Configs.kP = 4.8; // A position error of 2.5 rotations results in 12 V output
     slot0Configs.kI = 0; // no output for integrated error
     slot0Configs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output
-  
+
     // Set Motion Magic settings
     motionMagicConfigs.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
     motionMagicConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
     motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
-    
+
   }
 
-  /** 
-   * Sets elevator positions based on the leftElevatorMotor's encoder position
-   * Should be used with Constants.ElevatorConstants.xElevatorPosition
-  */
+  /**
+   * Sets elevator positions based on the leftElevatorMotor's encoder position.
+   * Should be used with Constants.ElevatorConstants.xElevatorPosition.
+   */
   public void setElevatorPosition(double position) {
     MotionMagicVoltage request = new MotionMagicVoltage(position);
     leftElevatorMotor.setControl(request.withPosition(position));
@@ -64,9 +69,9 @@ public class Elevator extends SubsystemBase {
   }
 
   /**
-   * Sets elevator positions in inches (still based on the left motor's encoder)
-   * Should be used with Constants.ElevatorConstants.xElevatorHeightInches
-  */
+   * Sets elevator positions in inches (still based on the left motor's encoder).
+   * Should be used with Constants.ElevatorConstants.xElevatorHeightInches.
+   */
   // DO NOT USE YET, NEED TO ADD CONVERSION FACTOR
   public void setElevatorHeightInches(double height) {
     double position = height /* ADD CONVERSION HERE */;
