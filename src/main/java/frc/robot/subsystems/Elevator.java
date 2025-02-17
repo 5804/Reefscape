@@ -79,10 +79,35 @@ public class Elevator extends SubsystemBase {
     leftElevatorMotor.setControl(request.withPosition(position));
   }
 
+  /**
+   * Methods to set elevator to placing positions.
+   */
+  public void setElevatorGround() {
+    setElevatorPosition(Constants.ElevatorConstants.groundElevatorPosition);
+  }
+
+  public void setElevatorl1() {
+    setElevatorPosition(Constants.ElevatorConstants.l1ElevatorPosition);
+  }
+
+  public void setElevatorl2() {
+    setElevatorPosition(Constants.ElevatorConstants.l2ElevatorPosition);
+  }
+
+  public void setElevatorl3() {
+    setElevatorPosition(Constants.ElevatorConstants.l3ElevatorPosition);
+  }
+
+  public void setElevatorl4() {
+    setElevatorPosition(Constants.ElevatorConstants.l4ElevatorPosition);
+  }
+
+  // Gets the position of the elevator based off of leftElevatorMotor, the leader to rightElevatorMotor.
   public void getElevatorPosition() {
     leftElevatorMotor.getPosition();
   }
 
+  // PROBABLY WRONG, BUT MAYBE NOT
   public void zeroElevatorPosition() {
     leftElevatorMotor.setPosition(0);
   }

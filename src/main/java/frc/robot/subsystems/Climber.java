@@ -59,6 +59,9 @@ public class Climber extends SubsystemBase {
         leftClimberMotor.setControl(request.withPosition(position));
     }
 
+    /**
+     * Methods to set the climber to preset positions.
+     */
     public void setClimberDown() {
         setClimberPosition(Constants.ClimberConstants.downClimberPosition);
     }
