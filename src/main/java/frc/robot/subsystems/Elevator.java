@@ -66,10 +66,9 @@ public class Elevator extends SubsystemBase {
    * Sets elevator positions based on the leftElevatorMotor's encoder position.
    * Should be used with Constants.ElevatorConstants.xElevatorPosition.
    */
-  public void setElevatorPosition(double position) { // Max pos: 37.942383
+  public Command setElevatorPosition(double position) { // Max pos: 37.942383
     MotionMagicVoltage request = new MotionMagicVoltage(position);
-    leftElevatorMotor.setControl(request.withPosition(position));
-
+    return run(() -> { leftElevatorMotor.setControl(request.withPosition(position)); });
   }
 
   /**
@@ -77,35 +76,35 @@ public class Elevator extends SubsystemBase {
    * Should be used with Constants.ElevatorConstants.xElevatorHeightInches.
    */
   // DO NOT USE YET, NEED TO ADD CONVERSION FACTOR
-  public void setElevatorHeightInches(double height) {
+  public Command setElevatorHeightInches(double height) {
     double position = height /* ADD CONVERSION HERE */;
     MotionMagicVoltage request = new MotionMagicVoltage(position);
-    leftElevatorMotor.setControl(request.withPosition(position));
+    return run(() -> { leftElevatorMotor.setControl(request.withPosition(position)); });
   }
 
   /** Methods to set elevator to placing positions. */
   public Command setElevatorGround() {
-    return run(() -> { setElevatorPosition(Constants.ElevatorConstants.groundElevatorPosition); });
+    return setElevatorPosition(Constants.ElevatorConstants.groundElevatorPosition);
   }
 
   public Command setElevatorHandoff() {
-    return run(() -> {setElevatorPosition(Constants.ElevatorConstants.handoffElevatorPosition); });
+    return setElevatorPosition(Constants.ElevatorConstants.handoffElevatorPosition);
   }
 
   public Command setElevatorL1() {
-    return run(() -> {setElevatorPosition(Constants.ElevatorConstants.l1ElevatorPosition); });
+    return setElevatorPosition(Constants.ElevatorConstants.l1ElevatorPosition);
   }
 
   public Command setElevatorL2() {
-    return run(() -> {setElevatorPosition(Constants.ElevatorConstants.l2ElevatorPosition); });
+    return setElevatorPosition(Constants.ElevatorConstants.l2ElevatorPosition);
   }
 
   public Command setElevatorL3() {
-    return run(() -> {setElevatorPosition(Constants.ElevatorConstants.l3ElevatorPosition); });
+    return setElevatorPosition(Constants.ElevatorConstants.l3ElevatorPosition);
   }
 
   public Command setElevatorL4() {
-    return run(() -> {setElevatorPosition(Constants.ElevatorConstants.l4ElevatorPosition); });
+    return setElevatorPosition(Constants.ElevatorConstants.l4ElevatorPosition);
   }
 
   // DELETE PROBABLY

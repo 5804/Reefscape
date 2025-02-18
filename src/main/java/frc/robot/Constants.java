@@ -53,11 +53,14 @@ public final class Constants {
          * to while placing coral
          * Should be used with //PUT CORRECT METHOD HERE
          */
-        // NEED TO SET ALL OF THESE STILL
         public static final double verticalWristPosition = 0;
-        public static final double horizontalWristPosition = 0;
+        public static final double horizontalWristPosition = 0.252;
+
+        public static final double clawMotorIntakeSpeed = -1;
+        public static final double clawMotorDropSpeed = 1;
     }
 
+    // NEED TO SET ALL OF THESE STILL
     public final class ClimberConstants {
         public static final double downClimberPosition = 0;
         public static final double climbClimberPosition = 0;
