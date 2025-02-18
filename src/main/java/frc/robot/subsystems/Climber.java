@@ -20,13 +20,13 @@ public class Climber extends SubsystemBase {
     public TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration(); // PROBABLY DOESN'T, BUT MIGHT NEED TO BE
                                                                              // ASSIGNED IN CONSTRUCTOR
 
-    // Motor config objects
+    /** Motor config objects */
     public Slot0Configs slot0Configs = talonFXConfigs.Slot0;
     public MotionMagicConfigs motionMagicConfigs = talonFXConfigs.MotionMagic;
 
     public Climber() {
         /** Configure objects here */
-        // Applies motor configs
+        /* Application of motor configs */
         leftClimberMotor.getConfigurator().apply(talonFXConfigs);
         rightClimberMotor.getConfigurator().apply(talonFXConfigs);
         leftClimberMotor.setNeutralMode(NeutralModeValue.Brake);

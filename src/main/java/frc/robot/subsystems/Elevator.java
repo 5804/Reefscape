@@ -21,15 +21,12 @@ public class Elevator extends SubsystemBase {
   public TalonFX leftElevatorMotor = new TalonFX(52);
   public TalonFX rightElevatorMotor = new TalonFX(51);
 
-  public TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration(); // PROBABLY DOESN'T, BUT MIGHT NEED TO BE
-                                                                           // ASSIGNED IN CONSTRUCTOR
-
   // Motor config objects
+  public TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
   public Slot0Configs slot0Configs = talonFXConfigs.Slot0;
   public MotionMagicConfigs motionMagicConfigs = talonFXConfigs.MotionMagic;
   public SoftwareLimitSwitchConfigs softwareLimitSwitch = talonFXConfigs.SoftwareLimitSwitch;
 
-  /** Creates a new Elevator. */
   public Elevator() {
     /** Configure objects here */
     /**
@@ -86,9 +83,7 @@ public class Elevator extends SubsystemBase {
     leftElevatorMotor.setControl(request.withPosition(position));
   }
 
-  /**
-   * Methods to set elevator to placing positions.
-   */
+  /** Methods to set elevator to placing positions. */
   public Command setElevatorGround() {
     return run(() -> { setElevatorPosition(Constants.ElevatorConstants.groundElevatorPosition); });
   }
@@ -113,19 +108,17 @@ public class Elevator extends SubsystemBase {
     return run(() -> {setElevatorPosition(Constants.ElevatorConstants.l4ElevatorPosition); });
   }
 
+  // DELETE PROBABLY
   public void voltageDebug(double voltage) {
     leftElevatorMotor.setVoltage(voltage);
   }
 
-  // Gets the position of the elevator based off of leftElevatorMotor, the leader
-  // to rightElevatorMotor.
+  /** 
+   * Gets the position of the elevator based off of leftElevatorMotor, 
+   * the leader to rightElevatorMotor. 
+   */
   public double getElevatorPosition() {
     return leftElevatorMotor.getPosition().getValueAsDouble();
-  }
-
-  // PROBABLY WRONG, BUT MAYBE NOT
-  public void zeroElevatorPosition() {
-    leftElevatorMotor.setPosition(0);
   }
 
   @Override

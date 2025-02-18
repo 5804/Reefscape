@@ -16,36 +16,31 @@ public class Arm extends SubsystemBase {
 
 public TalonFX wristMotor = new TalonFX(57);
 public TalonFX elbowMotor = new TalonFX(55); 
-public TalonFX intakeMotor = new TalonFX(58);
+public TalonFX clawMotor = new TalonFX(58);
 public CANcoder wristEncoder = new CANcoder(59);
 public CANcoder elbowEncoder = new CANcoder(60);
 // public TimeOfFlight timeOfFlight = new TimeOfFlight(5);
 
 
   /** Creates a new ArmSubsystem. */
-  public Arm() {}
-
-  public void wristIntakePosition() {
-    wristMotor.setPosition(0.252);
-    // horizontal coral (need to zero gyro and convert to degrees)
-  }
-  public void wristDropPosition() { // change name to include handoff
-    wristMotor.setPosition(0);
-    // vertical coral
+  public Arm() {
+    
   }
 
-  public Command wristIntakePositionCommand() {
-    return run(() -> { wristIntakePosition(); });
+  /** Commands to manipulate the wrist */
+  public Command setWristHorizontal() {
+    return run(() -> { wristMotor.setPosition(0.252); });
   }
 
-  public Command wristDropPositionCommand() {
-    return run(() -> { wristDropPosition(); });
+  public Command setWristVertical() {
+    return run(() -> { wristMotor.setPosition(0); });
   }
 
   public double getWristPosition() {
     return wristEncoder.getPosition().getValueAsDouble();
   }
 
+  /** Commands to manipulate the elbow */
   public Command setElbowPosition(double position) {
     return run(() -> { elbowMotor.setPosition(position); });
   }
@@ -54,33 +49,29 @@ public CANcoder elbowEncoder = new CANcoder(60);
     return elbowEncoder.getPosition().getValueAsDouble();
   }
 
-  // public boolean hasCoral() {
-  //   return (timeOfFlight.getRange() <= 30.00);
-  // }
-
-  public void intakeCoral() {
-    intakeMotor.set(0.1);
-    // Measure direction (could be the wrong way)
+  /** Commands to manipulate the claw */
+  public Command setClawIntake() {
+    return run(() -> { clawMotor.set(-1); });
   }
 
-  public void stopIntakeMotor() {
-    intakeMotor.set(0);
+  public Command setClawStop() {
+    return run(() -> { clawMotor.set(0); });
   }
 
+  public Command setClawDrop() {
+    return run(() -> { clawMotor.set(1); });
+  }
+
+  // NEED TO FINISH THESE
   // public Command intakeCoralCommand() {
   //   return run(() -> { intakeCoral(); })
   //         .until(() -> { return hasCoral(); })
   //         .finallyDo(() -> { stopIntakeMotor(); });
   // }
 
-  public void dropCoral() {
-    intakeMotor.set(-0.1);
-  }
-
-  public Command dropCoralCommand() {
-    return run(() -> { dropCoral(); })
-          .finallyDo(() -> { stopIntakeMotor(); });
-  }
+// public boolean hasCoral() {
+  //   return (timeOfFlight.getRange() <= 30.00);
+  // }
 
   @Override
   public void periodic() {
