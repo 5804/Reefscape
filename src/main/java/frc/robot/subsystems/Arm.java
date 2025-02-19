@@ -15,6 +15,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.playingwithfusion.TimeOfFlight;
@@ -25,62 +26,102 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Arm extends SubsystemBase {
+  public TalonFX elbowMotor = new TalonFX(55); 
   public TalonFXS wristMotor = new TalonFXS(57);
-  public TalonFXS elbowMotor = new TalonFXS(55); 
-  public TalonFX clawMotor = new TalonFX(58);
+  public TalonFXS clawMotor = new TalonFXS(58);
   public CANcoder wristEncoder = new CANcoder(59);
   public CANcoder elbowEncoder = new CANcoder(60);
+  // public TimeOfFlight timeOfFlight = new TimeOfFlight(5);
 
   /** Motor config objects */
-  public TalonFXSConfiguration talonFXSConfigs = new TalonFXSConfiguration();
-  public CommutationConfigs commutationFXSConfigs = talonFXSConfigs.Commutation;
-  public Slot0Configs slot0FXSConfigs = talonFXSConfigs.Slot0;
-  public MotionMagicConfigs motionMagicFXSConfigs = talonFXSConfigs.MotionMagic;
-  public SoftwareLimitSwitchConfigs softwareFXSLimitSwitch = talonFXSConfigs.SoftwareLimitSwitch;
+  /** Elbow motor config objects */
+  public TalonFXConfiguration elbowTalonFXConfigs = new TalonFXConfiguration();
+  public Slot0Configs elbowSlot0FXConfigs = elbowTalonFXConfigs.Slot0;
+  public MotionMagicConfigs elbowMotionMagicFXConfigs = elbowTalonFXConfigs.MotionMagic;
+  public MotorOutputConfigs elbowMotorOutputFXConfigs = elbowTalonFXConfigs.MotorOutput;
+  // public SoftwareLimitSwitchConfigs elbowSoftwareLimitSwitchFXConfigs = elbowTalonFXConfigs.SoftwareLimitSwitch; // Maybe implement
 
-  public TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
-  public Slot0Configs slot0FXConfigs = talonFXSConfigs.Slot0;
-  public MotionMagicConfigs motionMagicFXConfigs = talonFXConfigs.MotionMagic;
-  public SoftwareLimitSwitchConfigs softwareFXLimitSwitch = talonFXConfigs.SoftwareLimitSwitch;
+  /** Wrist motor config objects */
+  public TalonFXSConfiguration wristTalonFXSConfigs = new TalonFXSConfiguration();
+  public CommutationConfigs wristCommutationFXSConfigs = wristTalonFXSConfigs.Commutation;
+  public Slot0Configs wristSlot0FXSConfigs = wristTalonFXSConfigs.Slot0;
+  public MotionMagicConfigs wristMotionMagicFXSConfigs = wristTalonFXSConfigs.MotionMagic;
+  public MotorOutputConfigs wristMotorOutputFXSConfigs = wristTalonFXSConfigs.MotorOutput;
+  // public SoftwareLimitSwitchConfigs wristSoftwareLimitSwitchFXSConfigs = wristTalonFXSConfigs.SoftwareLimitSwitch; // Maybe implement
 
-  // public TimeOfFlight timeOfFlight = new TimeOfFlight(5);
+  /** Claw motor config objects */
+  public TalonFXSConfiguration clawTalonFXSConfigs = new TalonFXSConfiguration();
+  public CommutationConfigs clawCommutationFXSConfigs = clawTalonFXSConfigs.Commutation;
+  public Slot0Configs clawSlot0FXSConfigs = clawTalonFXSConfigs.Slot0;
+  public MotionMagicConfigs clawMotionMagicFXSConfigs = clawTalonFXSConfigs.MotionMagic;
+  public MotorOutputConfigs clawMotorOutputFXSConfigs = clawTalonFXSConfigs.MotorOutput;
 
   /** Creates a new ArmSubsystem. */
   public Arm() {
-    /** Set slot 0 gains */
-    slot0FXSConfigs.kS = 0.25; // Add 0.25 V output to overcome static friction
-    slot0FXSConfigs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
-    slot0FXSConfigs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
-    slot0FXSConfigs.kP = 4.8; // A position error of 2.5 rotations results in 12 V output
-    slot0FXSConfigs.kI = 0; // no output for integrated error
-    slot0FXSConfigs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output
+    /** Set motor arrangements (only for TalonFXS) */
+    // Set wrist motor arrangement
+    wristCommutationFXSConfigs.MotorArrangement = MotorArrangementValue.NEO550_JST;
 
-    slot0FXConfigs.kS = 0.25; // Add 0.25 V output to overcome static friction
-    slot0FXConfigs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
-    slot0FXConfigs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
-    slot0FXConfigs.kP = 4.8; // A position error of 2.5 rotations results in 12 V output
-    slot0FXConfigs.kI = 0; // no output for integrated error
-    slot0FXConfigs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output
+    // Set claw motor arrangement
+    clawCommutationFXSConfigs.MotorArrangement = MotorArrangementValue.NEO550_JST;
+
+    /** Set slot 0 gains */
+    /** Set elbow slot 0 gains */
+    elbowSlot0FXConfigs.kS = 0.25; // Add 0.25 V output to overcome static friction
+    elbowSlot0FXConfigs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+    elbowSlot0FXConfigs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
+    elbowSlot0FXConfigs.kP = 4.8; // A position error of 2.5 rotations results in 12 V output
+    elbowSlot0FXConfigs.kI = 0; // no output for integrated error
+    elbowSlot0FXConfigs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output
+
+    /** Set wrist slot 0 gains */
+    wristSlot0FXSConfigs.kS = 0.25; // Add 0.25 V output to overcome static friction
+    wristSlot0FXSConfigs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+    wristSlot0FXSConfigs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
+    wristSlot0FXSConfigs.kP = 4.8; // A position error of 2.5 rotations results in 12 V output
+    wristSlot0FXSConfigs.kI = 0; // no output for integrated error
+    wristSlot0FXSConfigs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output
+
+    /** Set claw slot 0 gains */
+    clawSlot0FXSConfigs.kS = 0.25; // Add 0.25 V output to overcome static friction
+    clawSlot0FXSConfigs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+    clawSlot0FXSConfigs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
+    clawSlot0FXSConfigs.kP = 4.8; // A position error of 2.5 rotations results in 12 V output
+    clawSlot0FXSConfigs.kI = 0; // no output for integrated error
+    clawSlot0FXSConfigs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output
 
     /** Set Motion Magic settings */
-    motionMagicFXSConfigs.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
-    motionMagicFXSConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
-    motionMagicFXSConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
+    /** Set elbow Motion Magic settings */
+    elbowMotionMagicFXConfigs.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
+    elbowMotionMagicFXConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
+    elbowMotionMagicFXConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
-    motionMagicFXConfigs.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
-    motionMagicFXConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
-    motionMagicFXConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
+    /** Set wrist Motion Magic settings */
+    wristMotionMagicFXSConfigs.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
+    wristMotionMagicFXSConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
+    wristMotionMagicFXSConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
-    // Set motor arrangement
-    commutationFXSConfigs.MotorArrangement = MotorArrangementValue.NEO550_JST;
+    /** Set claw Motion Magic settings */
+    clawMotionMagicFXSConfigs.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
+    clawMotionMagicFXSConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
+    clawMotionMagicFXSConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
+    /** Set elbow motor output configs */
+    elbowMotorOutputFXConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    elbowMotorOutputFXConfigs.NeutralMode = NeutralModeValue.Brake;
+
+    /** Set wrist motor output configs */
+    wristMotorOutputFXSConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    wristMotorOutputFXSConfigs.NeutralMode = NeutralModeValue.Brake;
+
+    /** Set claw motor output configs */
+    clawMotorOutputFXSConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    clawMotorOutputFXSConfigs.NeutralMode = NeutralModeValue.Brake;
+    
     /** Applies motor configs */
-    wristMotor.getConfigurator().apply(talonFXSConfigs);
-    elbowMotor.getConfigurator().apply(talonFXSConfigs);
-    clawMotor.getConfigurator().apply(talonFXConfigs);
-    wristMotor.setNeutralMode(NeutralModeValue.Brake);
-    elbowMotor.setNeutralMode(NeutralModeValue.Brake);
-    clawMotor.setNeutralMode(NeutralModeValue.Brake);
+    elbowMotor.getConfigurator().apply(elbowTalonFXConfigs);
+    wristMotor.getConfigurator().apply(wristTalonFXSConfigs);
+    clawMotor.getConfigurator().apply(clawCommutationFXSConfigs);
   }
 
   /** Commands to manipulate the wrist */

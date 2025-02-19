@@ -10,6 +10,7 @@ import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.*;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,11 +22,12 @@ public class Elevator extends SubsystemBase {
   public TalonFX leftElevatorMotor = new TalonFX(52);
   public TalonFX rightElevatorMotor = new TalonFX(51);
 
-  // Motor config objects
-  public TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
-  public Slot0Configs slot0Configs = talonFXConfigs.Slot0;
-  public MotionMagicConfigs motionMagicConfigs = talonFXConfigs.MotionMagic;
-  public SoftwareLimitSwitchConfigs softwareLimitSwitch = talonFXConfigs.SoftwareLimitSwitch;
+  /** Motor config objects */
+  public TalonFXConfiguration elevatorTalonFXConfigs = new TalonFXConfiguration();
+  public Slot0Configs elevatorSlot0FXConfigs = elevatorTalonFXConfigs.Slot0;
+  public MotionMagicConfigs elevatorMotionMagicFXConfigs = elevatorTalonFXConfigs.MotionMagic;
+  public MotorOutputConfigs elevatorMotorOutputFXConfigs = elevatorTalonFXConfigs.MotorOutput;
+  public SoftwareLimitSwitchConfigs elevatorSoftwareLimitSwitchFXConfigs = elevatorTalonFXConfigs.SoftwareLimitSwitch;
 
   public Elevator() {
     /** Configure objects here */
@@ -36,30 +38,32 @@ public class Elevator extends SubsystemBase {
      */
     rightElevatorMotor.setControl(new Follower(leftElevatorMotor.getDeviceID(), false));
 
-    // Set slot 0 gains
-    slot0Configs.kS = 0.25; // Add 0.25 V output to overcome static friction
-    slot0Configs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
-    slot0Configs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
-    slot0Configs.kP = 4.8; // A position error of 2.5 rotations results in 12 V output
-    slot0Configs.kI = 0; // no output for integrated error
-    slot0Configs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output
+    /** Set slot 0 gains */
+    elevatorSlot0FXConfigs.kS = 0.25; // Add 0.25 V output to overcome static friction
+    elevatorSlot0FXConfigs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+    elevatorSlot0FXConfigs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
+    elevatorSlot0FXConfigs.kP = 4.8; // A position error of 2.5 rotations results in 12 V output
+    elevatorSlot0FXConfigs.kI = 0; // no output for integrated error
+    elevatorSlot0FXConfigs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output
 
-    // Set Motion Magic settings
-    motionMagicConfigs.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
-    motionMagicConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
-    motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
+    /** Set Motion Magic settings */
+    elevatorMotionMagicFXConfigs.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
+    elevatorMotionMagicFXConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
+    elevatorMotionMagicFXConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
-    // Set software limit switches
-    softwareLimitSwitch.withForwardSoftLimitEnable(true)
-                      //  .withReverseSoftLimitEnable(true)
-                       .withForwardSoftLimitThreshold(37.942383 - Constants.ElevatorConstants.softwareLimitSafetyThreshold);
-                      //  .withReverseSoftLimitThreshold(0);
+    /** Set elevaotr motor output configs */
+    elevatorMotorOutputFXConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    elevatorMotorOutputFXConfigs.NeutralMode = NeutralModeValue.Brake;
 
-    // Applies motor configs
-    leftElevatorMotor.getConfigurator().apply(talonFXConfigs);
-    rightElevatorMotor.getConfigurator().apply(talonFXConfigs);
-    leftElevatorMotor.setNeutralMode(NeutralModeValue.Brake);
-    rightElevatorMotor.setNeutralMode(NeutralModeValue.Brake);
+    /** Set software limit switches */
+    elevatorSoftwareLimitSwitchFXConfigs.ForwardSoftLimitEnable = true;
+    elevatorSoftwareLimitSwitchFXConfigs.ForwardSoftLimitThreshold = 37.942383 - Constants.ElevatorConstants.softwareLimitSafetyThreshold;
+    // softwareLimitSwitch.ReverseSoftLimitEnable = true; // NEED TO TEST
+    // softwareLimitSwitch.ReverseSoftLimitThreshold = 0; // NEED TO TEST
+
+    /** Applies motor configs */
+    leftElevatorMotor.getConfigurator().apply(elevatorTalonFXConfigs);
+    rightElevatorMotor.getConfigurator().apply(elevatorTalonFXConfigs);
   }
 
   /**
@@ -80,36 +84,6 @@ public class Elevator extends SubsystemBase {
     double position = height /* ADD CONVERSION HERE */;
     MotionMagicVoltage request = new MotionMagicVoltage(position);
     return run(() -> { leftElevatorMotor.setControl(request.withPosition(position)); });
-  }
-
-  /** Methods to set elevator to placing positions. */
-  public Command setElevatorGround() {
-    return setElevatorPosition(Constants.ElevatorConstants.groundElevatorPosition);
-  }
-
-  public Command setElevatorHandoff() {
-    return setElevatorPosition(Constants.ElevatorConstants.handoffElevatorPosition);
-  }
-
-  public Command setElevatorL1() {
-    return setElevatorPosition(Constants.ElevatorConstants.l1ElevatorPosition);
-  }
-
-  public Command setElevatorL2() {
-    return setElevatorPosition(Constants.ElevatorConstants.l2ElevatorPosition);
-  }
-
-  public Command setElevatorL3() {
-    return setElevatorPosition(Constants.ElevatorConstants.l3ElevatorPosition);
-  }
-
-  public Command setElevatorL4() {
-    return setElevatorPosition(Constants.ElevatorConstants.l4ElevatorPosition);
-  }
-
-  // DELETE PROBABLY
-  public void voltageDebug(double voltage) {
-    leftElevatorMotor.setVoltage(voltage);
   }
 
   /** 
