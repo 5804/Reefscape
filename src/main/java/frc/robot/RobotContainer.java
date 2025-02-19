@@ -98,14 +98,21 @@ public class RobotContainer {
 
         // Reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-     
-        // Wrist position testing
-        // joystick.x().onTrue(arm.setClawIntake());
-        // joystick.y().onTrue(arm.setClawDrop());
-        // joystick.a().onTrue(arm.setClawStop());
-        joystick.y().onTrue(arm.setClawStop());
-        joystick.a().onTrue(arm.setWristHorizontal());
-        joystick.b().onTrue(arm.setWristVertical());
+
+        // joystick.a().onTrue(arm.setClawIntake());
+        // joystick.b().onTrue(arm.setClawDrop());
+        // joystick.y().onTrue(arm.setClawStop());
+
+        // joystick.x().onTrue(arm.setElbowPosition(Constants.ArmConstants.l4ElbowPosition));
+        // joystick.y().onTrue(arm.setElbowPosition(Constants.ArmConstants.handoffElbowPosition));
+
+        // joystick.y().onTrue(arm.setClawStop());
+        // joystick.a().onTrue(arm.setWristHorizontal());
+        // joystick.b().onTrue(arm.setWristVertical());
+        
+        // joystick.y().onTrue(arm.setElbowStop());
+        // joystick.a().onTrue(arm.setElbowBrakeOff());
+        // joystick.b().onTrue(arm.setElbowBrakeOn());
    
         // Logs telemetry every time the swerve drive updates.
         drivetrain.registerTelemetry(logger::telemeterize);

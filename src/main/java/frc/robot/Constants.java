@@ -41,12 +41,12 @@ public final class Constants {
          * Should be used with //PUT CORRECT METHOD HERE
          */
         // NEED TO SET ALL OF THESE STILL
-        public static final double l4ElbowPosition = 0;
+        public static final double l4ElbowPosition = 0.177;
         public static final double l3ElbowPosition = 0;
         public static final double l2ElbowPosition = 0;
         public static final double l1ElbowPosition = 0;
         public static final double groundElbowPosition = 0;
-        public static final double handoffElbowPosition = 0;
+        public static final double handoffElbowPosition = 0; 
 
         /**
          * Wrist positions based on the wrist absolute encoder for the wrist to be set
@@ -54,7 +54,7 @@ public final class Constants {
          * Should be used with //PUT CORRECT METHOD HERE
          */
         public static final double verticalWristPosition = 0;
-        public static final double horizontalWristPosition = 0.23;
+        public static final double horizontalWristPosition = 0.23; // problems
 
         public static final double clawMotorIntakeSpeed = -1;
         public static final double clawMotorDropSpeed = 1;

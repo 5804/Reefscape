@@ -12,6 +12,8 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.playingwithfusion.TimeOfFlight;
@@ -31,8 +33,10 @@ public class Arm extends SubsystemBase {
 
   // Motor config objects
   public TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
-  public Slot0Configs slot0Configs = talonFXConfigs.Slot0;
-  public MotionMagicConfigs motionMagicConfigs = talonFXConfigs.MotionMagic;
+  public TalonFXConfiguration wristConfigs = new TalonFXConfiguration();
+  public TalonFXConfiguration elbowConfigs = new TalonFXConfiguration();
+  public Slot0Configs slot0Configs = elbowConfigs.Slot0;
+  public MotionMagicConfigs motionMagicConfigs = elbowConfigs.MotionMagic;
   public SoftwareLimitSwitchConfigs softwareLimitSwitch = talonFXConfigs.SoftwareLimitSwitch;
   // public MotorArrangementValue motorArrangementValue = MotorArrangementValue.NEO550_JST;
   // public MotorOutputConfigs motorOutputConfigs = talonFXConfigs.MotorOutput;
@@ -43,7 +47,7 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new ArmSubsystem. */
   public Arm() {
-    // Set slot 0 gains
+   // Set slot 0 gains
     slot0Configs.kS = 0.25; // Add 0.25 V output to overcome static friction
     slot0Configs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
     slot0Configs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
@@ -57,10 +61,22 @@ public class Arm extends SubsystemBase {
     motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
     // motorOutputConfigs.withMotorArrangementValue();
+    wristConfigs.Feedback.FeedbackRemoteSensorID = wristEncoder.getDeviceID();
+    wristConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+    elbowConfigs.Feedback.FeedbackRemoteSensorID = elbowEncoder.getDeviceID();
+    elbowConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
 
+    
+    // var slot0Configs = talonFXConfigs.Slot0;
+    // slot0Configs.GravityType = GravityTypeValue.Arm_Cosine;
+    // slot0Configs.kV = 7; // 7 
+    // slot0Configs.kP = 80; // 50 // 70 
+    // slot0Configs.kI = 0; // 0 
+    // slot0Configs.kD = 2; // 3.375 // 2 
+    // slot0Configs.kS = 0; // 0 
     // Applies motor configs
-    wristMotor.getConfigurator().apply(talonFXConfigs);
-    elbowMotor.getConfigurator().apply(talonFXConfigs);
+    wristMotor.getConfigurator().apply(wristConfigs);
+    elbowMotor.getConfigurator().apply(elbowConfigs);
     clawMotor.getConfigurator().apply(talonFXConfigs);
     wristMotor.setNeutralMode(NeutralModeValue.Brake);
     elbowMotor.setNeutralMode(NeutralModeValue.Brake);
@@ -82,9 +98,21 @@ public class Arm extends SubsystemBase {
   }
 
   /** Commands to manipulate the elbow */
-  public Command setElbowPosition(double position) {
+  public Command setElbowPosition(double position) { // HELP doesn't set position??
     MotionMagicVoltage request = new MotionMagicVoltage(position);
     return run(() -> { elbowMotor.setControl(request.withPosition(position)); });
+  }
+
+  public Command setElbowStop() {
+    return run(() -> { elbowMotor.set(0); });
+  }
+
+  public Command setElbowBrakeOn() {
+    return run(() -> { elbowMotor.setNeutralMode(NeutralModeValue.Brake); });
+  }
+
+  public Command setElbowBrakeOff() {
+    return run(() -> { elbowMotor.setNeutralMode(NeutralModeValue.Coast); });
   }
 
   public double getElbowPosition() {
