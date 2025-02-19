@@ -4,14 +4,17 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CommutationConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.playingwithfusion.TimeOfFlight;
@@ -22,45 +25,58 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Arm extends SubsystemBase {
-
-  public TalonFX wristMotor = new TalonFX(57);
-  public TalonFX elbowMotor = new TalonFX(55); 
+  public TalonFXS wristMotor = new TalonFXS(57);
+  public TalonFXS elbowMotor = new TalonFXS(55); 
   public TalonFX clawMotor = new TalonFX(58);
   public CANcoder wristEncoder = new CANcoder(59);
   public CANcoder elbowEncoder = new CANcoder(60);
 
-  // Motor config objects
-  public TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
-  public Slot0Configs slot0Configs = talonFXConfigs.Slot0;
-  public MotionMagicConfigs motionMagicConfigs = talonFXConfigs.MotionMagic;
-  public SoftwareLimitSwitchConfigs softwareLimitSwitch = talonFXConfigs.SoftwareLimitSwitch;
-  // public MotorArrangementValue motorArrangementValue = MotorArrangementValue.NEO550_JST;
-  // public MotorOutputConfigs motorOutputConfigs = talonFXConfigs.MotorOutput;
+  /** Motor config objects */
+  public TalonFXSConfiguration talonFXSConfigs = new TalonFXSConfiguration();
+  public CommutationConfigs commutationFXSConfigs = talonFXSConfigs.Commutation;
+  public Slot0Configs slot0FXSConfigs = talonFXSConfigs.Slot0;
+  public MotionMagicConfigs motionMagicFXSConfigs = talonFXSConfigs.MotionMagic;
+  public SoftwareLimitSwitchConfigs softwareFXSLimitSwitch = talonFXSConfigs.SoftwareLimitSwitch;
 
-  public MotorOutputConfigs motorOutputConfigs = talonFXConfigs.MotorOutput;
+  public TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
+  public Slot0Configs slot0FXConfigs = talonFXSConfigs.Slot0;
+  public MotionMagicConfigs motionMagicFXConfigs = talonFXConfigs.MotionMagic;
+  public SoftwareLimitSwitchConfigs softwareFXLimitSwitch = talonFXConfigs.SoftwareLimitSwitch;
 
   // public TimeOfFlight timeOfFlight = new TimeOfFlight(5);
 
   /** Creates a new ArmSubsystem. */
   public Arm() {
-    // Set slot 0 gains
-    slot0Configs.kS = 0.25; // Add 0.25 V output to overcome static friction
-    slot0Configs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
-    slot0Configs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
-    slot0Configs.kP = 4.8; // A position error of 2.5 rotations results in 12 V output
-    slot0Configs.kI = 0; // no output for integrated error
-    slot0Configs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output
+    /** Set slot 0 gains */
+    slot0FXSConfigs.kS = 0.25; // Add 0.25 V output to overcome static friction
+    slot0FXSConfigs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+    slot0FXSConfigs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
+    slot0FXSConfigs.kP = 4.8; // A position error of 2.5 rotations results in 12 V output
+    slot0FXSConfigs.kI = 0; // no output for integrated error
+    slot0FXSConfigs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output
 
-    // Set Motion Magic settings
-    motionMagicConfigs.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
-    motionMagicConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
-    motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
+    slot0FXConfigs.kS = 0.25; // Add 0.25 V output to overcome static friction
+    slot0FXConfigs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+    slot0FXConfigs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
+    slot0FXConfigs.kP = 4.8; // A position error of 2.5 rotations results in 12 V output
+    slot0FXConfigs.kI = 0; // no output for integrated error
+    slot0FXConfigs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output
 
-    // motorOutputConfigs.withMotorArrangementValue();
+    /** Set Motion Magic settings */
+    motionMagicFXSConfigs.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
+    motionMagicFXSConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
+    motionMagicFXSConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
-    // Applies motor configs
-    wristMotor.getConfigurator().apply(talonFXConfigs);
-    elbowMotor.getConfigurator().apply(talonFXConfigs);
+    motionMagicFXConfigs.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
+    motionMagicFXConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
+    motionMagicFXConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
+
+    // Set motor arrangement
+    commutationFXSConfigs.MotorArrangement = MotorArrangementValue.NEO550_JST;
+
+    /** Applies motor configs */
+    wristMotor.getConfigurator().apply(talonFXSConfigs);
+    elbowMotor.getConfigurator().apply(talonFXSConfigs);
     clawMotor.getConfigurator().apply(talonFXConfigs);
     wristMotor.setNeutralMode(NeutralModeValue.Brake);
     elbowMotor.setNeutralMode(NeutralModeValue.Brake);
