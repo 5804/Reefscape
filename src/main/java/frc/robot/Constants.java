@@ -2,6 +2,9 @@ package frc.robot;
 
 public final class Constants {
     public final class ElevatorConstants {
+        /** IDs */
+        public static final int leftElevatorMotorID = 52;
+        public static final int rightElevatorMotorID = 51;
 
         /**
          * Elevator positions based on the leftElevatorMotor's encoder for the elevator
@@ -35,6 +38,13 @@ public final class Constants {
     }
 
     public final class ArmConstants {
+        /** IDs */
+        public static final int elbowMotorID = 55;
+        public static final int wristMotorID = 57;
+        public static final int clawMotorID = 58;
+        public static final int wristEncoderID = 59;
+        public static final int elbowEncoderID = 60;
+
         /**
          * Elbow positions based on the elbow absolute encoder for the elbow to be set
          * to while placing coral

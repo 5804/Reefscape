@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.lang.reflect.Type;
-
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -19,8 +17,8 @@ import frc.robot.Constants;
 
 public class Elevator extends SubsystemBase {
   /** Declare variables and assign values */
-  public TalonFX leftElevatorMotor = new TalonFX(52);
-  public TalonFX rightElevatorMotor = new TalonFX(51);
+  public TalonFX leftElevatorMotor = new TalonFX(Constants.ElevatorConstants.leftElevatorMotorID);
+  public TalonFX rightElevatorMotor = new TalonFX(Constants.ElevatorConstants.rightElevatorMotorID);
 
   /** Motor config objects */
   public TalonFXConfiguration elevatorTalonFXConfigs = new TalonFXConfiguration();

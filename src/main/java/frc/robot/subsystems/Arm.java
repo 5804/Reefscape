@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CommutationConfigs;
+import com.ctre.phoenix6.configs.ExternalFeedbackConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -15,6 +17,8 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
+import com.ctre.phoenix6.signals.ExternalFeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -26,11 +30,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Arm extends SubsystemBase {
-  public TalonFX elbowMotor = new TalonFX(55); 
-  public TalonFXS wristMotor = new TalonFXS(57);
-  public TalonFXS clawMotor = new TalonFXS(58);
-  public CANcoder wristEncoder = new CANcoder(59);
-  public CANcoder elbowEncoder = new CANcoder(60);
+  public TalonFX elbowMotor = new TalonFX(Constants.ArmConstants.elbowMotorID); 
+  public TalonFXS wristMotor = new TalonFXS(Constants.ArmConstants.wristMotorID);
+  public TalonFXS clawMotor = new TalonFXS(Constants.ArmConstants.clawMotorID);
+  public CANcoder wristEncoder = new CANcoder(Constants.ArmConstants.wristEncoderID);
+  public CANcoder elbowEncoder = new CANcoder(Constants.ArmConstants.elbowEncoderID);
   // public TimeOfFlight timeOfFlight = new TimeOfFlight(5);
 
   /** Motor config objects */
@@ -39,20 +43,23 @@ public class Arm extends SubsystemBase {
   public Slot0Configs elbowSlot0FXConfigs = elbowTalonFXConfigs.Slot0;
   public MotionMagicConfigs elbowMotionMagicFXConfigs = elbowTalonFXConfigs.MotionMagic;
   public MotorOutputConfigs elbowMotorOutputFXConfigs = elbowTalonFXConfigs.MotorOutput;
+  public FeedbackConfigs elbowMotorFeedbackFXConfigs = elbowTalonFXConfigs.Feedback;
   // public SoftwareLimitSwitchConfigs elbowSoftwareLimitSwitchFXConfigs = elbowTalonFXConfigs.SoftwareLimitSwitch; // Maybe implement
 
   /** Wrist motor config objects */
   public TalonFXSConfiguration wristTalonFXSConfigs = new TalonFXSConfiguration();
-  public CommutationConfigs wristCommutationFXSConfigs = wristTalonFXSConfigs.Commutation;
   public Slot0Configs wristSlot0FXSConfigs = wristTalonFXSConfigs.Slot0;
+  public CommutationConfigs wristCommutationFXSConfigs = wristTalonFXSConfigs.Commutation;
   public MotionMagicConfigs wristMotionMagicFXSConfigs = wristTalonFXSConfigs.MotionMagic;
   public MotorOutputConfigs wristMotorOutputFXSConfigs = wristTalonFXSConfigs.MotorOutput;
+  public ExternalFeedbackConfigs wristMotorFeedbackFXSConfigs = wristTalonFXSConfigs.ExternalFeedback;
   // public SoftwareLimitSwitchConfigs wristSoftwareLimitSwitchFXSConfigs = wristTalonFXSConfigs.SoftwareLimitSwitch; // Maybe implement
+  
 
   /** Claw motor config objects */
   public TalonFXSConfiguration clawTalonFXSConfigs = new TalonFXSConfiguration();
-  public CommutationConfigs clawCommutationFXSConfigs = clawTalonFXSConfigs.Commutation;
   public Slot0Configs clawSlot0FXSConfigs = clawTalonFXSConfigs.Slot0;
+  public CommutationConfigs clawCommutationFXSConfigs = clawTalonFXSConfigs.Commutation;
   public MotionMagicConfigs clawMotionMagicFXSConfigs = clawTalonFXSConfigs.MotionMagic;
   public MotorOutputConfigs clawMotorOutputFXSConfigs = clawTalonFXSConfigs.MotorOutput;
 
@@ -117,7 +124,15 @@ public class Arm extends SubsystemBase {
     /** Set claw motor output configs */
     clawMotorOutputFXSConfigs.Inverted = InvertedValue.Clockwise_Positive;
     clawMotorOutputFXSConfigs.NeutralMode = NeutralModeValue.Brake;
-    
+
+    /** Set elbow fused encoder configs */
+    elbowMotorFeedbackFXConfigs.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    elbowMotorFeedbackFXConfigs.FeedbackRemoteSensorID = Constants.ArmConstants.elbowEncoderID;
+
+    /** Set wrist fused encoder configs */
+    wristMotorFeedbackFXSConfigs.ExternalFeedbackSensorSource = ExternalFeedbackSensorSourceValue.FusedCANcoder;
+    wristMotorFeedbackFXSConfigs.FeedbackRemoteSensorID = Constants.ArmConstants.wristMotorID;
+
     /** Applies motor configs */
     elbowMotor.getConfigurator().apply(elbowTalonFXConfigs);
     wristMotor.getConfigurator().apply(wristTalonFXSConfigs);
