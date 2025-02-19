@@ -100,10 +100,10 @@ public class RobotContainer {
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
      
         // Wrist position testing
-        joystick.leftTrigger(0.8).whileTrue(arm.setClawIntake());
-        joystick.rightTrigger(0.8).whileTrue(arm.setClawDrop());
-        joystick.leftTrigger(0.8).whileFalse(arm.setClawStop());
-        joystick.rightTrigger(0.8).whileFalse(arm.setClawStop());
+        // joystick.x().onTrue(arm.setClawIntake());
+        // joystick.y().onTrue(arm.setClawDrop());
+        // joystick.a().onTrue(arm.setClawStop());
+        joystick.y().onTrue(arm.setClawStop());
         joystick.a().onTrue(arm.setWristHorizontal());
         joystick.b().onTrue(arm.setWristVertical());
    

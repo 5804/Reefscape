@@ -54,7 +54,7 @@ public final class Constants {
          * Should be used with //PUT CORRECT METHOD HERE
          */
         public static final double verticalWristPosition = 0;
-        public static final double horizontalWristPosition = 0.252;
+        public static final double horizontalWristPosition = 0.23;
 
         public static final double clawMotorIntakeSpeed = -1;
         public static final double clawMotorDropSpeed = 1;

@@ -5,12 +5,14 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.playingwithfusion.TimeOfFlight;
 
@@ -32,6 +34,10 @@ public class Arm extends SubsystemBase {
   public Slot0Configs slot0Configs = talonFXConfigs.Slot0;
   public MotionMagicConfigs motionMagicConfigs = talonFXConfigs.MotionMagic;
   public SoftwareLimitSwitchConfigs softwareLimitSwitch = talonFXConfigs.SoftwareLimitSwitch;
+  // public MotorArrangementValue motorArrangementValue = MotorArrangementValue.NEO550_JST;
+  // public MotorOutputConfigs motorOutputConfigs = talonFXConfigs.MotorOutput;
+
+  public MotorOutputConfigs motorOutputConfigs = talonFXConfigs.MotorOutput;
 
   // public TimeOfFlight timeOfFlight = new TimeOfFlight(5);
 
@@ -50,6 +56,8 @@ public class Arm extends SubsystemBase {
     motionMagicConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
     motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
+    // motorOutputConfigs.withMotorArrangementValue();
+
     // Applies motor configs
     wristMotor.getConfigurator().apply(talonFXConfigs);
     elbowMotor.getConfigurator().apply(talonFXConfigs);
@@ -61,11 +69,12 @@ public class Arm extends SubsystemBase {
 
   /** Commands to manipulate the wrist */
   public Command setWristHorizontal() {
-    return run(() -> { wristMotor.setPosition(Constants.ArmConstants.horizontalWristPosition); });
-  }
+    MotionMagicVoltage request = new MotionMagicVoltage(Constants.ArmConstants.horizontalWristPosition);
+    return run(() -> { wristMotor.setControl(request.withPosition(Constants.ArmConstants.horizontalWristPosition)); });  }
 
   public Command setWristVertical() {
-    return run(() -> { wristMotor.setPosition(Constants.ArmConstants.verticalWristPosition); });
+    MotionMagicVoltage request = new MotionMagicVoltage(Constants.ArmConstants.verticalWristPosition);
+    return run(() -> { wristMotor.setControl(request.withPosition(Constants.ArmConstants.verticalWristPosition)); });
   }
 
   public double getWristPosition() {
