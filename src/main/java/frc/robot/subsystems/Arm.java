@@ -141,11 +141,11 @@ public class Arm extends SubsystemBase {
 
   /** Commands to manipulate the wrist */
   public Command setWristHorizontal() {
-    MotionMagicVoltage request = new MotionMagicVoltage(Constants.ArmConstants.horizontalWristPosition);
+    MotionMagicVoltage request = new MotionMagicVoltage(0); // Constants.ArmConstants.horizontalWristPosition
     return run(() -> { wristMotor.setControl(request.withPosition(Constants.ArmConstants.horizontalWristPosition)); });  }
 
   public Command setWristVertical() {
-    MotionMagicVoltage request = new MotionMagicVoltage(Constants.ArmConstants.verticalWristPosition);
+    MotionMagicVoltage request = new MotionMagicVoltage(0);  // Constants.ArmConstants.verticalWristPosition
     return run(() -> { wristMotor.setControl(request.withPosition(Constants.ArmConstants.verticalWristPosition)); });
   }
 
@@ -155,7 +155,7 @@ public class Arm extends SubsystemBase {
 
   /** Commands to manipulate the elbow */
   public Command setElbowPosition(double position) {
-    MotionMagicVoltage request = new MotionMagicVoltage(position);
+    MotionMagicVoltage request = new MotionMagicVoltage(0); // position
     return run(() -> { elbowMotor.setControl(request.withPosition(position)); });
   }
 

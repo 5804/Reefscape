@@ -69,7 +69,7 @@ public class Elevator extends SubsystemBase {
    * Should be used with Constants.ElevatorConstants.xElevatorPosition.
    */
   public Command setElevatorPosition(double position) { // Max pos: 37.942383
-    MotionMagicVoltage request = new MotionMagicVoltage(position);
+    MotionMagicVoltage request = new MotionMagicVoltage(0); // position
     return run(() -> { leftElevatorMotor.setControl(request.withPosition(position)); });
   }
 
@@ -80,7 +80,7 @@ public class Elevator extends SubsystemBase {
   // DO NOT USE YET, NEED TO ADD CONVERSION FACTOR
   public Command setElevatorHeightInches(double height) {
     double position = height /* ADD CONVERSION HERE */;
-    MotionMagicVoltage request = new MotionMagicVoltage(position);
+    MotionMagicVoltage request = new MotionMagicVoltage(0); // position
     return run(() -> { leftElevatorMotor.setControl(request.withPosition(position)); });
   }
 
