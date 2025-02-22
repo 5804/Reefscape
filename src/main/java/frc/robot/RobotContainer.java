@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-
+import frc.ButtonBoard;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -41,7 +41,9 @@ public class RobotContainer {
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final CommandXboxController joystick = new CommandXboxController(0);
+    private final CommandXboxController driveController = new CommandXboxController(0);
+    private final ButtonBoard buttonBoard = new ButtonBoard(12, 1);
+    
 
     /** Subsytem initializations. */
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -52,8 +54,6 @@ public class RobotContainer {
     /** Shuffleboard configurations. */
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
     private ShuffleboardTab tab1 = Shuffleboard.getTab("Tab1");
-
-    
 
     public RobotContainer() {
         configureBindings();
@@ -75,52 +75,18 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-1 * Math.pow(joystick.getLeftY(), 3) * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-1 * Math.pow(joystick.getLeftX(), 3) * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-1 * Math.pow(joystick.getRightX(), 3) * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-1 * Math.pow(driveController.getLeftY(), 3) * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-1 * Math.pow(driveController.getLeftX(), 3) * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(-1 * Math.pow(driveController.getRightX(), 3) * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
 
-        /** CTRE Swerve built in controls, will probably be deleted at some point. */
-        // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        // joystick.b().whileTrue(drivetrain.applyRequest(() ->
-        //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
-        // ));
-
-        // Run SysId routines when holding back/start and X/Y.
-        // Note that each routine should be run exactly once in a single log.
-        // joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        // joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-
-        // Elevator testing
-        // joystick.a().whileTrue(new InstantCommand(() -> { elevator.setElevatorPosition(5); }));
-        // joystick.a().whileFalse(new InstantCommand(() -> { elevator.voltageDebug(0); }));
-
         // Reset the field-centric heading on left bumper press
-        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-     
-        // Wrist position testing
-        // joystick.x().onTrue(arm.setClawIntake());
-        // joystick.y().onTrue(arm.setClawDrop());
-        // joystick.a().onTrue(arm.setClawStop());
-        joystick.y().onTrue(arm.setClawStop());
-        joystick.a().onTrue(arm.setWristHorizontal());
-        joystick.b().onTrue(arm.setWristVertical());
+        driveController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
    
         // Logs telemetry every time the swerve drive updates.
         drivetrain.registerTelemetry(logger::telemeterize);
     }
-
-    // public Command groundIntakeCommand() {
-    //     return elevator.setElevatorGround()
-    //                    .until(() -> { return elevator.getElevatorPosition() <= Constants.ElevatorConstants.groundElevatorPosition + 0.01; })
-    //                    .andThen(arm.setElbowPosition(Constants.ArmConstants.groundElbowPosition))
-    //                    .until(() -> { return arm.getElbowPosition() <= 0;})
-    //                    .andThen(arm.wristIntakePositionCommand())
-    //                    .until(() -> { return arm.getWristPosition() <= 0;}); // Need to change from 0!!!!! (╯°□°)╯︵ ┻━┻
-    // }
 
     // Sets the autonomous command based off of the sendable chooser 
     public Command getAutonomousCommand() {

@@ -82,10 +82,10 @@ public class Arm extends SubsystemBase {
     elbowSlot0FXConfigs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output
 
     /** Set wrist slot 0 gains */
-    wristSlot0FXSConfigs.kS = 0.25; // Add 0.25 V output to overcome static friction
+    wristSlot0FXSConfigs.kS = 0.50; // Add 0.25 V output to overcome static friction
     wristSlot0FXSConfigs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
     wristSlot0FXSConfigs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
-    wristSlot0FXSConfigs.kP = 4.8; // A position error of 2.5 rotations results in 12 V output
+    wristSlot0FXSConfigs.kP = 40.8; // A position error of 2.5 rotations results in 12 V output
     wristSlot0FXSConfigs.kI = 0; // no output for integrated error
     wristSlot0FXSConfigs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output
 
@@ -126,17 +126,17 @@ public class Arm extends SubsystemBase {
     clawMotorOutputFXSConfigs.NeutralMode = NeutralModeValue.Brake;
 
     /** Set elbow fused encoder configs */
-    elbowMotorFeedbackFXConfigs.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    elbowMotorFeedbackFXConfigs.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
     elbowMotorFeedbackFXConfigs.FeedbackRemoteSensorID = Constants.ArmConstants.elbowEncoderID;
 
     /** Set wrist fused encoder configs */
-    wristMotorFeedbackFXSConfigs.ExternalFeedbackSensorSource = ExternalFeedbackSensorSourceValue.FusedCANcoder;
-    wristMotorFeedbackFXSConfigs.FeedbackRemoteSensorID = Constants.ArmConstants.wristMotorID;
+    wristMotorFeedbackFXSConfigs.ExternalFeedbackSensorSource = ExternalFeedbackSensorSourceValue.RemoteCANcoder;
+    wristMotorFeedbackFXSConfigs.FeedbackRemoteSensorID = Constants.ArmConstants.wristEncoderID;
 
     /** Applies motor configs */
     elbowMotor.getConfigurator().apply(elbowTalonFXConfigs);
     wristMotor.getConfigurator().apply(wristTalonFXSConfigs);
-    clawMotor.getConfigurator().apply(clawCommutationFXSConfigs);
+    clawMotor.getConfigurator().apply(clawTalonFXSConfigs);
   }
 
   /** Commands to manipulate the wrist */
