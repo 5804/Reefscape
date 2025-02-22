@@ -14,8 +14,8 @@ import frc.robot.Constants;
 public class Climber extends SubsystemBase {
 
     /** Declare variables and assign values */
-    public TalonFX leftClimberMotor = new TalonFX(0); // NEED TO ID
-    public TalonFX rightClimberMotor = new TalonFX(0); // NEED TO ID
+    public TalonFX leftClimberMotor = new TalonFX(Constants.Climber.leftMotorID); // NEED TO ID
+    public TalonFX rightClimberMotor = new TalonFX(Constants.Climber.rightMotorID); // NEED TO ID
 
     public TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration(); // PROBABLY DOESN'T, BUT MIGHT NEED TO BE
                                                                              // ASSIGNED IN CONSTRUCTOR
@@ -40,17 +40,17 @@ public class Climber extends SubsystemBase {
         rightClimberMotor.setControl(new Follower(leftClimberMotor.getDeviceID(), true));
 
         // Set slot 0 gains
-        slot0Configs.kS = 0.25; // Add 0.25 V output to overcome static friction
-        slot0Configs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
-        slot0Configs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
-        slot0Configs.kP = 4.8; // A position error of 2.5 rotations results in 12 V output
-        slot0Configs.kI = 0; // no output for integrated error
-        slot0Configs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output
+        slot0Configs.kS = Constants.Climber.kS; // Add 0.25 V output to overcome static friction
+        slot0Configs.kV = Constants.Climber.kV; // A velocity target of 1 rps results in 0.12 V output
+        slot0Configs.kA = Constants.Climber.kA; // An acceleration of 1 rps/s requires 0.01 V output
+        slot0Configs.kP = Constants.Climber.kP; // A position error of 2.5 rotations results in 12 V output
+        slot0Configs.kI = Constants.Climber.kI; // no output for integrated error
+        slot0Configs.kD = Constants.Climber.kD; // A velocity error of 1 rps results in 0.1 V output
 
         // Set Motion Magic settings
-        motionMagicConfigs.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
-        motionMagicConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
-        motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
+        motionMagicConfigs.MotionMagicCruiseVelocity = Constants.Climber.cruiseVelocity; // Target cruise velocity of 80 rps
+        motionMagicConfigs.MotionMagicAcceleration = Constants.Climber.acceleration; // Target acceleration of 160 rps/s (0.5 seconds)
+        motionMagicConfigs.MotionMagicJerk = Constants.Climber.jerk; // Target jerk of 1600 rps/s/s (0.1 seconds)
     }
 
     public void setClimberPosition(double position) {
@@ -62,14 +62,14 @@ public class Climber extends SubsystemBase {
      * Methods to set the climber to preset positions.
      */
     public void setClimberDown() {
-        setClimberPosition(Constants.ClimberConstants.downClimberPosition);
+        setClimberPosition(Constants.Climber.downClimberPosition);
     }
 
     public void setClimberClimb() {
-        setClimberPosition(Constants.ClimberConstants.climbClimberPosition);
+        setClimberPosition(Constants.Climber.climbClimberPosition);
     }
 
     public void setClimberStow() {
-        setClimberPosition(Constants.ClimberConstants.stowClimberPosition);
+        setClimberPosition(Constants.Climber.stowClimberPosition);
     }
 }

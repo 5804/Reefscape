@@ -22,11 +22,11 @@ public class CoralSystem extends SubsystemBase {
     }
 
     public Command setCoralSystemGroundReady() {
-        return arm.setShoulderPosition(Constants.ArmConstants.shoulderMinSafeValue)
-                  .until(() -> { return arm.getShoulderPosition() < Constants.ArmConstants.shoulderMinSafeValue + 0.01; })
-                  .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.groundElevatorReadyPosition))
-                  .until(() -> { return elevator.getElevatorPosition() < Constants.ElevatorConstants.groundElevatorReadyPosition + 0.01; })
-                  .andThen(arm.setShoulderPosition(Constants.ArmConstants.groundShoulderPosition));
+        return arm.setShoulderPosition(Constants.Arm.Shoulder.minSafeValue)
+                  .until(() -> { return arm.getShoulderPosition() < Constants.Arm.Shoulder.minSafeValue + 0.01; })
+                  .andThen(elevator.setElevatorPosition(Constants.Elevator.groundReadyPosition))
+                  .until(() -> { return elevator.getElevatorPosition() < Constants.Elevator.groundReadyPosition + 0.01; })
+                  .andThen(arm.setShoulderPosition(Constants.Arm.Shoulder.groundPosition));
     }
 
     // public Command setCoralSystemPickup() {

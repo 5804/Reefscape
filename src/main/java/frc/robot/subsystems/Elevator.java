@@ -17,8 +17,8 @@ import frc.robot.Constants;
 
 public class Elevator extends SubsystemBase {
   /** Declare variables and assign values */
-  public TalonFX leftElevatorMotor = new TalonFX(Constants.ElevatorConstants.leftElevatorMotorID);
-  public TalonFX rightElevatorMotor = new TalonFX(Constants.ElevatorConstants.rightElevatorMotorID);
+  public TalonFX leftElevatorMotor = new TalonFX(Constants.Elevator.leftElevatorMotorID);
+  public TalonFX rightElevatorMotor = new TalonFX(Constants.Elevator.rightElevatorMotorID);
 
   /** Motor config objects */
   public TalonFXConfiguration elevatorTalonFXConfigs = new TalonFXConfiguration();
@@ -37,17 +37,17 @@ public class Elevator extends SubsystemBase {
     rightElevatorMotor.setControl(new Follower(leftElevatorMotor.getDeviceID(), false));
 
     /** Set slot 0 gains */
-    elevatorSlot0FXConfigs.kS = Constants.ElevatorConstants.kS; // Add 0.25 V output to overcome static friction
-    elevatorSlot0FXConfigs.kV = Constants.ElevatorConstants.kV; // A velocity target of 1 rps results in 0.12 V output
-    elevatorSlot0FXConfigs.kA = Constants.ElevatorConstants.kA; // An acceleration of 1 rps/s requires 0.01 V output
-    elevatorSlot0FXConfigs.kP = Constants.ElevatorConstants.kP; // A position error of 2.5 rotations results in 12 V output
-    elevatorSlot0FXConfigs.kI = Constants.ElevatorConstants.kI; // no output for integrated error
-    elevatorSlot0FXConfigs.kD = Constants.ElevatorConstants.kD; // A velocity error of 1 rps results in 0.1 V output
+    elevatorSlot0FXConfigs.kS = Constants.Elevator.kS; // Add 0.25 V output to overcome static friction
+    elevatorSlot0FXConfigs.kV = Constants.Elevator.kV; // A velocity target of 1 rps results in 0.12 V output
+    elevatorSlot0FXConfigs.kA = Constants.Elevator.kA; // An acceleration of 1 rps/s requires 0.01 V output
+    elevatorSlot0FXConfigs.kP = Constants.Elevator.kP; // A position error of 2.5 rotations results in 12 V output
+    elevatorSlot0FXConfigs.kI = Constants.Elevator.kI; // no output for integrated error
+    elevatorSlot0FXConfigs.kD = Constants.Elevator.kD; // A velocity error of 1 rps results in 0.1 V output
 
     /** Set Motion Magic settings */
-    elevatorMotionMagicFXConfigs.MotionMagicCruiseVelocity = Constants.ElevatorConstants.cruiseVelocity; // Target cruise velocity of 80 rps
-    elevatorMotionMagicFXConfigs.MotionMagicAcceleration = Constants.ElevatorConstants.acceleration; // Target acceleration of 160 rps/s (0.5 seconds)
-    elevatorMotionMagicFXConfigs.MotionMagicJerk = Constants.ElevatorConstants.jerk; // Target jerk of 1600 rps/s/s (0.1 seconds)
+    elevatorMotionMagicFXConfigs.MotionMagicCruiseVelocity = Constants.Elevator.cruiseVelocity; // Target cruise velocity of 80 rps
+    elevatorMotionMagicFXConfigs.MotionMagicAcceleration = Constants.Elevator.acceleration; // Target acceleration of 160 rps/s (0.5 seconds)
+    elevatorMotionMagicFXConfigs.MotionMagicJerk = Constants.Elevator.jerk; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
     /** Set elevator motor output configs */
     elevatorMotorOutputFXConfigs.Inverted = InvertedValue.Clockwise_Positive;
