@@ -10,46 +10,44 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.ButtonBoard;
+import frc.CoralSystem;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.PhotonVision;
+// import frc.robot.subsystems.PhotonVision;
 
 public class RobotContainer {
-    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);               // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     /** Setting up bindings for necessary control of the swerve drive platform. */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.005).withRotationalDeadband(MaxAngularRate * 0.005) // Add a 20% deadband
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);                       // Use open-loop control for drive motors
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
+    /** Controllers */
     private final CommandXboxController driveController = new CommandXboxController(0);
     private final ButtonBoard buttonBoard = new ButtonBoard(12, 1);
-    
 
     /** Subsytem initializations. */
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public Arm arm = new Arm();
     public Elevator elevator = new Elevator();
-    public PhotonVision photonVision = new PhotonVision();
+    // public PhotonVision photonVision = new PhotonVision();
+
+    // coralSystem is used to set the elevator and arm to states
+    private final CoralSystem coralSystem = new CoralSystem(elevator, arm);
 
     /** Shuffleboard configurations. */
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -70,19 +68,37 @@ public class RobotContainer {
     private void configureBindings() {
         /**
          * Note that X is defined as forward according to WPILib convention,
-         * and Y is defined as to the left according to WPILib convention.
+         * and Y is defined as to the left according to WPILib convention. 
+         * As a default command the drive train will call this continually.
          */
         drivetrain.setDefaultCommand(
-            // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-1 * Math.pow(driveController.getLeftY(), 3) * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-1 * Math.pow(driveController.getLeftX(), 3) * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-1 * Math.pow(driveController.getRightX(), 3) * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftY(), 0.5), 3) * MaxSpeed)            // Drive forward with negative Y (forward)
+                    .withVelocityY(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftX(), 0.5), 3) * MaxSpeed)             // Drive left with negative X (left)
+                    .withRotationalRate(-1 * Math.pow(MathUtil.applyDeadband(driveController.getRightX(), 0.5), 3) * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
 
         // Reset the field-centric heading on left bumper press
         driveController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        driveController.a().onTrue(coralSystem.setCoralSystemGroundReady());
+        // driveController.b().onTrue();
+        /* buttonBoard bindings */
+        // buttonBoard.getButton(1).onTrue(/* l1 coral */); 
+        // buttonBoard.getButton(2).onTrue(/* l2 coral */);
+        // buttonBoard.getButton(3).onTrue(/* l3 coral */);
+        // buttonBoard.getButton(4).onTrue(/* l4 coral */);
+        // buttonBoard.getButton(5).onTrue(/* funnel */);
+        // buttonBoard.getButton(6).onTrue(/* ground */);
+
+        // buttonBoard.getButton(7).onTrue(/* wrist vertical */);
+        // buttonBoard.getButton(8).onTrue(/* wrist horizontal */);
+
+        // buttonBoard.getButton(9).onTrue(/* ratchet disable */);
+
+        // // buttonBoard.getButton(10).onTrue(); // Unused
+        // buttonBoard.getButton(11).onTrue(/* stow coral arm*/);
+        // buttonBoard.getButton(12).onTrue(/* clear coral */);
    
         // Logs telemetry every time the swerve drive updates.
         drivetrain.registerTelemetry(logger::telemeterize);

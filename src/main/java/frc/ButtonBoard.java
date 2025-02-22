@@ -16,12 +16,12 @@ public class ButtonBoard {
         buttons = new JoystickButton[numberOfButtons];
         buttonBoard = new Joystick(buttonBoardPort);
         for (int i = 1; i <= buttons.length; i++) {
-            buttons[i] = new JoystickButton(buttonBoard, i);
+            buttons[i - 1] = new JoystickButton(buttonBoard, i);
         }
     }
 
     public JoystickButton getButton(int buttonIndex){
-        return buttons[buttonIndex];
+        return buttons[buttonIndex - 1];
     }
 
     public Joystick getButtonBoard(){

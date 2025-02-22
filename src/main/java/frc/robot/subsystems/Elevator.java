@@ -37,25 +37,25 @@ public class Elevator extends SubsystemBase {
     rightElevatorMotor.setControl(new Follower(leftElevatorMotor.getDeviceID(), false));
 
     /** Set slot 0 gains */
-    elevatorSlot0FXConfigs.kS = 0.25; // Add 0.25 V output to overcome static friction
-    elevatorSlot0FXConfigs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
-    elevatorSlot0FXConfigs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
-    elevatorSlot0FXConfigs.kP = 4.8; // A position error of 2.5 rotations results in 12 V output
-    elevatorSlot0FXConfigs.kI = 0; // no output for integrated error
-    elevatorSlot0FXConfigs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output
+    elevatorSlot0FXConfigs.kS = Constants.ElevatorConstants.kS; // Add 0.25 V output to overcome static friction
+    elevatorSlot0FXConfigs.kV = Constants.ElevatorConstants.kV; // A velocity target of 1 rps results in 0.12 V output
+    elevatorSlot0FXConfigs.kA = Constants.ElevatorConstants.kA; // An acceleration of 1 rps/s requires 0.01 V output
+    elevatorSlot0FXConfigs.kP = Constants.ElevatorConstants.kP; // A position error of 2.5 rotations results in 12 V output
+    elevatorSlot0FXConfigs.kI = Constants.ElevatorConstants.kI; // no output for integrated error
+    elevatorSlot0FXConfigs.kD = Constants.ElevatorConstants.kD; // A velocity error of 1 rps results in 0.1 V output
 
     /** Set Motion Magic settings */
-    elevatorMotionMagicFXConfigs.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
-    elevatorMotionMagicFXConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
-    elevatorMotionMagicFXConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
+    elevatorMotionMagicFXConfigs.MotionMagicCruiseVelocity = Constants.ElevatorConstants.cruiseVelocity; // Target cruise velocity of 80 rps
+    elevatorMotionMagicFXConfigs.MotionMagicAcceleration = Constants.ElevatorConstants.acceleration; // Target acceleration of 160 rps/s (0.5 seconds)
+    elevatorMotionMagicFXConfigs.MotionMagicJerk = Constants.ElevatorConstants.jerk; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
-    /** Set elevaotr motor output configs */
+    /** Set elevator motor output configs */
     elevatorMotorOutputFXConfigs.Inverted = InvertedValue.Clockwise_Positive;
     elevatorMotorOutputFXConfigs.NeutralMode = NeutralModeValue.Brake;
 
     /** Set software limit switches */
-    elevatorSoftwareLimitSwitchFXConfigs.ForwardSoftLimitEnable = true;
-    elevatorSoftwareLimitSwitchFXConfigs.ForwardSoftLimitThreshold = 37.942383 - Constants.ElevatorConstants.softwareLimitSafetyThreshold;
+    // elevatorSoftwareLimitSwitchFXConfigs.ForwardSoftLimitEnable = true; // NEED TO TEST
+    // elevatorSoftwareLimitSwitchFXConfigs.ForwardSoftLimitThreshold = ; // NEED TO TEST
     // softwareLimitSwitch.ReverseSoftLimitEnable = true; // NEED TO TEST
     // softwareLimitSwitch.ReverseSoftLimitThreshold = 0; // NEED TO TEST
 
@@ -68,8 +68,8 @@ public class Elevator extends SubsystemBase {
    * Sets elevator positions based on the leftElevatorMotor's encoder position.
    * Should be used with Constants.ElevatorConstants.xElevatorPosition.
    */
-  public Command setElevatorPosition(double position) { // Max pos: 37.942383
-    MotionMagicVoltage request = new MotionMagicVoltage(0); // position
+  public Command setElevatorPosition(double position) {
+    MotionMagicVoltage request = new MotionMagicVoltage(0);
     return run(() -> { leftElevatorMotor.setControl(request.withPosition(position)); });
   }
 
@@ -80,7 +80,7 @@ public class Elevator extends SubsystemBase {
   // DO NOT USE YET, NEED TO ADD CONVERSION FACTOR
   public Command setElevatorHeightInches(double height) {
     double position = height /* ADD CONVERSION HERE */;
-    MotionMagicVoltage request = new MotionMagicVoltage(0); // position
+    MotionMagicVoltage request = new MotionMagicVoltage(0);
     return run(() -> { leftElevatorMotor.setControl(request.withPosition(position)); });
   }
 

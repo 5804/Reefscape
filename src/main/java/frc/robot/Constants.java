@@ -23,6 +23,17 @@ public final class Constants {
     } 
 
     public final class ElevatorConstants {
+        /** PID slot 0 gains */
+        public static final double kS = 0.25;
+        public static final double kV = 0.12;
+        public static final double kA = 0.01;
+        public static final double kP = 20;
+        public static final double kI = 0;
+        public static final double kD = 0.1;
+        public static final double cruiseVelocity = 80;
+        public static final double acceleration = 160;
+        public static final double jerk = 1600;
+        // public static final double forwardSofLimitThreshold =  ; // NEED TO TEST
         /** IDs */
         public static final int leftElevatorMotorID = 52;
         public static final int rightElevatorMotorID = 51;
@@ -33,11 +44,12 @@ public final class Constants {
          * Should be used with setElevatorPosition()
          */
         // NEED TO SET ALL OF THESE STILL
+        public static final double zeroElevatorPosition = 0.26709;
         public static final double l4ElevatorPosition = 0;
         public static final double l3ElevatorPosition = 0;
         public static final double l2ElevatorPosition = 0;
         public static final double l1ElevatorPosition = 0;
-        public static final double groundElevatorPosition = 0;
+        public static final double groundElevatorReadyPosition = -4.95;
         public static final double handoffElevatorPosition = 0;
 
         /**
@@ -59,25 +71,62 @@ public final class Constants {
     }
 
     public final class ArmConstants {
+        public final class ShoulderConstants {
+            public static final double kS = 0.50;
+            public static final double kV = 0.12;
+            public static final double kA = 0.01;
+            public static final double kP = 30.0;
+            public static final double kI = 0;
+            public static final double kD = 0.1;
+            public static final double cruiseVelocity = 80;
+            public static final double acceleration = 160;
+            public static final double jerk = 1600;
+        }
+
+        public final class WristConstants {
+            public static final double kS = 0.50;
+            public static final double kV = 0.12;
+            public static final double kA = 0.01;
+            public static final double kP = 40.8;
+            public static final double kI = 0;
+            public static final double kD = 0.1;
+            public static final double cruiseVelocity = 80;
+            public static final double acceleration = 160;
+            public static final double jerk = 1600;
+        }
+
+        public final class ClawConstants {
+            public static final double kS = 0.25;
+            public static final double kV = 0.12;
+            public static final double kA = 0.01;
+            public static final double kP = 30.0;
+            public static final double kI = 0;
+            public static final double kD = 0.1;
+            public static final double cruiseVelocity = 80;
+            public static final double acceleration = 160;
+            public static final double jerk = 1600;
+        }
+        
         /** IDs */
-        public static final int elbowMotorID = 55;
+        public static final int shoulderMotorID = 55;
         public static final int wristMotorID = 57;
         public static final int clawMotorID = 58;
         public static final int wristEncoderID = 59;
-        public static final int elbowEncoderID = 60;
+        public static final int shoulderEncoderID = 60;
 
         /**
-         * Elbow positions based on the elbow absolute encoder for the elbow to be set
+         * Shoulder positions based on the shoulder absolute encoder for the shoulder to be set
          * to while placing coral
          * Should be used with //PUT CORRECT METHOD HERE
          */
         // NEED TO SET ALL OF THESE STILL
-        public static final double l4ElbowPosition = 0;
-        public static final double l3ElbowPosition = 0;
-        public static final double l2ElbowPosition = 0;
-        public static final double l1ElbowPosition = 0;
-        public static final double groundElbowPosition = 0;
-        public static final double handoffElbowPosition = 0;
+        public static final double shoulderMinSafeValue = -0.256592;
+        public static final double l4ShoulderPosition = 0;
+        public static final double l3ShoulderPosition = 0;
+        public static final double l2ShoulderPosition = 0;
+        public static final double l1ShoulderPosition = 0;
+        public static final double groundShoulderPosition = 0.062012;
+        public static final double handoffShoulderPosition = 0;
 
         /**
          * Wrist positions based on the wrist absolute encoder for the wrist to be set

@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.util.ArrayList;
-
 import edu.wpi.first.wpilibj.RobotBase;
 
 public final class Main {
@@ -16,4 +14,3 @@ public final class Main {
     RobotBase.startRobot(Robot::new);
   }
 }
-// hi taylor
