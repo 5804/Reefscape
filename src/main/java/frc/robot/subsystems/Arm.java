@@ -172,8 +172,8 @@ public class Arm extends SubsystemBase {
     return run(() -> { clawMotor.set(0); });
   }
 
-  public Command setClawDrop() {
-    return run(() -> { clawMotor.set(Constants.Arm.Claw.motorDropSpeed); });
+  public Command setClawEject() {
+    return run(() -> { clawMotor.set(Constants.Arm.Claw.motorEjectSpeed); });
   }
 
   // NEED TO FINISH THESE

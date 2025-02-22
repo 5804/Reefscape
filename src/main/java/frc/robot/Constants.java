@@ -50,7 +50,8 @@ public final class Constants {
         public static final double l2Position = 0;
         public static final double l1Position = 0;
         public static final double groundReadyPosition = -4.95;
-        public static final double handoffPosition = 0;
+        public static final double groundPickupPosition = -3; // NEED TO SET!!!
+        public static final double hopperIntakePosition = 0;
 
         // Used to shrink software limits to slightly smaller than the full elevator.
         public static final double softwareLimitSafetyThreshold = 5;
@@ -84,7 +85,7 @@ public final class Constants {
             public static final double l2Position = 0;
             public static final double l1Position = 0;
             public static final double groundPosition = 0.062012;
-            public static final double handoffPosition = 0;
+            public static final double hopperIntakePosition = 0;
         }
 
         public final class Wrist {
@@ -123,7 +124,7 @@ public final class Constants {
             public static final double jerk = 1600;
 
             public static final double motorIntakeSpeed = 1;
-            public static final double motorDropSpeed = -1;
+            public static final double motorEjectSpeed = -1;
         }
     }
 
