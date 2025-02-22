@@ -30,21 +30,21 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Arm extends SubsystemBase {
-  public TalonFX elbowMotor = new TalonFX(Constants.ArmConstants.elbowMotorID); 
+  public TalonFX shoulderMotor = new TalonFX(Constants.ArmConstants.shoulderMotorID); 
   public TalonFXS wristMotor = new TalonFXS(Constants.ArmConstants.wristMotorID);
   public TalonFXS clawMotor = new TalonFXS(Constants.ArmConstants.clawMotorID);
   public CANcoder wristEncoder = new CANcoder(Constants.ArmConstants.wristEncoderID);
-  public CANcoder elbowEncoder = new CANcoder(Constants.ArmConstants.elbowEncoderID);
+  public CANcoder shoulderEncoder = new CANcoder(Constants.ArmConstants.shoulderEncoderID);
   // public TimeOfFlight timeOfFlight = new TimeOfFlight(5);
 
   /** Motor config objects */
-  /** Elbow motor config objects */
-  public TalonFXConfiguration elbowTalonFXConfigs = new TalonFXConfiguration();
-  public Slot0Configs elbowSlot0FXConfigs = elbowTalonFXConfigs.Slot0;
-  public MotionMagicConfigs elbowMotionMagicFXConfigs = elbowTalonFXConfigs.MotionMagic;
-  public MotorOutputConfigs elbowMotorOutputFXConfigs = elbowTalonFXConfigs.MotorOutput;
-  public FeedbackConfigs elbowMotorFeedbackFXConfigs = elbowTalonFXConfigs.Feedback;
-  // public SoftwareLimitSwitchConfigs elbowSoftwareLimitSwitchFXConfigs = elbowTalonFXConfigs.SoftwareLimitSwitch; // Maybe implement
+  /** Shoulder motor config objects */
+  public TalonFXConfiguration shoulderTalonFXConfigs = new TalonFXConfiguration();
+  public Slot0Configs shoulderSlot0FXConfigs = shoulderTalonFXConfigs.Slot0;
+  public MotionMagicConfigs shoulderMotionMagicFXConfigs = shoulderTalonFXConfigs.MotionMagic;
+  public MotorOutputConfigs shoulderMotorOutputFXConfigs = shoulderTalonFXConfigs.MotorOutput;
+  public FeedbackConfigs shoulderMotorFeedbackFXConfigs = shoulderTalonFXConfigs.Feedback;
+  // public SoftwareLimitSwitchConfigs shoulderSoftwareLimitSwitchFXConfigs = shoulderTalonFXConfigs.SoftwareLimitSwitch; // Maybe implement
 
   /** Wrist motor config objects */
   public TalonFXSConfiguration wristTalonFXSConfigs = new TalonFXSConfiguration();
@@ -73,13 +73,13 @@ public class Arm extends SubsystemBase {
     clawCommutationFXSConfigs.MotorArrangement = MotorArrangementValue.NEO550_JST;
 
     /** Set slot 0 gains */
-    /** Set elbow slot 0 gains */
-    elbowSlot0FXConfigs.kS = 0.25; // Add 0.25 V output to overcome static friction
-    elbowSlot0FXConfigs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
-    elbowSlot0FXConfigs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
-    elbowSlot0FXConfigs.kP = 4.8; // A position error of 2.5 rotations results in 12 V output
-    elbowSlot0FXConfigs.kI = 0; // no output for integrated error
-    elbowSlot0FXConfigs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output
+    /** Set shoulder slot 0 gains */
+    shoulderSlot0FXConfigs.kS = 0.25; // Add 0.25 V output to overcome static friction
+    shoulderSlot0FXConfigs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+    shoulderSlot0FXConfigs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
+    shoulderSlot0FXConfigs.kP = 4.8; // A position error of 2.5 rotations results in 12 V output
+    shoulderSlot0FXConfigs.kI = 0; // no output for integrated error
+    shoulderSlot0FXConfigs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output
 
     /** Set wrist slot 0 gains */
     wristSlot0FXSConfigs.kS = 0.25; // Add 0.25 V output to overcome static friction
@@ -98,10 +98,10 @@ public class Arm extends SubsystemBase {
     clawSlot0FXSConfigs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output
 
     /** Set Motion Magic settings */
-    /** Set elbow Motion Magic settings */
-    elbowMotionMagicFXConfigs.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
-    elbowMotionMagicFXConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
-    elbowMotionMagicFXConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
+    /** Set shoulder Motion Magic settings */
+    shoulderMotionMagicFXConfigs.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
+    shoulderMotionMagicFXConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
+    shoulderMotionMagicFXConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
     /** Set wrist Motion Magic settings */
     wristMotionMagicFXSConfigs.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
@@ -113,9 +113,9 @@ public class Arm extends SubsystemBase {
     clawMotionMagicFXSConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
     clawMotionMagicFXSConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
-    /** Set elbow motor output configs */
-    elbowMotorOutputFXConfigs.Inverted = InvertedValue.Clockwise_Positive;
-    elbowMotorOutputFXConfigs.NeutralMode = NeutralModeValue.Brake;
+    /** Set shoulder motor output configs */
+    shoulderMotorOutputFXConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    shoulderMotorOutputFXConfigs.NeutralMode = NeutralModeValue.Brake;
 
     /** Set wrist motor output configs */
     wristMotorOutputFXSConfigs.Inverted = InvertedValue.Clockwise_Positive;
@@ -125,16 +125,16 @@ public class Arm extends SubsystemBase {
     clawMotorOutputFXSConfigs.Inverted = InvertedValue.Clockwise_Positive;
     clawMotorOutputFXSConfigs.NeutralMode = NeutralModeValue.Brake;
 
-    /** Set elbow fused encoder configs */
-    elbowMotorFeedbackFXConfigs.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-    elbowMotorFeedbackFXConfigs.FeedbackRemoteSensorID = Constants.ArmConstants.elbowEncoderID;
+    /** Set shoulder fused encoder configs */
+    shoulderMotorFeedbackFXConfigs.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    shoulderMotorFeedbackFXConfigs.FeedbackRemoteSensorID = Constants.ArmConstants.shoulderEncoderID;
 
     /** Set wrist fused encoder configs */
     wristMotorFeedbackFXSConfigs.ExternalFeedbackSensorSource = ExternalFeedbackSensorSourceValue.FusedCANcoder;
     wristMotorFeedbackFXSConfigs.FeedbackRemoteSensorID = Constants.ArmConstants.wristMotorID;
 
     /** Applies motor configs */
-    elbowMotor.getConfigurator().apply(elbowTalonFXConfigs);
+    shoulderMotor.getConfigurator().apply(shoulderTalonFXConfigs);
     wristMotor.getConfigurator().apply(wristTalonFXSConfigs);
     clawMotor.getConfigurator().apply(clawCommutationFXSConfigs);
   }
@@ -153,14 +153,14 @@ public class Arm extends SubsystemBase {
     return wristEncoder.getPosition().getValueAsDouble();
   }
 
-  /** Commands to manipulate the elbow */
-  public Command setElbowPosition(double position) {
+  /** Commands to manipulate the shoulder */
+  public Command setShoulderPosition(double position) {
     MotionMagicVoltage request = new MotionMagicVoltage(0); // position
-    return run(() -> { elbowMotor.setControl(request.withPosition(position)); });
+    return run(() -> { shoulderMotor.setControl(request.withPosition(position)); });
   }
 
-  public double getElbowPosition() {
-    return elbowEncoder.getPosition().getValueAsDouble();
+  public double getShoulderPosition() {
+    return shoulderEncoder.getPosition().getValueAsDouble();
   }
 
   /** Commands to manipulate the claw */
@@ -172,8 +172,8 @@ public class Arm extends SubsystemBase {
     return run(() -> { clawMotor.set(0); });
   }
 
-  public Command setClawDrop() {
-    return run(() -> { clawMotor.set(Constants.ArmConstants.clawMotorDropSpeed); });
+  public Command setClawEject() {
+    return run(() -> { clawMotor.set(Constants.ArmConstants.clawMotorEjectSpeed); });
   }
 
   // NEED TO FINISH THESE

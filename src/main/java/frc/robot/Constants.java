@@ -60,24 +60,24 @@ public final class Constants {
 
     public final class ArmConstants {
         /** IDs */
-        public static final int elbowMotorID = 55;
+        public static final int shoulderMotorID = 55;
         public static final int wristMotorID = 57;
         public static final int clawMotorID = 58;
         public static final int wristEncoderID = 59;
-        public static final int elbowEncoderID = 60;
+        public static final int shoulderEncoderID = 60;
 
         /**
-         * Elbow positions based on the elbow absolute encoder for the elbow to be set
+         * Shoulder positions based on the shoulder absolute encoder for the shoulder to be set
          * to while placing coral
          * Should be used with //PUT CORRECT METHOD HERE
          */
         // NEED TO SET ALL OF THESE STILL
-        public static final double l4ElbowPosition = 0;
-        public static final double l3ElbowPosition = 0;
-        public static final double l2ElbowPosition = 0;
-        public static final double l1ElbowPosition = 0;
-        public static final double groundElbowPosition = 0;
-        public static final double handoffElbowPosition = 0;
+        public static final double l4ShoulderPosition = 0;
+        public static final double l3ShoulderPosition = 0;
+        public static final double l2ShoulderPosition = 0;
+        public static final double l1ShoulderPosition = 0;
+        public static final double groundShoulderPosition = 0;
+        public static final double handoffShoulderPosition = 0;
 
         /**
          * Wrist positions based on the wrist absolute encoder for the wrist to be set
@@ -87,8 +87,8 @@ public final class Constants {
         public static final double verticalWristPosition = 0;
         public static final double horizontalWristPosition = 0.23;
 
-        public static final double clawMotorIntakeSpeed = -1;
-        public static final double clawMotorDropSpeed = 1;
+        public static final double clawMotorIntakeSpeed = 1;
+        public static final double clawMotorEjectSpeed = -1;
     }
 
     // NEED TO SET ALL OF THESE STILL
