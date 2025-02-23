@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.ButtonBoard;
 import frc.CoralSystem;
@@ -83,23 +84,24 @@ public class RobotContainer {
          * and Y is defined as to the left according to WPILib convention. 
          * As a default command the drive train will call this continually.
          */
-        drivetrain.setDefaultCommand(
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftY(), 0.5), 3) * maxSpeed * speedMultiplier)            // Drive forward with negative Y (forward)
-                    .withVelocityY(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftX(), 0.5), 3) * maxSpeed * speedMultiplier)             // Drive left with negative X (left)
-                    .withRotationalRate(-1 * Math.pow(MathUtil.applyDeadband(driveController.getRightX(), 0.5), 3) * maxAngularRate * speedMultiplier) // Drive counterclockwise with negative X (left)
-            )
-        );
+        // drivetrain.setDefaultCommand(
+        //     drivetrain.applyRequest(() ->
+        //         drive.withVelocityX(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftY(), 0.5), 3) * maxSpeed * speedMultiplier)            // Drive forward with negative Y (forward)
+        //             .withVelocityY(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftX(), 0.5), 3) * maxSpeed * speedMultiplier)             // Drive left with negative X (left)
+        //             .withRotationalRate(-1 * Math.pow(MathUtil.applyDeadband(driveController.getRightX(), 0.5), 3) * maxAngularRate * speedMultiplier) // Drive counterclockwise with negative X (left)
+        //     )
+        // );
 
-        driveController.leftBumper().onTrue(arm.setClawIntake());
-        driveController.leftBumper().onFalse(arm.setClawStop());
+        driveController.leftBumper().onTrue(arm.setClawIntakeWithTimeOfFlight());
 
-        driveController.rightBumper().onTrue(arm.setClawEject());
+        // driveController.rightBumper().onTrue(arm.setClawEjectWithTimeOfFlight());
+        driveController.rightBumper().onTrue(arm.setClawIntake());
         driveController.rightBumper().onFalse(arm.setClawStop());
 
         // Need to add ratchet.
         // driveController.a().onTrue(climber.setClimberDown());
         // driveController.y().onTrue(climber.setClimberClimb());
+
 
         driveController.povUp().onTrue(new InstantCommand(() -> { if (speedMultiplier <= 0.9) { speedMultiplier += 0.1; } }));
         driveController.povDown().onTrue(new InstantCommand(() -> { if (speedMultiplier > 0.1) { speedMultiplier -= 0.1; } }));
@@ -123,18 +125,19 @@ public class RobotContainer {
         // buttonBoard.getButton(9).onTrue(climber.deactivateRatchets());
 
         // buttonBoard.getButton(10).onTrue(); // Unused
-        // buttonBoard.getButton(11).onTrue(coralSystem.setCoralSystemStow());
+        // buttonBoard.getButton(11).onTrue(new ParallelCommandGroup(coralSystem.setCoralSystemHopperIntake(), climber.setClimberStow()));
 
-        // buttonBoard.getButton(12).onTrue(arm.setClawEject());
-        // buttonBoard.getButton(12).onFalse(arm.setClawStop());
+        // buttonBoard.getButton(12).onTrue(arm.setClawEjectWithTimeOfFlight());
 
-        /** Assistant controller bindings COMMENTED OUT ARE UNIMPLEMENTED */
+        /** Assistant controller bindings COMMENTED OUT ARE UNIMPLEMENTED, DON'T DELETE */
         // assistantController.a().onTrue(coralSystem.setCoralSystemL1()); 
-        // assistantController.b().onTrue(coralSystem.setCoralSystemL2());
-        // assistantController.x().onTrue(coralSystem.setCoralSystemL3());
-        // assistantController.y().onTrue(coralSystem.setCoralSystemL4());
+        assistantController.b().onTrue(coralSystem.setCoralSystemL2());
+        assistantController.x().onTrue(coralSystem.setCoralSystemL3());
+        assistantController.y().onTrue(coralSystem.setCoralSystemL4());
+
         // assistantController.povUp().onTrue(coralSystem.setCoralSystemHopperIntake());
         assistantController.povDown().onTrue(coralSystem.setCoralSystemGroundReady());
+        assistantController.povUp().onTrue(coralSystem.setCoralSystemGroundPickup());
 
         assistantController.povRight().onTrue(arm.setWristVertical());
         assistantController.povLeft().onTrue(arm.setWristHorizontal());
@@ -142,10 +145,12 @@ public class RobotContainer {
         // assistantController.start().onTrue(climber.deactivateRatchets());
 
         // assistantController.getButton().onTrue(); // Unused
-        // assistantController.rightTrigger(0.5).onTrue(coralSystem.setCoralSystemStow());
+        assistantController.rightTrigger(0.5).onTrue(new ParallelCommandGroup(coralSystem.setCoralSystemHopperIntake()/*, climber.setClimberStow()*/));
 
-        assistantController.leftTrigger(0.5).onTrue(arm.setClawEject());
-        assistantController.leftTrigger(0.5).onFalse(arm.setClawStop());
+        assistantController.leftTrigger(0.5).onTrue(arm.setClawEjectWithTimeOfFlight());
+        // assistantController.leftTrigger(0.5).onTrue(arm.setClawIntake());
+        // assistantController.leftTrigger(0.5).onFalse(arm.setClawStop());
+
    
         // Logs telemetry every time the swerve drive updates.
         drivetrain.registerTelemetry(logger::telemeterize);

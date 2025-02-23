@@ -23,6 +23,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.playingwithfusion.TimeOfFlight;
+import com.playingwithfusion.TimeOfFlight.RangingMode;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -35,7 +36,7 @@ public class Arm extends SubsystemBase {
   public TalonFXS clawMotor = new TalonFXS(Constants.ArmConstants.ClawConstants.motorID);
   public CANcoder wristEncoder = new CANcoder(Constants.ArmConstants.WristConstants.encoderID);
   public CANcoder shoulderEncoder = new CANcoder(Constants.ArmConstants.ShoulderConstants.encoderID);
-  // public TimeOfFlight timeOfFlight = new TimeOfFlight(5);
+  public TimeOfFlight timeOfFlight = new TimeOfFlight(1);
 
   /** Motor config objects */
   /** Shoulder motor config objects */
@@ -65,6 +66,9 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new ArmSubsystem. */
   public Arm() {
+    // Sets time of flight sensor ranging mode to short
+    timeOfFlight.setRangingMode(RangingMode.Short, 30);
+
     /** Set motor arrangements (only for TalonFXS) */
     // Set wrist motor arrangement
     wristCommutationFXSConfigs.MotorArrangement = MotorArrangementValue.NEO550_JST;
@@ -123,7 +127,7 @@ public class Arm extends SubsystemBase {
 
     /** Set claw motor output configs */
     clawMotorOutputFXSConfigs.Inverted = InvertedValue.Clockwise_Positive;
-    clawMotorOutputFXSConfigs.NeutralMode = NeutralModeValue.Brake;
+    clawMotorOutputFXSConfigs.NeutralMode = NeutralModeValue.Coast;
 
     /** Set shoulder fused encoder configs */
     shoulderMotorFeedbackFXConfigs.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
@@ -176,16 +180,22 @@ public class Arm extends SubsystemBase {
     return run(() -> { clawMotor.set(Constants.ArmConstants.ClawConstants.motorEjectSpeed); });
   }
 
-  // NEED TO FINISH THESE
-  // public Command intakeCoralCommand() {
-  //   return run(() -> { intakeCoral(); })
-  //         .until(() -> { return hasCoral(); })
-  //         .finallyDo(() -> { stopIntakeMotor(); });
-  // }
+  public double getClawVelocity() {
+    return clawMotor.getVelocity().getValueAsDouble();
+  }
 
-// public boolean hasCoral() {
-  //   return (timeOfFlight.getRange() <= 30.00);
-  // }
+  public Command setClawIntakeWithTimeOfFlight() {
+    return setClawIntake()
+          .until(() -> { return timeOfFlight.getRange() < 40 && timeOfFlight.getRange() > 5; })
+          // .finallyDo(() -> { clawMotor.set(0); });
+          .andThen(setClawStop());          
+  }
+
+  public Command setClawEjectWithTimeOfFlight() {
+    return setClawEject()
+          .until(() -> { return timeOfFlight.getRange() > 40; })
+          .finallyDo(() -> { clawMotor.set(0); });           
+  }
 
   @Override
   public void periodic() {

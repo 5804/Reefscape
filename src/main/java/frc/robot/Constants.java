@@ -27,10 +27,10 @@ public final class Constants {
         public static final double kS = 0.25;
         public static final double kV = 0.12;
         public static final double kA = 0.01;
-        public static final double kP = 20;
+        public static final double kP = 5;
         public static final double kI = 0;
         public static final double kD = 0.1;
-        public static final double cruiseVelocity = 80;
+        public static final double cruiseVelocity = 15; // 80
         public static final double acceleration = 160;
         public static final double jerk = 1600;
         // public static final double forwardSofLimitThreshold =  ; // NEED TO TEST
@@ -44,15 +44,15 @@ public final class Constants {
          * Should be used with setElevatorPosition()
          */
         // NEED TO SET ALL OF THESE STILL
-        public static final double zeroPosition = 0.26709;
-        public static final double stowPosition = zeroPosition + 1;
-        public static final double l4Position = 0;
-        public static final double l3Position = 0;
-        public static final double l2Position = 0;
+        public static final double zeroPosition = 0.15832;
+        public static final double minSafePosition = -38;
+        public static final double l4Position = -30.29;
+        public static final double l3Position = -15.6;
+        public static final double l2Position = -5.9;
         public static final double l1Position = 0;
         public static final double groundReadyPosition = -4.95;
-        public static final double groundPickupPosition = -3; // NEED TO SET!!!
-        public static final double hopperIntakePosition = 0;
+        public static final double groundPickupPosition = -1.652; // -2.14826
+        public static final double hopperIntakePosition = zeroPosition - 0.5;
 
         // Used to shrink software limits to slightly smaller than the full elevator.
         public static final double softwareLimitSafetyThreshold = 5;
@@ -66,12 +66,12 @@ public final class Constants {
             public static final double kS = 0.50;
             public static final double kV = 0.12;
             public static final double kA = 0.01;
-            public static final double kP = 30.0;
+            public static final double kP = 90.0;
             public static final double kI = 0;
             public static final double kD = 0.1;
 
-            public static final double cruiseVelocity = 80;
-            public static final double acceleration = 160;
+            public static final double cruiseVelocity = 320;
+            public static final double acceleration = 320;
             public static final double jerk = 1600;
 
             /**
@@ -80,13 +80,14 @@ public final class Constants {
              * Should be used with setShoulderPosition
              */
             // NEED TO SET ALL OF THESE STILL
-            public static final double minSafeValue = -0.256592;
-            public static final double l4Position = 0;
-            public static final double l3Position = 0;
-            public static final double l2Position = 0;
+            public static final double minSafeValue = 0.12; // 0.220459
+            public static final double l4Position = 0.16; // 0.13
+            public static final double l3Position = 0.14;
+            public static final double l2Position = 0.14;
             public static final double l1Position = 0;
-            public static final double groundPosition = 0.062012;
-            public static final double hopperIntakePosition = 0;
+            public static final double groundPosition = 0.495117; // 0.062012
+            public static final double groundPostpickupPosition = 0.25;
+            public static final double hopperIntakePosition = 0.091553;
         }
 
         public final class WristConstants {
