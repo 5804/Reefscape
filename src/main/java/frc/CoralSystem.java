@@ -21,49 +21,39 @@ public class CoralSystem extends SubsystemBase {
         this.arm = arm;
     }
 
-    public Command setCoralSystemL4Ready() {
+    public Command setCoralSystemStow() {
+        return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue) // NEED TO SEE IF THIS COMMAND STICKS AFTER THE UNTIL
+                  .until(() -> { return arm.getShoulderPosition() < Constants.ArmConstants.ShoulderConstants.minSafeValue + 0.01; })
+                  .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.stowPosition));
+    }
+
+    public Command setCoralSystemL4() {
         return null;
     }
 
-    public Command setCoralSystemL4Eject() {
+    public Command setCoralSystemL3() {
         return null;
     }
 
-    public Command setCoralSystemL3Ready() {
+    public Command setCoralSystemL2() {
         return null;
     }
 
-    public Command setCoralSystemL3Eject() {
-        return null;
-    }
-
-    public Command setCoralSystemL2Ready() {
-        return null;
-    }
-
-    public Command setCoralSystemL2Eject() {
-        return null;
-    }
-
-    public Command setCoralSystemL1Ready() {
-        return null;
-    }
-
-    public Command setCoralSystemL1Eject() {
+    public Command setCoralSystemL1() {
         return null;
     }
 
     public Command setCoralSystemGroundReady() {
-        return arm.setShoulderPosition(Constants.Arm.Shoulder.minSafeValue)
-                  .until(() -> { return arm.getShoulderPosition() < Constants.Arm.Shoulder.minSafeValue + 0.01; })
-                  .andThen(elevator.setElevatorPosition(Constants.Elevator.groundReadyPosition))
-                //   .until(() -> { return elevator.getElevatorPosition() < Constants.Elevator.groundReadyPosition + 0.01; })
-                  .andThen(arm.setShoulderPosition(Constants.Arm.Shoulder.groundPosition));
+        return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue)
+                  .until(() -> { return arm.getShoulderPosition() < Constants.ArmConstants.ShoulderConstants.minSafeValue + 0.01; })
+                  .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.groundReadyPosition))
+                //   .until(() -> { return elevator.getElevatorPosition() < Constants.ElevatorConstants.groundReadyPosition + 0.01; })
+                  .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.groundPosition));
     }
 
     public Command setCoralSystemGroundPickup() {
         return arm.setClawIntake()
-                  .andThen(elevator.setElevatorPosition(Constants.Elevator.groundPickupPosition));
+                  .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.groundPickupPosition));
     }
 
     public Command setCoralSystemHopperIntake() {

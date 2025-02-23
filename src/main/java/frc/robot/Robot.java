@@ -17,6 +17,10 @@ public class Robot extends TimedRobot {
     robotContainer = new RobotContainer();
   }
 
+  public void cancelAllActiveCommands() {
+    CommandScheduler.getInstance().cancelAll();
+  }
+
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();

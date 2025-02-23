@@ -11,7 +11,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import frc.PhotonCameraWithTransform;
 
 public final class Constants {
-    public final class PhotonVision {
+    public final class PhotonVisionConstants {
         public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark); // SWITCH AT WORLDS, IF WE MAKE IT
 
         public static final PhotonCameraWithTransform photonCamerasWithTransforms[] = {
@@ -22,7 +22,7 @@ public final class Constants {
         };
     } 
 
-    public final class Elevator {
+    public final class ElevatorConstants {
         /** PID slot 0 gains */
         public static final double kS = 0.25;
         public static final double kV = 0.12;
@@ -45,6 +45,7 @@ public final class Constants {
          */
         // NEED TO SET ALL OF THESE STILL
         public static final double zeroPosition = 0.26709;
+        public static final double stowPosition = zeroPosition + 1;
         public static final double l4Position = 0;
         public static final double l3Position = 0;
         public static final double l2Position = 0;
@@ -57,8 +58,8 @@ public final class Constants {
         public static final double softwareLimitSafetyThreshold = 5;
     }
 
-    public final class Arm {
-        public final class Shoulder {
+    public final class ArmConstants {
+        public final class ShoulderConstants {
             public static final int motorID = 55;
             public static final int encoderID = 60;
 
@@ -88,7 +89,7 @@ public final class Constants {
             public static final double hopperIntakePosition = 0;
         }
 
-        public final class Wrist {
+        public final class WristConstants {
             public static final int motorID = 57;
             public static final int encoderID = 59;
 
@@ -110,7 +111,7 @@ public final class Constants {
             public static final double horizontalPosition = 0.248;
         }
 
-        public final class Claw {
+        public final class ClawConstants {
             public static final int motorID = 58;
 
             public static final double kS = 0.25;
@@ -129,7 +130,7 @@ public final class Constants {
     }
 
     // NEED TO SET ALL OF THESE STILL
-    public final class Climber {
+    public final class ClimberConstants {
         public static final int leftMotorID = 0;
         public static final int rightMotorID = 0;
 

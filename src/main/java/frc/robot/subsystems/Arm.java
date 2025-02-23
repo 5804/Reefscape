@@ -30,11 +30,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Arm extends SubsystemBase {
-  public TalonFX shoulderMotor = new TalonFX(Constants.Arm.Shoulder.motorID); 
-  public TalonFXS wristMotor = new TalonFXS(Constants.Arm.Wrist.motorID);
-  public TalonFXS clawMotor = new TalonFXS(Constants.Arm.Claw.motorID);
-  public CANcoder wristEncoder = new CANcoder(Constants.Arm.Wrist.encoderID);
-  public CANcoder shoulderEncoder = new CANcoder(Constants.Arm.Shoulder.encoderID);
+  public TalonFX shoulderMotor = new TalonFX(Constants.ArmConstants.ShoulderConstants.motorID); 
+  public TalonFXS wristMotor = new TalonFXS(Constants.ArmConstants.WristConstants.motorID);
+  public TalonFXS clawMotor = new TalonFXS(Constants.ArmConstants.ClawConstants.motorID);
+  public CANcoder wristEncoder = new CANcoder(Constants.ArmConstants.WristConstants.encoderID);
+  public CANcoder shoulderEncoder = new CANcoder(Constants.ArmConstants.ShoulderConstants.encoderID);
   // public TimeOfFlight timeOfFlight = new TimeOfFlight(5);
 
   /** Motor config objects */
@@ -74,44 +74,44 @@ public class Arm extends SubsystemBase {
 
     /** Set slot 0 gains */
     /** Set shoulder slot 0 gains */
-    shoulderSlot0FXConfigs.kS = Constants.Arm.Shoulder.kS; // Add 0.25 V output to overcome static friction
-    shoulderSlot0FXConfigs.kV = Constants.Arm.Shoulder.kV; // A velocity target of 1 rps results in 0.12 V output
-    shoulderSlot0FXConfigs.kA = Constants.Arm.Shoulder.kA; // An acceleration of 1 rps/s requires 0.01 V output
-    shoulderSlot0FXConfigs.kP = Constants.Arm.Shoulder.kP; // A position error of 2.5 rotations results in 12 V output // 4.8
-    shoulderSlot0FXConfigs.kI = Constants.Arm.Shoulder.kI; // no output for integrated error
-    shoulderSlot0FXConfigs.kD = Constants.Arm.Shoulder.kD; // A velocity error of 1 rps results in 0.1 V output
+    shoulderSlot0FXConfigs.kS = Constants.ArmConstants.ShoulderConstants.kS; // Add 0.25 V output to overcome static friction
+    shoulderSlot0FXConfigs.kV = Constants.ArmConstants.ShoulderConstants.kV; // A velocity target of 1 rps results in 0.12 V output
+    shoulderSlot0FXConfigs.kA = Constants.ArmConstants.ShoulderConstants.kA; // An acceleration of 1 rps/s requires 0.01 V output
+    shoulderSlot0FXConfigs.kP = Constants.ArmConstants.ShoulderConstants.kP; // A position error of 2.5 rotations results in 12 V output // 4.8
+    shoulderSlot0FXConfigs.kI = Constants.ArmConstants.ShoulderConstants.kI; // no output for integrated error
+    shoulderSlot0FXConfigs.kD = Constants.ArmConstants.ShoulderConstants.kD; // A velocity error of 1 rps results in 0.1 V output
 
     /** Set wrist slot 0 gains */
-    wristSlot0FXSConfigs.kS = Constants.Arm.Wrist.kS; // Add 0.25 V output to overcome static friction
-    wristSlot0FXSConfigs.kV = Constants.Arm.Wrist.kV; // A velocity target of 1 rps results in 0.12 V output
-    wristSlot0FXSConfigs.kA = Constants.Arm.Wrist.kA; // An acceleration of 1 rps/s requires 0.01 V output
-    wristSlot0FXSConfigs.kP = Constants.Arm.Wrist.kP; // A position error of 2.5 rotations results in 12 V output
-    wristSlot0FXSConfigs.kI = Constants.Arm.Wrist.kI; // no output for integrated error
-    wristSlot0FXSConfigs.kD = Constants.Arm.Wrist.kD; // A velocity error of 1 rps results in 0.1 V output
+    wristSlot0FXSConfigs.kS = Constants.ArmConstants.WristConstants.kS; // Add 0.25 V output to overcome static friction
+    wristSlot0FXSConfigs.kV = Constants.ArmConstants.WristConstants.kV; // A velocity target of 1 rps results in 0.12 V output
+    wristSlot0FXSConfigs.kA = Constants.ArmConstants.WristConstants.kA; // An acceleration of 1 rps/s requires 0.01 V output
+    wristSlot0FXSConfigs.kP = Constants.ArmConstants.WristConstants.kP; // A position error of 2.5 rotations results in 12 V output
+    wristSlot0FXSConfigs.kI = Constants.ArmConstants.WristConstants.kI; // no output for integrated error
+    wristSlot0FXSConfigs.kD = Constants.ArmConstants.WristConstants.kD; // A velocity error of 1 rps results in 0.1 V output
 
     /** Set claw slot 0 gains */
-    clawSlot0FXSConfigs.kS = Constants.Arm.Claw.kS; // Add 0.25 V output to overcome static friction
-    clawSlot0FXSConfigs.kV = Constants.Arm.Claw.kV; // A velocity target of 1 rps results in 0.12 V output
-    clawSlot0FXSConfigs.kA = Constants.Arm.Claw.kA; // An acceleration of 1 rps/s requires 0.01 V output
-    clawSlot0FXSConfigs.kP = Constants.Arm.Claw.kP; // A position error of 2.5 rotations results in 12 V output
-    clawSlot0FXSConfigs.kI = Constants.Arm.Claw.kI; // no output for integrated error
-    clawSlot0FXSConfigs.kD = Constants.Arm.Claw.kD; // A velocity error of 1 rps results in 0.1 V output
+    clawSlot0FXSConfigs.kS = Constants.ArmConstants.ClawConstants.kS; // Add 0.25 V output to overcome static friction
+    clawSlot0FXSConfigs.kV = Constants.ArmConstants.ClawConstants.kV; // A velocity target of 1 rps results in 0.12 V output
+    clawSlot0FXSConfigs.kA = Constants.ArmConstants.ClawConstants.kA; // An acceleration of 1 rps/s requires 0.01 V output
+    clawSlot0FXSConfigs.kP = Constants.ArmConstants.ClawConstants.kP; // A position error of 2.5 rotations results in 12 V output
+    clawSlot0FXSConfigs.kI = Constants.ArmConstants.ClawConstants.kI; // no output for integrated error
+    clawSlot0FXSConfigs.kD = Constants.ArmConstants.ClawConstants.kD; // A velocity error of 1 rps results in 0.1 V output
 
     /** Set Motion Magic settings */
     /** Set shoulder Motion Magic settings */
-    shoulderMotionMagicFXConfigs.MotionMagicCruiseVelocity = Constants.Arm.Shoulder.cruiseVelocity; // Target cruise velocity of 80 rps
-    shoulderMotionMagicFXConfigs.MotionMagicAcceleration = Constants.Arm.Shoulder.acceleration; // Target acceleration of 160 rps/s (0.5 seconds)
-    shoulderMotionMagicFXConfigs.MotionMagicJerk = Constants.Arm.Shoulder.jerk; // Target jerk of 1600 rps/s/s (0.1 seconds)
+    shoulderMotionMagicFXConfigs.MotionMagicCruiseVelocity = Constants.ArmConstants.ShoulderConstants.cruiseVelocity; // Target cruise velocity of 80 rps
+    shoulderMotionMagicFXConfigs.MotionMagicAcceleration = Constants.ArmConstants.ShoulderConstants.acceleration; // Target acceleration of 160 rps/s (0.5 seconds)
+    shoulderMotionMagicFXConfigs.MotionMagicJerk = Constants.ArmConstants.ShoulderConstants.jerk; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
     /** Set wrist Motion Magic settings */
-    wristMotionMagicFXSConfigs.MotionMagicCruiseVelocity = Constants.Arm.Wrist.cruiseVelocity; // Target cruise velocity of 80 rps
-    wristMotionMagicFXSConfigs.MotionMagicAcceleration = Constants.Arm.Wrist.acceleration; // Target acceleration of 160 rps/s (0.5 seconds)
-    wristMotionMagicFXSConfigs.MotionMagicJerk = Constants.Arm.Wrist.jerk; // Target jerk of 1600 rps/s/s (0.1 seconds)
+    wristMotionMagicFXSConfigs.MotionMagicCruiseVelocity = Constants.ArmConstants.WristConstants.cruiseVelocity; // Target cruise velocity of 80 rps
+    wristMotionMagicFXSConfigs.MotionMagicAcceleration = Constants.ArmConstants.WristConstants.acceleration; // Target acceleration of 160 rps/s (0.5 seconds)
+    wristMotionMagicFXSConfigs.MotionMagicJerk = Constants.ArmConstants.WristConstants.jerk; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
     /** Set claw Motion Magic settings */
-    clawMotionMagicFXSConfigs.MotionMagicCruiseVelocity = Constants.Arm.Claw.cruiseVelocity; // Target cruise velocity of 80 rps
-    clawMotionMagicFXSConfigs.MotionMagicAcceleration = Constants.Arm.Claw.acceleration; // Target acceleration of 160 rps/s (0.5 seconds)
-    clawMotionMagicFXSConfigs.MotionMagicJerk = Constants.Arm.Claw.jerk; // Target jerk of 1600 rps/s/s (0.1 seconds)
+    clawMotionMagicFXSConfigs.MotionMagicCruiseVelocity = Constants.ArmConstants.ClawConstants.cruiseVelocity; // Target cruise velocity of 80 rps
+    clawMotionMagicFXSConfigs.MotionMagicAcceleration = Constants.ArmConstants.ClawConstants.acceleration; // Target acceleration of 160 rps/s (0.5 seconds)
+    clawMotionMagicFXSConfigs.MotionMagicJerk = Constants.ArmConstants.ClawConstants.jerk; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
     /** Set shoulder motor output configs */
     shoulderMotorOutputFXConfigs.Inverted = InvertedValue.Clockwise_Positive;
@@ -127,11 +127,11 @@ public class Arm extends SubsystemBase {
 
     /** Set shoulder fused encoder configs */
     shoulderMotorFeedbackFXConfigs.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-    shoulderMotorFeedbackFXConfigs.FeedbackRemoteSensorID = Constants.Arm.Shoulder.encoderID;
+    shoulderMotorFeedbackFXConfigs.FeedbackRemoteSensorID = Constants.ArmConstants.ShoulderConstants.encoderID;
 
     /** Set wrist fused encoder configs */
     wristMotorFeedbackFXSConfigs.ExternalFeedbackSensorSource = ExternalFeedbackSensorSourceValue.RemoteCANcoder;
-    wristMotorFeedbackFXSConfigs.FeedbackRemoteSensorID = Constants.Arm.Wrist.encoderID;
+    wristMotorFeedbackFXSConfigs.FeedbackRemoteSensorID = Constants.ArmConstants.WristConstants.encoderID;
 
     /** Applies motor configs */
     shoulderMotor.getConfigurator().apply(shoulderTalonFXConfigs);
@@ -142,11 +142,11 @@ public class Arm extends SubsystemBase {
   /** Commands to manipulate the wrist */
   public Command setWristHorizontal() {
     MotionMagicVoltage request = new MotionMagicVoltage(0);
-    return run(() -> { wristMotor.setControl(request.withPosition(Constants.Arm.Wrist.horizontalPosition)); });  }
+    return run(() -> { wristMotor.setControl(request.withPosition(Constants.ArmConstants.WristConstants.horizontalPosition)); });  }
 
   public Command setWristVertical() {
     MotionMagicVoltage request = new MotionMagicVoltage(0);
-    return run(() -> { wristMotor.setControl(request.withPosition(Constants.Arm.Wrist.verticalPosition)); });
+    return run(() -> { wristMotor.setControl(request.withPosition(Constants.ArmConstants.WristConstants.verticalPosition)); });
   }
 
   public double getWristPosition() {
@@ -165,7 +165,7 @@ public class Arm extends SubsystemBase {
 
   /** Commands to manipulate the claw */
   public Command setClawIntake() {
-    return run(() -> { clawMotor.set(Constants.Arm.Claw.motorIntakeSpeed); });
+    return run(() -> { clawMotor.set(Constants.ArmConstants.ClawConstants.motorIntakeSpeed); });
   }
 
   public Command setClawStop() {
@@ -173,7 +173,7 @@ public class Arm extends SubsystemBase {
   }
 
   public Command setClawEject() {
-    return run(() -> { clawMotor.set(Constants.Arm.Claw.motorEjectSpeed); });
+    return run(() -> { clawMotor.set(Constants.ArmConstants.ClawConstants.motorEjectSpeed); });
   }
 
   // NEED TO FINISH THESE
