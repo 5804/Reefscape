@@ -127,7 +127,7 @@ public class Arm extends SubsystemBase {
 
     /** Set claw motor output configs */
     clawMotorOutputFXSConfigs.Inverted = InvertedValue.Clockwise_Positive;
-    clawMotorOutputFXSConfigs.NeutralMode = NeutralModeValue.Coast;
+    clawMotorOutputFXSConfigs.NeutralMode = NeutralModeValue.Brake;
 
     /** Set shoulder fused encoder configs */
     shoulderMotorFeedbackFXConfigs.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
