@@ -123,26 +123,26 @@ public class RobotContainer {
         // buttonBoard.getButton(9).onTrue(climber.deactivateRatchets());
 
         // buttonBoard.getButton(10).onTrue(); // Unused
-        // buttonBoard.getButton(11).onTrue(/* stow coral arm*/);
+        // buttonBoard.getButton(11).onTrue(coralSystem.setCoralSystemStow());
 
         // buttonBoard.getButton(12).onTrue(arm.setClawEject());
         // buttonBoard.getButton(12).onFalse(arm.setClawStop());
 
-        /** Assistant controller bindings */
-        assistantController.a().onTrue(coralSystem.setCoralSystemL1()); 
-        assistantController.b().onTrue(coralSystem.setCoralSystemL2());
-        assistantController.x().onTrue(coralSystem.setCoralSystemL3());
-        assistantController.y().onTrue(coralSystem.setCoralSystemL4());
-        assistantController.povUp().onTrue(coralSystem.setCoralSystemHopperIntake());
+        /** Assistant controller bindings COMMENTED OUT ARE UNIMPLEMENTED */
+        // assistantController.a().onTrue(coralSystem.setCoralSystemL1()); 
+        // assistantController.b().onTrue(coralSystem.setCoralSystemL2());
+        // assistantController.x().onTrue(coralSystem.setCoralSystemL3());
+        // assistantController.y().onTrue(coralSystem.setCoralSystemL4());
+        // assistantController.povUp().onTrue(coralSystem.setCoralSystemHopperIntake());
         assistantController.povDown().onTrue(coralSystem.setCoralSystemGroundReady());
 
         assistantController.povRight().onTrue(arm.setWristVertical());
         assistantController.povLeft().onTrue(arm.setWristHorizontal());
 
-        assistantController.start().onTrue(climber.deactivateRatchets());
+        // assistantController.start().onTrue(climber.deactivateRatchets());
 
         // assistantController.getButton().onTrue(); // Unused
-        // assistantController.rightTrigger(0.5).onTrue(/* stow coral arm*/);
+        // assistantController.rightTrigger(0.5).onTrue(coralSystem.setCoralSystemStow());
 
         assistantController.leftTrigger(0.5).onTrue(arm.setClawEject());
         assistantController.leftTrigger(0.5).onFalse(arm.setClawStop());
