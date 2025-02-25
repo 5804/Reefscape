@@ -13,7 +13,7 @@ import frc.robot.subsystems.Arm;
 public class Robot extends TimedRobot {
   private Command autonomousCommand;
 
-  // Declaration of robotContainer, which should be used to reference other subsystem objects, ex. robotContainer.arm.elbowEncoder.getAbsolutePosition()
+  // Declaration of robotContainer, which should be used to reference other subsystem objects, ex. robotContainer.arm.shoulderEncoder.getAbsolutePosition()
   private final RobotContainer robotContainer;
 
   public Robot() {

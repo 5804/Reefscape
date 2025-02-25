@@ -103,7 +103,7 @@ public class RobotContainer {
      
         // Wrist position testing
         // joystick.x().onTrue(arm.setClawIntake());
-        // joystick.y().onTrue(arm.setClawDrop());
+        // joystick.y().onTrue(arm.setClawEject());
         // joystick.a().onTrue(arm.setClawStop());
         joystick.y().onTrue(arm.setClawStop());
         joystick.a().onTrue(arm.setWristHorizontal());
@@ -116,8 +116,8 @@ public class RobotContainer {
     // public Command groundIntakeCommand() {
     //     return elevator.setElevatorGround()
     //                    .until(() -> { return elevator.getElevatorPosition() <= Constants.ElevatorConstants.groundElevatorPosition + 0.01; })
-    //                    .andThen(arm.setElbowPosition(Constants.ArmConstants.groundElbowPosition))
-    //                    .until(() -> { return arm.getElbowPosition() <= 0;})
+    //                    .andThen(arm.setShoulderPosition(Constants.ArmConstants.groundShoulderPosition))
+    //                    .until(() -> { return arm.getShoulderPosition() <= 0;})
     //                    .andThen(arm.wristIntakePositionCommand())
     //                    .until(() -> { return arm.getWristPosition() <= 0;}); // Need to change from 0!!!!! (╯°□°)╯︵ ┻━┻
     // }

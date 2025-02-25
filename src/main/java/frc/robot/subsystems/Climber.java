@@ -8,6 +8,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -61,15 +62,15 @@ public class Climber extends SubsystemBase {
     /**
      * Methods to set the climber to preset positions.
      */
-    public void setClimberDown() {
-        setClimberPosition(Constants.ClimberConstants.downClimberPosition);
+    public Command setClimberDown() {
+        return run(() -> { setClimberPosition(Constants.ClimberConstants.downClimberPosition); });
     }
 
-    public void setClimberClimb() {
-        setClimberPosition(Constants.ClimberConstants.climbClimberPosition);
+    public Command setClimberClimb() {
+        return run(() -> { setClimberPosition(Constants.ClimberConstants.climbClimberPosition); });
     }
-
-    public void setClimberStow() {
-        setClimberPosition(Constants.ClimberConstants.stowClimberPosition);
+        
+    public Command setClimberStow() {
+        return run(() -> { setClimberPosition(Constants.ClimberConstants.stowClimberPosition); });
     }
 }

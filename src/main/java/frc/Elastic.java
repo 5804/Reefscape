@@ -386,5 +386,5 @@ public final class Elastic {
       /** Error message */
       ERROR
     }
-  }
+  }   
 }
