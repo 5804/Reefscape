@@ -52,9 +52,7 @@ public class CoralSystem extends SubsystemBase {
     }
 
     public Command setCoralSystemL2() {
-        return arm.setWristVertical()
-                  .until(() -> { return arm.getWristPosition() < Constants.ArmConstants.WristConstants.verticalPosition + 0.1; })
-                  .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue))
+        return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue)
                   .until(() -> { return arm.getShoulderPosition() < Constants.ArmConstants.ShoulderConstants.minSafeValue + 0.01 && arm.getShoulderPosition() > Constants.ArmConstants.ShoulderConstants.minSafeValue - 0.01; })
                   .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l2Position))
                   .until(() -> { return elevator.getElevatorPosition() < Constants.ElevatorConstants.l2Position + 0.1 && elevator.getElevatorPosition() > Constants.ElevatorConstants.l2Position - 0.1; })
@@ -76,14 +74,19 @@ public class CoralSystem extends SubsystemBase {
     }
 
     public Command setCoralSystemGroundPickup() {
-        // return arm.setClawIntakeWithTimeOfFlight()
-        //         //   .until(() -> { return arm.getClawVelocity() > 180; })
-        //           .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.groundPickupPosition));
         return arm.setClawIntake()
                   .until(() -> { return arm.getClawVelocity() > 150; })
                   .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.groundPickupPosition))
                   .until(() -> { return arm.timeOfFlight.getRange() < 40 && arm.timeOfFlight.getRange() > 5; })
-                  .andThen(arm.setClawStop());
+                  .andThen(new SequentialCommandGroup(arm.setClawStop(), arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.groundPostpickupPosition)))
+                  .until(() -> { return arm.getShoulderPosition() < Constants.ArmConstants.ShoulderConstants.groundPostpickupPosition + 0.01 && arm.getShoulderPosition() > Constants.ArmConstants.ShoulderConstants.groundPostpickupPosition - 0.01; })
+                  .andThen(arm.setWristVertical())
+                  .until(() -> { return arm.getWristPosition() < Constants.ArmConstants.WristConstants.verticalPosition + 0.1; });
+                //   .andThen(setCoralSystemL1());
+                  
                 // Then we need to figure out how to get it to set the shoulder up
+                // the set wrist vert
+                // setWristVertical()
+                //   .until(() -> { return arm.getWristPosition() < Constants.ArmConstants.WristConstants.verticalPosition + 0.1; })
     }
 }
