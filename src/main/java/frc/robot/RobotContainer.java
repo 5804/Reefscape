@@ -94,7 +94,6 @@ public class RobotContainer {
 
         driveController.leftBumper().onTrue(arm.setClawIntakeWithTimeOfFlight());
 
-        // driveController.rightBumper().onTrue(arm.setClawEjectWithTimeOfFlight());
         driveController.rightBumper().onTrue(arm.setClawIntake());
         driveController.rightBumper().onFalse(arm.setClawStop());
 
@@ -118,40 +117,32 @@ public class RobotContainer {
         // buttonBoard.getButton(4).onTrue(coralSystem.setCoralSystemL4());
         // buttonBoard.getButton(5).onTrue(coralSystem.setCoralSystemHopperIntake());
         // buttonBoard.getButton(6).onTrue(coralSystem.setCoralSystemGroundReady());
-
         // buttonBoard.getButton(7).onTrue(arm.setWristVertical());
         // buttonBoard.getButton(8).onTrue(arm.setWristHorizontal());
-
         // buttonBoard.getButton(9).onTrue(climber.deactivateRatchets());
-
         // buttonBoard.getButton(10).onTrue(); // Unused
         // buttonBoard.getButton(11).onTrue(new ParallelCommandGroup(coralSystem.setCoralSystemHopperIntake(), climber.setClimberStow()));
-
         // buttonBoard.getButton(12).onTrue(arm.setClawEjectWithTimeOfFlight());
 
         /** Assistant controller bindings COMMENTED OUT ARE UNIMPLEMENTED, DON'T DELETE */
-        // assistantController.a().onTrue(coralSystem.setCoralSystemL1()); 
+        assistantController.a().onTrue(coralSystem.setCoralSystemL1()); 
         assistantController.b().onTrue(coralSystem.setCoralSystemL2());
         assistantController.x().onTrue(coralSystem.setCoralSystemL3());
         assistantController.y().onTrue(coralSystem.setCoralSystemL4());
+        assistantController.povUp().onTrue(coralSystem.setCoralSystemHopperIntake());
 
-        // assistantController.povUp().onTrue(coralSystem.setCoralSystemHopperIntake());
         assistantController.povDown().onTrue(coralSystem.setCoralSystemGroundReady());
         assistantController.povUp().onTrue(coralSystem.setCoralSystemGroundPickup());
-
+        
         assistantController.povRight().onTrue(arm.setWristVertical());
         assistantController.povLeft().onTrue(arm.setWristHorizontal());
-
         // assistantController.start().onTrue(climber.deactivateRatchets());
-
         // assistantController.getButton().onTrue(); // Unused
         assistantController.rightTrigger(0.5).onTrue(new ParallelCommandGroup(coralSystem.setCoralSystemHopperIntake()/*, climber.setClimberStow()*/));
-
         assistantController.leftTrigger(0.5).onTrue(arm.setClawEjectWithTimeOfFlight());
         // assistantController.leftTrigger(0.5).onTrue(arm.setClawIntake());
         // assistantController.leftTrigger(0.5).onFalse(arm.setClawStop());
 
-   
         // Logs telemetry every time the swerve drive updates.
         drivetrain.registerTelemetry(logger::telemeterize);
     }

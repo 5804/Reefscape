@@ -19,11 +19,10 @@ public class Climber extends SubsystemBase {
     /** Declare variables and assign values */
     public TalonFX leftClimberMotor = new TalonFX(Constants.ClimberConstants.leftMotorID); // NEED TO ID
     public TalonFX rightClimberMotor = new TalonFX(Constants.ClimberConstants.rightMotorID); // NEED TO ID
-    public PWM leftRatchet = new PWM(1);
-    public PWM rightRatchet = new PWM(2);
+    public PWM leftRatchet = new PWM(1); // NEED TO ID
+    public PWM rightRatchet = new PWM(2); // NEED TO ID
 
-    public TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration(); // PROBABLY DOESN'T, BUT MIGHT NEED TO BE
-                                                                             // ASSIGNED IN CONSTRUCTOR
+    public TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
 
     /** Motor config objects */
     public Slot0Configs slot0Configs = talonFXConfigs.Slot0;

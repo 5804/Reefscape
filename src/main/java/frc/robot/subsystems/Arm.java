@@ -172,18 +172,17 @@ public class Arm extends SubsystemBase {
     return run(() -> { clawMotor.set(Constants.ArmConstants.ClawConstants.motorIntakeSpeed); });
   }
 
+  // Stops the claw from spinning.
   public Command setClawStop() {
     return run(() -> { clawMotor.set(0); });
   }
 
+  // Spins the claw backwards, immediately pops the coral out.
   public Command setClawEject() {
     return run(() -> { clawMotor.set(Constants.ArmConstants.ClawConstants.motorEjectSpeed); });
   }
 
-  public double getClawVelocity() {
-    return clawMotor.getVelocity().getValueAsDouble();
-  }
-
+  // Intakes the coral, automatically stopping intaking when the coral is in the correct position.
   public Command setClawIntakeWithTimeOfFlight() {
     return setClawIntake()
           .until(() -> { return timeOfFlight.getRange() < 40 && timeOfFlight.getRange() > 5; })
@@ -191,11 +190,17 @@ public class Arm extends SubsystemBase {
           .andThen(setClawStop());          
   }
 
+  // Ejects the coral, automatically stopping ejecting when the coral is in the correct position.
   public Command setClawEjectWithTimeOfFlight() {
     return setClawEject()
           .until(() -> { return timeOfFlight.getRange() > 40; })
           .finallyDo(() -> { clawMotor.set(0); });           
   }
+
+  public double getClawVelocity() {
+    return clawMotor.getVelocity().getValueAsDouble();
+  }
+
 
   @Override
   public void periodic() {
