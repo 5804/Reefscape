@@ -179,13 +179,13 @@ public class RobotContainer {
                  .until(() -> { return elevator.getElevatorPosition() < Constants.ElevatorConstants.l4Position + 0.1 && elevator.getElevatorPosition() > Constants.ElevatorConstants.l4Position - 0.1; })
 
                  /** Combined Arm, Elevator, Wrist */
-
+                 // NEED TO ADD L1 ONCE WE IMPLEMENT IT
                  .andThen(coralSystem.setCoralSystemL2())
-                 .until(null)
+                 .until(() -> { return arm.getShoulderPosition() < Constants.ArmConstants.ShoulderConstants.l2Position + 0.01 && arm.getShoulderPosition() > Constants.ArmConstants.ShoulderConstants.l2Position - 0.01; })
                  .andThen(coralSystem.setCoralSystemL3())
-                 .until(null)
+                 .until(() -> { return arm.getShoulderPosition() < Constants.ArmConstants.ShoulderConstants.l3Position + 0.01 && arm.getShoulderPosition() > Constants.ArmConstants.ShoulderConstants.l3Position - 0.01; })
                  .andThen(coralSystem.setCoralSystemL4())
-                 .until(null)
+                 .until(() -> { return arm.getShoulderPosition() < Constants.ArmConstants.ShoulderConstants.l4Position + 0.01 && arm.getShoulderPosition() > Constants.ArmConstants.ShoulderConstants.l4Position - 0.01; })
                  
                  /** Climber */
                  // NEED TO ADD ACTUAL VALUES AND THRESHOLDS
@@ -194,7 +194,6 @@ public class RobotContainer {
                  //  .andThen(climber.setClimberStow())
                  //  .until(() -> { return climber.getClimberPosition() < Constants.ClimberConstants.stowClimberPosition && climber.getClimberPosition() > Constants.ClimberConstants.stowClimberPosition; })
                  /** Drivetrain */
-                 
                  .andThen(
                     drivetrain.applyRequest(() ->
                     drive.withVelocityX(-1) // Drive forward with negative Y (forward)
