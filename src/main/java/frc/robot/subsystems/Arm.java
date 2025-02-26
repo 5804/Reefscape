@@ -10,7 +10,6 @@ import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -26,7 +25,6 @@ import com.playingwithfusion.TimeOfFlight;
 import com.playingwithfusion.TimeOfFlight.RangingMode;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -66,6 +64,7 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new ArmSubsystem. */
   public Arm() {
+
     // Sets time of flight sensor ranging mode to short
     timeOfFlight.setRangingMode(RangingMode.Short, 30);
 
@@ -146,11 +145,14 @@ public class Arm extends SubsystemBase {
   /** Commands to manipulate the wrist */
   public Command setWristHorizontal() {
     MotionMagicVoltage request = new MotionMagicVoltage(0);
-    return run(() -> { wristMotor.setControl(request.withPosition(Constants.ArmConstants.WristConstants.horizontalPosition)); });  }
+    return run(() -> { wristMotor.setControl(request.withPosition(Constants.ArmConstants.WristConstants.horizontalPosition));})
+    .until(() -> { return getWristPosition() > Constants.ArmConstants.WristConstants.horizontalPosition - 0.1; });
+  }
 
   public Command setWristVertical() {
     MotionMagicVoltage request = new MotionMagicVoltage(0);
-    return run(() -> { wristMotor.setControl(request.withPosition(Constants.ArmConstants.WristConstants.verticalPosition)); });
+    return run(() -> { wristMotor.setControl(request.withPosition(Constants.ArmConstants.WristConstants.verticalPosition));})
+    .until(() -> { return getWristPosition() > Constants.ArmConstants.WristConstants.verticalPosition + 0.1; });
   }
 
   public double getWristPosition() {
@@ -158,9 +160,10 @@ public class Arm extends SubsystemBase {
   }
 
   /** Commands to manipulate the shoulder */
-  public Command setShoulderPosition(double position) {
+  public Command setShoulderPosition(double position, double tolerance) {
     MotionMagicVoltage request = new MotionMagicVoltage(0); // position
-    return run(() -> { shoulderMotor.setControl(request.withPosition(position)); });
+    return run(() -> { shoulderMotor.setControl(request.withPosition(position)); })
+    .until(() -> { return Math.abs(getShoulderPosition() - tolerance) < 0.01; });
   }
 
   public double getShoulderPosition() {
@@ -199,11 +202,5 @@ public class Arm extends SubsystemBase {
 
   public double getClawVelocity() {
     return clawMotor.getVelocity().getValueAsDouble();
-  }
-
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
   }
 }

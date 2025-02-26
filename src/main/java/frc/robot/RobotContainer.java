@@ -160,14 +160,11 @@ public class RobotContainer {
     public Command systemsTest() {
         return 
               /** Arm */
-              arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.groundPostpickupPosition)
+              arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.groundPostpickupPosition, Constants.ArmConstants.ShoulderConstants.groundPostpickupPosition)
                  .until(() -> { return arm.getShoulderPosition() < Constants.ArmConstants.ShoulderConstants.groundPostpickupPosition + 0.01 && arm.getShoulderPosition() > Constants.ArmConstants.ShoulderConstants.groundPostpickupPosition - 0.01; })
                  .andThen(arm.setWristHorizontal())
-                 .until(() -> { return arm.getWristPosition() > Constants.ArmConstants.WristConstants.horizontalPosition - 0.1; })
                  .andThen(arm.setWristVertical())
-                 .until(() -> { return arm.getWristPosition() < Constants.ArmConstants.WristConstants.verticalPosition + 0.1; })
-                 .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue))
-                 .until(() -> { return arm.getShoulderPosition() < Constants.ArmConstants.ShoulderConstants.minSafeValue + 0.01 && arm.getShoulderPosition() > Constants.ArmConstants.ShoulderConstants.minSafeValue - 0.01; })
+                 .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, Constants.ArmConstants.ShoulderConstants.minSafeValue));
                  
                  /** Elevator */
                  // NEED TO ADD L1 ONCE WE IMPLEMENT IT
