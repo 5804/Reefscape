@@ -185,7 +185,7 @@ public class Arm extends SubsystemBase {
   // Intakes the coral, automatically stopping intaking when the coral is in the correct position.
   public Command setClawIntakeWithTimeOfFlight() {
     return setClawIntake()
-          .until(() -> { return timeOfFlight.getRange() < 40 && timeOfFlight.getRange() > 5; })
+          .until(() -> { return timeOfFlight.getRange() < Constants.ArmConstants.ClawConstants.tofHasCoralUpperBound && timeOfFlight.getRange() > Constants.ArmConstants.ClawConstants.tofHasCoralLowerBound; })
           // .finallyDo(() -> { clawMotor.set(0); });
           .andThen(setClawStop());          
   }
@@ -193,7 +193,7 @@ public class Arm extends SubsystemBase {
   // Ejects the coral, automatically stopping ejecting when the coral is in the correct position.
   public Command setClawEjectWithTimeOfFlight() {
     return setClawEject()
-          .until(() -> { return timeOfFlight.getRange() > 40; })
+          .until(() -> { return timeOfFlight.getRange() > Constants.ArmConstants.ClawConstants.tofHasCoralUpperBound; })
           .finallyDo(() -> { clawMotor.set(0); });           
   }
 
