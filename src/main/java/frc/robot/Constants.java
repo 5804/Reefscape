@@ -135,8 +135,8 @@ public final class Constants {
 
     // NEED TO SET ALL OF THESE STILL
     public final class ClimberConstants {
-        public static final int leftMotorID = 0;
-        public static final int rightMotorID = 0;
+        public static final int leftMotorID = 53;
+        public static final int rightMotorID = 54;
 
         public static final double kS = 0.25;
         public static final double kV = 0.12;

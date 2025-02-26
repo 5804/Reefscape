@@ -44,6 +44,7 @@ public class RobotContainer {
             .withDeadband(maxSpeed * 0.005).withRotationalDeadband(maxAngularRate * 0.005) // Add a 20% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);                       // Use open-loop control for drive motors
 
+
     private final Telemetry logger = new Telemetry(maxSpeed);
 
     /** Controllers */
@@ -55,7 +56,7 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public Arm arm = new Arm();
     public Elevator elevator = new Elevator();
-    public Climber climber = new Climber();
+    public Climber climber = new Climber(() -> { return driveController.getLeftX(); });
     // public PhotonVision photonVision = new PhotonVision();
 
     // coralSystem is used to set the elevator and arm to states
@@ -84,13 +85,13 @@ public class RobotContainer {
          * and Y is defined as to the left according to WPILib convention. 
          * As a default command the drive train will call this continually.
          */
-        // drivetrain.setDefaultCommand(
-        //     drivetrain.applyRequest(() ->
-        //         drive.withVelocityX(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftY(), 0.5), 3) * maxSpeed * speedMultiplier)            // Drive forward with negative Y (forward)
-        //             .withVelocityY(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftX(), 0.5), 3) * maxSpeed * speedMultiplier)             // Drive left with negative X (left)
-        //             .withRotationalRate(-1 * Math.pow(MathUtil.applyDeadband(driveController.getRightX(), 0.5), 3) * maxAngularRate * speedMultiplier) // Drive counterclockwise with negative X (left)
-        //     )
-        // );
+        drivetrain.setDefaultCommand(
+            drivetrain.applyRequest(() ->
+                drive.withVelocityX(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftY(), 0.1), 3) * maxSpeed * speedMultiplier)            // Drive forward with negative Y (forward)
+                    .withVelocityY(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftX(), 0.1), 3) * maxSpeed * speedMultiplier)             // Drive left with negative X (left)
+                    .withRotationalRate(-1 * Math.pow(MathUtil.applyDeadband(driveController.getRightX(), 0.1), 3) * maxAngularRate * speedMultiplier) // Drive counterclockwise with negative X (left)
+            )
+        );
 
         driveController.leftBumper().onTrue(arm.setClawIntakeWithTimeOfFlight());
 
@@ -125,14 +126,14 @@ public class RobotContainer {
         // buttonBoard.getButton(12).onTrue(arm.setClawEjectWithTimeOfFlight());
 
         /** Assistant controller bindings COMMENTED OUT ARE UNIMPLEMENTED, DON'T DELETE */
-        assistantController.a().onTrue(coralSystem.setCoralSystemL1()); 
+        // assistantController.a().onTrue(coralSystem.setCoralSystemL1()); 
         assistantController.b().onTrue(coralSystem.setCoralSystemL2());
         assistantController.x().onTrue(coralSystem.setCoralSystemL3());
         assistantController.y().onTrue(coralSystem.setCoralSystemL4());
         // assistantController.povUp().onTrue(coralSystem.setCoralSystemHopperIntake());1234567
 
-        assistantController.povDown().onTrue(coralSystem.setCoralSystemGroundReady());
-        assistantController.povUp().onTrue(coralSystem.setCoralSystemGroundPickup());
+        // assistantController.povDown().onTrue(coralSystem.setCoralSystemGroundReady());
+        // assistantController.povUp().onTrue(coralSystem.setCoralSystemGroundPickup());
         
         assistantController.povRight().onTrue(arm.setWristVertical());
         assistantController.povLeft().onTrue(arm.setWristHorizontal());
