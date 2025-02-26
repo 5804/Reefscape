@@ -78,7 +78,9 @@ public class CoralSystem extends SubsystemBase {
                   .until(() -> { return arm.getClawVelocity() > 150; })
                   .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.groundPickupPosition))
                   .until(() -> { return arm.timeOfFlight.getRange() < 40 && arm.timeOfFlight.getRange() > 5; })
-                  .andThen(new SequentialCommandGroup(arm.setClawStop(), arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.groundPostpickupPosition)))
+                  .andThen(arm.setClawStop())
+                  .until(() -> { return arm.getClawVelocity() < 40; })
+                  .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.groundPostpickupPosition))
                   .until(() -> { return arm.getShoulderPosition() < Constants.ArmConstants.ShoulderConstants.groundPostpickupPosition + 0.01 && arm.getShoulderPosition() > Constants.ArmConstants.ShoulderConstants.groundPostpickupPosition - 0.01; })
                   .andThen(arm.setWristVertical())
                   .until(() -> { return arm.getWristPosition() < Constants.ArmConstants.WristConstants.verticalPosition + 0.1; });
