@@ -27,10 +27,10 @@ public final class Constants {
         public static final double kS = 0.25;
         public static final double kV = 0.12;
         public static final double kA = 0.01;
-        public static final double kP = 5;
+        public static final double kP = 5; // 5
         public static final double kI = 0;
         public static final double kD = 0.1;
-        public static final double cruiseVelocity = 15; // 80
+        public static final double cruiseVelocity = 75;
         public static final double acceleration = 160;
         public static final double jerk = 1600;
         // public static final double forwardSofLimitThreshold =  ; // NEED TO TEST
@@ -66,12 +66,12 @@ public final class Constants {
             public static final double kS = 0.50;
             public static final double kV = 0.12;
             public static final double kA = 0.01;
-            public static final double kP = 90.0;
+            public static final double kP = 40.0; // Probably decrease // 90 // 150
             public static final double kI = 0;
             public static final double kD = 0.1;
 
-            public static final double cruiseVelocity = 320;
-            public static final double acceleration = 320;
+            public static final double cruiseVelocity = 400 * 6; // 320 // 400
+            public static final double acceleration = 320 * 4;
             public static final double jerk = 1600;
 
             /**
@@ -80,7 +80,7 @@ public final class Constants {
              * Should be used with setShoulderPosition
              */
             // NEED TO SET ALL OF THESE STILL
-            public static final double minSafeValue = 0.12; // 0.220459
+            public static final double minSafeValue = 0.13; // 0.12
             public static final double l4Position = 0.16; // 0.13
             public static final double l3Position = 0.14;
             public static final double l2Position = 0.14;
