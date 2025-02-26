@@ -11,6 +11,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.ButtonBoard;
 import frc.CoralSystem;
 import frc.robot.Constants.ClimberConstants;
+import frc.robot.Constants.ArmConstants.ShoulderConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -69,6 +71,7 @@ public class RobotContainer {
     public RobotContainer() {
         configureBindings();
 
+        autoChooser.addOption("systemsTest", systemsTest());
         autoChooser.addOption("oneMeter", oneMeterAuto());
         autoChooser.addOption("twoMeter", twoMeterAuto());
         autoChooser.addOption("ninetyDegrees", ninetyDegreesAuto());
@@ -88,8 +91,8 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftY(), 0.1), 3) * maxSpeed * speedMultiplier)            // Drive forward with negative Y (forward)
-                    .withVelocityY(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftX(), 0.1), 3) * maxSpeed * speedMultiplier)             // Drive left with negative X (left)
-                    .withRotationalRate(-1 * Math.pow(MathUtil.applyDeadband(driveController.getRightX(), 0.1), 3) * maxAngularRate * speedMultiplier) // Drive counterclockwise with negative X (left)
+                     .withVelocityY(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftX(), 0.1), 3) * maxSpeed * speedMultiplier)             // Drive left with negative X (left)
+                     .withRotationalRate(-1 * Math.pow(MathUtil.applyDeadband(driveController.getRightX(), 0.1), 3) * maxAngularRate * speedMultiplier) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -154,6 +157,60 @@ public class RobotContainer {
     }
 
     /** Declare autonomous commands here. */
+    public Command systemsTest() {
+        return 
+              /** Arm */
+              arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.groundPostpickupPosition)
+                 .until(() -> { return arm.getShoulderPosition() < Constants.ArmConstants.ShoulderConstants.groundPostpickupPosition + 0.01 && arm.getShoulderPosition() > Constants.ArmConstants.ShoulderConstants.groundPostpickupPosition - 0.01; })
+                 .andThen(arm.setWristHorizontal())
+                 .until(() -> { return arm.getWristPosition() > Constants.ArmConstants.WristConstants.horizontalPosition - 0.1; })
+                 .andThen(arm.setWristVertical())
+                 .until(() -> { return arm.getWristPosition() < Constants.ArmConstants.WristConstants.verticalPosition + 0.1; })
+                 .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue))
+                 .until(() -> { return arm.getShoulderPosition() < Constants.ArmConstants.ShoulderConstants.minSafeValue + 0.01 && arm.getShoulderPosition() > Constants.ArmConstants.ShoulderConstants.minSafeValue - 0.01; })
+                 
+                 /** Elevator */
+                 // NEED TO ADD L1 ONCE WE IMPLEMENT IT
+                 .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l2Position))
+                 .until(() -> { return elevator.getElevatorPosition() < Constants.ElevatorConstants.l2Position + 0.1 && elevator.getElevatorPosition() > Constants.ElevatorConstants.l2Position - 0.1; })
+                 .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l3Position))
+                 .until(() -> { return elevator.getElevatorPosition() < Constants.ElevatorConstants.l3Position + 0.1 && elevator.getElevatorPosition() > Constants.ElevatorConstants.l3Position - 0.1; })
+                 .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l4Position))
+                 .until(() -> { return elevator.getElevatorPosition() < Constants.ElevatorConstants.l4Position + 0.1 && elevator.getElevatorPosition() > Constants.ElevatorConstants.l4Position - 0.1; })
+
+                 /** Combined Arm, Elevator, Wrist */
+
+                 .andThen(coralSystem.setCoralSystemL2())
+                 .until(null)
+                 .andThen(coralSystem.setCoralSystemL3())
+                 .until(null)
+                 .andThen(coralSystem.setCoralSystemL4())
+                 .until(null)
+                 
+                 /** Climber */
+                 // NEED TO ADD ACTUAL VALUES AND THRESHOLDS
+                 //  .andThen(climber.setClimberDown())
+                 //  .until(() -> { return climber.getClimberPosition() < Constants.ClimberConstants.downClimberPosition && climber.getClimberPosition() > Constants.ClimberConstants.downClimberPosition; })
+                 //  .andThen(climber.setClimberStow())
+                 //  .until(() -> { return climber.getClimberPosition() < Constants.ClimberConstants.stowClimberPosition && climber.getClimberPosition() > Constants.ClimberConstants.stowClimberPosition; })
+                 /** Drivetrain */
+                 
+                 .andThen(
+                    drivetrain.applyRequest(() ->
+                    drive.withVelocityX(-1) // Drive forward with negative Y (forward)
+                         .withVelocityY(0) // Drive left with negative X (left)
+                         .withRotationalRate(0) // Drive counterclockwise with negative X (left)
+                    ))
+                 .withTimeout(5)
+                 .andThen(
+                    drivetrain.applyRequest(() ->
+                    drive.withVelocityX(0) // Drive forward with negative Y (forward)
+                         .withVelocityY(-1) // Drive left with negative X (left)
+                         .withRotationalRate(0) // Drive counterclockwise with negative X (left)
+                    ))
+                 .withTimeout(5);
+
+    }
     public Command oneMeterAuto() {
         return new PathPlannerAuto("OneMeterAuto");
     }

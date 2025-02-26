@@ -18,6 +18,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Elevator;
 
 /** Add your docs here. */
+/** TODO: Can we move the until checks into the commands we are using them with? They seem commonly repeated. */
 public class CoralSystem extends SubsystemBase {
     Elevator elevator;
     Arm arm;

@@ -88,6 +88,10 @@ public class Climber extends SubsystemBase {
         return run(() -> { leftClimberMotor.set(climberSup.getAsDouble() / 5); });
     }
 
+    public double getClimberPosition() {
+        return leftClimberMotor.getPosition().getValueAsDouble();
+    }
+
     public Command activateRatchets() {
         return new ParallelCommandGroup(run(() -> { leftRatchet.setPosition(1); }), run(() -> { rightRatchet.setPosition(1); }));
     }
