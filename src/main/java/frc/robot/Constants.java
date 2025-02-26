@@ -127,6 +127,9 @@ public final class Constants {
 
             public static final double motorIntakeSpeed = 1;
             public static final double motorEjectSpeed = -1;
+
+            public static final double tofHasCoralUpperBound = 40; // The maximum distance (mm) away from the time of flight sensor that the coral needs to be to intake
+            public static final double tofHasCoralLowerBound = 5; // The minimum distance ^
         }
     }
 
