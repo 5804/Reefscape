@@ -163,7 +163,7 @@ public class Arm extends SubsystemBase {
   public Command setShoulderPosition(double position, double tolerance) {
     MotionMagicVoltage request = new MotionMagicVoltage(0); // position
     return run(() -> { shoulderMotor.setControl(request.withPosition(position)); })
-    .until(() -> { return Math.abs(getShoulderPosition() - tolerance) < 0.01; });
+          .until(() -> { return Math.abs(getShoulderPosition() - position) < tolerance; });
   }
 
   public double getShoulderPosition() {

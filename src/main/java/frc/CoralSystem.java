@@ -70,11 +70,9 @@ public class CoralSystem extends SubsystemBase {
                   .andThen(arm.setClawStop())
                   .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.groundPostpickupPosition, 0.01))
                   .andThen(arm.setWristVertical());
-                //   .andThen(setCoralSystemL1());
-                  
-                // Then we need to figure out how to get it to set the shoulder up
-                // the set wrist vert
-                // setWristVertical()
-                //   .until(() -> { return arm.getWristPosition() < Constants.ArmConstants.WristConstants.verticalPosition + 0.1; })
     }
+
+    // public Command herdAlgaePosition() {
+    //     return 
+    // }
 }

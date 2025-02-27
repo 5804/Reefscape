@@ -17,6 +17,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,11 +27,49 @@ import frc.robot.Constants;
 
 public class PhotonVision extends SubsystemBase {
   PhotonPoseEstimator photonPoseEstimator;
+  public PhotonCamera frontCamera = new PhotonCamera("front");
+  PhotonCamera[] cameras = {
+      frontCamera
+  };
+  Transform3d[] cameraTransforms = {
+      new Transform3d(0.16, -0.33, 0.4, new Rotation3d(0, 0, 0)), // front
+  };
+  public static double frontTargetYaw = 0.0;
+  public static double frontTargetRangeX = 0.0;
+  public static double frontTargetRangeY = 0.0;
 
   /** Creates a new PhotonVision. */
   public PhotonVision() {
     
   }
+
+  public void findYaw(PhotonCamera[] cameras, Transform3d[] cameraTransforms) {
+
+    boolean targetVisible = false;
+
+    var frameResults = frontCamera.getAllUnreadResults();
+
+      if (!frameResults.isEmpty()) {
+        PhotonPipelineResult result = frameResults.get(frameResults.size() - 1);
+
+        if (result.hasTargets()) {          
+          PhotonTrackedTarget bestTarget = result.getBestTarget();
+          Pose3d estimatedRobotPose = null;
+          
+          for (var target : result.getTargets()) {
+              frontTargetYaw = target.getYaw();
+              targetVisible = true;
+
+              frontTargetRangeX = bestTarget.getBestCameraToTarget().getMeasureX().in(Meters);
+              frontTargetRangeY = bestTarget.getBestCameraToTarget().getMeasureY().in(Meters) - 1; // This value is the offset
+
+              SmartDashboard.putNumber("Yaw", frontTargetYaw);
+              SmartDashboard.putNumber("Range X", frontTargetRangeX);
+              SmartDashboard.putNumber("Range Y", frontTargetRangeY);
+          }
+        }
+      }
+    }
 
   public void dumpSingleTagCameraData(PhotonCamera[] cameras, Transform3d[] cameraTransforms) {
     for(int cameraIndex = 0; cameraIndex < cameras.length; cameraIndex++){
@@ -110,6 +149,7 @@ public class PhotonVision extends SubsystemBase {
 
   @Override
   public void periodic() {
-    dumpMultiTagData(Constants.PhotonVisionConstants.photonCamerasWithTransforms);
+    // dumpSingleTagCameraData(cameras, cameraTransforms);
+    findYaw(cameras, cameraTransforms);
   }
 }

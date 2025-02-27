@@ -29,6 +29,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.Climber;
 // import frc.robot.subsystems.PhotonVision;
 
@@ -202,6 +203,25 @@ public class RobotContainer {
                  .withTimeout(5);
 
     }
+
+    public Command aimAtTarget() {
+        double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+        return drivetrain.applyRequest(() -> 
+                drive.withVelocityX(0)
+                    .withVelocityY(0)
+                    .withRotationalRate(Math.toRadians(PhotonVision.frontTargetYaw) * -1 * MaxAngularRate)
+        );
+    }
+
+    public Command moveToTarget() {
+        double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+        return drivetrain.applyRequest(() ->
+            drive.withVelocityX(-1 * MaxSpeed * PhotonVision.frontTargetRangeX)
+                .withVelocityY(-1 * MaxSpeed * PhotonVision.frontTargetRangeY)
+                .withRotationalRate(0)
+        );
+    }
+
     public Command oneMeterAuto() {
         return new PathPlannerAuto("OneMeterAuto");
     }

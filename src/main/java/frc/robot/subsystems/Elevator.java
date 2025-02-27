@@ -36,6 +36,9 @@ public class Elevator extends SubsystemBase {
      */
     rightElevatorMotor.setControl(new Follower(leftElevatorMotor.getDeviceID(), false));
 
+    leftElevatorMotor.setPosition(0);
+    rightElevatorMotor.setPosition(0);
+    
     /** Set slot 0 gains */
     elevatorSlot0FXConfigs.kS = Constants.ElevatorConstants.kS; // Add 0.25 V output to overcome static friction
     elevatorSlot0FXConfigs.kV = Constants.ElevatorConstants.kV; // A velocity target of 1 rps results in 0.12 V output
