@@ -101,9 +101,10 @@ public class RobotContainer {
         driveController.rightBumper().onTrue(arm.setClawIntake());
         driveController.rightBumper().onFalse(arm.setClawStop());
 
-        // Need to add ratchet.
-        // driveController.a().onTrue(climber.setClimberDown());
-        // driveController.y().onTrue(climber.setClimberClimb());
+        // Need to add ratchet. 
+        driveController.a().onTrue(climber.setClimberDown());
+        driveController.y().onTrue(climber.setClimberClimb());
+        driveController.b().onTrue(climber.setClimberStow()); 
 
 
         driveController.povUp().onTrue(new InstantCommand(() -> { if (speedMultiplier <= 0.9) { speedMultiplier += 0.1; } }));
@@ -135,8 +136,8 @@ public class RobotContainer {
         assistantController.y().onTrue(coralSystem.setCoralSystemL4());
         // assistantController.povUp().onTrue(coralSystem.setCoralSystemHopperIntake());1234567
 
-        // assistantController.povDown().onTrue(coralSystem.setCoralSystemGroundReady());
-        // assistantController.povUp().onTrue(coralSystem.setCoralSystemGroundPickup());
+        assistantController.povDown().onTrue(coralSystem.setCoralSystemGroundReady());
+        assistantController.povUp().onTrue(coralSystem.setCoralSystemGroundPickup());
         
         assistantController.povRight().onTrue(arm.setWristVertical());
         assistantController.povLeft().onTrue(arm.setWristHorizontal());

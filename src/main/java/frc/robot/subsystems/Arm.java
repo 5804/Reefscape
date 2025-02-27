@@ -67,7 +67,7 @@ public class Arm extends SubsystemBase {
   /** Creates a new ArmSubsystem. */
   public Arm() {
     // Sets time of flight sensor ranging mode to short
-    timeOfFlight.setRangingMode(RangingMode.Short, 30);
+    timeOfFlight.setRangingMode(RangingMode.Long, 30);
 
     /** Set motor arrangements (only for TalonFXS) */
     // Set wrist motor arrangement
