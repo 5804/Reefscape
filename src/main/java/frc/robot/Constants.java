@@ -141,15 +141,15 @@ public final class Constants {
         public static final double kS = 0.25;
         public static final double kV = 0.12;
         public static final double kA = 0.01;
-        public static final double kP = 4.8;
+        public static final double kP = 15;
         public static final double kI = 0;
         public static final double kD = 0.1;
-        public static final double cruiseVelocity = 80;
-        public static final double acceleration = 160;
+        public static final double cruiseVelocity = 100;
+        public static final double acceleration = 200;
         public static final double jerk = 1600;
 
-        public static final double downClimberPosition = 0;
-        public static final double climbClimberPosition = 0;
+        public static final double downClimberPosition = 27.60;
+        public static final double climbClimberPosition = 2.6;
         public static final double stowClimberPosition = 0;
     }
 }

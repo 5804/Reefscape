@@ -4,6 +4,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -29,17 +30,23 @@ public class Climber extends SubsystemBase {
     public PWM leftRatchet = new PWM(1); // NEED TO ID
     public PWM rightRatchet = new PWM(2); // NEED TO ID
 
-    public TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
 
     /** Motor config objects */
-    public Slot0Configs slot0Configs = talonFXConfigs.Slot0;
-    public MotionMagicConfigs motionMagicConfigs = talonFXConfigs.MotionMagic;
+    // public TalonFXConfiguration elevatorTalonFXConfigs = new TalonFXConfiguration();
+    // public Slot0Configs elevatorSlot0FXConfigs = elevatorTalonFXConfigs.Slot0;
+    // public MotionMagicConfigs elevatorMotionMagicFXConfigs = elevatorTalonFXConfigs.MotionMagic;
+    // public MotorOutputConfigs elevatorMotorOutputFXConfigs = elevatorTalonFXConfigs.MotorOutput;
+
+    public TalonFXConfiguration climberTalonFXConfigs = new TalonFXConfiguration();
+    public Slot0Configs climberSlot0Configs = climberTalonFXConfigs.Slot0;
+    public MotionMagicConfigs climberMotionMagicConfigs = climberTalonFXConfigs.MotionMagic;
+    public MotorOutputConfigs climberMotorOutputFXConfigs = climberTalonFXConfigs.MotorOutput;
 
     public Climber(DoubleSupplier climberSup) {
         /** Configure objects here */
         /* Application of motor configs */
-        leftClimberMotor.getConfigurator().apply(talonFXConfigs);
-        rightClimberMotor.getConfigurator().apply(talonFXConfigs);
+        leftClimberMotor.setPosition(0);
+        rightClimberMotor.setPosition(0);
         leftClimberMotor.setNeutralMode(NeutralModeValue.Brake);
         rightClimberMotor.setNeutralMode(NeutralModeValue.Brake);
 
@@ -51,23 +58,26 @@ public class Climber extends SubsystemBase {
         rightClimberMotor.setControl(new Follower(leftClimberMotor.getDeviceID(), true));
 
         // Set slot 0 gains
-        slot0Configs.kS = Constants.ClimberConstants.kS; // Add 0.25 V output to overcome static friction
-        slot0Configs.kV = Constants.ClimberConstants.kV; // A velocity target of 1 rps results in 0.12 V output
-        slot0Configs.kA = Constants.ClimberConstants.kA; // An acceleration of 1 rps/s requires 0.01 V output
-        slot0Configs.kP = Constants.ClimberConstants.kP; // A position error of 2.5 rotations results in 12 V output
-        slot0Configs.kI = Constants.ClimberConstants.kI; // no output for integrated error
-        slot0Configs.kD = Constants.ClimberConstants.kD; // A velocity error of 1 rps results in 0.1 V output
+        climberSlot0Configs.kS = Constants.ClimberConstants.kS; // Add 0.25 V output to overcome static friction
+        climberSlot0Configs.kV = Constants.ClimberConstants.kV; // A velocity target of 1 rps results in 0.12 V output
+        climberSlot0Configs.kA = Constants.ClimberConstants.kA; // An acceleration of 1 rps/s requires 0.01 V output
+        climberSlot0Configs.kP = Constants.ClimberConstants.kP; // A position error of 2.5 rotations results in 12 V output
+        climberSlot0Configs.kI = Constants.ClimberConstants.kI; // no output for integrated error
+        climberSlot0Configs.kD = Constants.ClimberConstants.kD; // A velocity error of 1 rps results in 0.1 V output
 
         // Set Motion Magic settings
-        motionMagicConfigs.MotionMagicCruiseVelocity = Constants.ClimberConstants.cruiseVelocity; // Target cruise velocity of 80 rps
-        motionMagicConfigs.MotionMagicAcceleration = Constants.ClimberConstants.acceleration; // Target acceleration of 160 rps/s (0.5 seconds)
-        motionMagicConfigs.MotionMagicJerk = Constants.ClimberConstants.jerk; // Target jerk of 1600 rps/s/s (0.1 seconds)
+        climberMotionMagicConfigs.MotionMagicCruiseVelocity = Constants.ClimberConstants.cruiseVelocity; // Target cruise velocity of 80 rps
+        climberMotionMagicConfigs.MotionMagicAcceleration = Constants.ClimberConstants.acceleration; // Target acceleration of 160 rps/s (0.5 seconds)
+        climberMotionMagicConfigs.MotionMagicJerk = Constants.ClimberConstants.jerk; // Target jerk of 1600 rps/s/s (0.1 seconds)
+
+        leftClimberMotor.getConfigurator().apply(climberTalonFXConfigs);
+        rightClimberMotor.getConfigurator().apply(climberTalonFXConfigs);
 
         this.climberSup = climberSup;
     }
 
     public void setClimberPosition(double position) {
-        MotionMagicVoltage request = new MotionMagicVoltage(position);
+        MotionMagicVoltage request = new MotionMagicVoltage(0);
         leftClimberMotor.setControl(request.withPosition(position));
     }
 
