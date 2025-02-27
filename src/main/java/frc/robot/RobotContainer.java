@@ -165,25 +165,19 @@ public class RobotContainer {
                  .until(() -> { return arm.getShoulderPosition() < Constants.ArmConstants.ShoulderConstants.groundPostpickupPosition + 0.01 && arm.getShoulderPosition() > Constants.ArmConstants.ShoulderConstants.groundPostpickupPosition - 0.01; })
                  .andThen(arm.setWristHorizontal())
                  .andThen(arm.setWristVertical())
-                 .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, Constants.ArmConstants.ShoulderConstants.minSafeValue));
+                 .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, Constants.ArmConstants.ShoulderConstants.minSafeValue))
                  
                  /** Elevator */
                  // NEED TO ADD L1 ONCE WE IMPLEMENT IT
-                 .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l2Position))
-                 .until(() -> { return elevator.getElevatorPosition() < Constants.ElevatorConstants.l2Position + 0.1 && elevator.getElevatorPosition() > Constants.ElevatorConstants.l2Position - 0.1; })
-                 .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l3Position))
-                 .until(() -> { return elevator.getElevatorPosition() < Constants.ElevatorConstants.l3Position + 0.1 && elevator.getElevatorPosition() > Constants.ElevatorConstants.l3Position - 0.1; })
-                 .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l4Position))
-                 .until(() -> { return elevator.getElevatorPosition() < Constants.ElevatorConstants.l4Position + 0.1 && elevator.getElevatorPosition() > Constants.ElevatorConstants.l4Position - 0.1; })
+                 .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l2Position, 0.1))
+                 .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l3Position, 0.1))
+                 .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l4Position, 0.1))
 
                  /** Combined Arm, Elevator, Wrist */
                  // NEED TO ADD L1 ONCE WE IMPLEMENT IT
                  .andThen(coralSystem.setCoralSystemL2())
-                 .until(() -> { return arm.getShoulderPosition() < Constants.ArmConstants.ShoulderConstants.l2Position + 0.01 && arm.getShoulderPosition() > Constants.ArmConstants.ShoulderConstants.l2Position - 0.01; })
                  .andThen(coralSystem.setCoralSystemL3())
-                 .until(() -> { return arm.getShoulderPosition() < Constants.ArmConstants.ShoulderConstants.l3Position + 0.01 && arm.getShoulderPosition() > Constants.ArmConstants.ShoulderConstants.l3Position - 0.01; })
                  .andThen(coralSystem.setCoralSystemL4())
-                 .until(() -> { return arm.getShoulderPosition() < Constants.ArmConstants.ShoulderConstants.l4Position + 0.01 && arm.getShoulderPosition() > Constants.ArmConstants.ShoulderConstants.l4Position - 0.01; })
                  
                  /** Climber */
                  // NEED TO ADD ACTUAL VALUES AND THRESHOLDS

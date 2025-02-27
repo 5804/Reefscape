@@ -146,13 +146,13 @@ public class Arm extends SubsystemBase {
   public Command setWristHorizontal() {
     MotionMagicVoltage request = new MotionMagicVoltage(0);
     return run(() -> { wristMotor.setControl(request.withPosition(Constants.ArmConstants.WristConstants.horizontalPosition));})
-    .until(() -> { return getWristPosition() > Constants.ArmConstants.WristConstants.horizontalPosition - 0.1; });
+          .until(() -> { return getWristPosition() > Constants.ArmConstants.WristConstants.horizontalPosition - 0.1; });
   }
 
   public Command setWristVertical() {
     MotionMagicVoltage request = new MotionMagicVoltage(0);
     return run(() -> { wristMotor.setControl(request.withPosition(Constants.ArmConstants.WristConstants.verticalPosition));})
-    .until(() -> { return getWristPosition() > Constants.ArmConstants.WristConstants.verticalPosition + 0.1; });
+          .until(() -> { return getWristPosition() > Constants.ArmConstants.WristConstants.verticalPosition + 0.1; });
   }
 
   public double getWristPosition() {
@@ -172,12 +172,14 @@ public class Arm extends SubsystemBase {
 
   /** Commands to manipulate the claw */
   public Command setClawIntake() {
-    return run(() -> { clawMotor.set(Constants.ArmConstants.ClawConstants.motorIntakeSpeed); });
+    return run(() -> { clawMotor.set(Constants.ArmConstants.ClawConstants.motorIntakeSpeed); })
+          .until(() -> { return getClawVelocity() > 150; });
   }
 
   // Stops the claw from spinning.
   public Command setClawStop() {
-    return run(() -> { clawMotor.set(0); });
+    return run(() -> { clawMotor.set(0); })
+          .until(() -> { return getClawVelocity() < 40; });
   }
 
   // Spins the claw backwards, immediately pops the coral out.

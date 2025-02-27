@@ -68,9 +68,10 @@ public class Elevator extends SubsystemBase {
    * Sets elevator positions based on the leftElevatorMotor's encoder position.
    * Should be used with Constants.ElevatorConstants.xElevatorPosition.
    */
-  public Command setElevatorPosition(double position) {
+  public Command setElevatorPosition(double position, double tolerance) {
     MotionMagicVoltage request = new MotionMagicVoltage(0);
-    return run(() -> { leftElevatorMotor.setControl(request.withPosition(position)); });
+    return run(() -> { leftElevatorMotor.setControl(request.withPosition(position)); })
+          .until(() -> { return Math.abs(getElevatorPosition() - position) < tolerance; });
   }
 
   /** 
