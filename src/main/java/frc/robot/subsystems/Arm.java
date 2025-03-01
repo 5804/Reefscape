@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CommutationConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.ExternalFeedbackConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -12,6 +13,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXSConfiguration;
+import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -44,6 +46,8 @@ public class Arm extends SubsystemBase {
   public MotorOutputConfigs shoulderMotorOutputFXConfigs = shoulderTalonFXConfigs.MotorOutput;
   public FeedbackConfigs shoulderMotorFeedbackFXConfigs = shoulderTalonFXConfigs.Feedback;
   // public SoftwareLimitSwitchConfigs shoulderSoftwareLimitSwitchFXConfigs = shoulderTalonFXConfigs.SoftwareLimitSwitch; // Maybe implement
+  // public VoltageConfigs shoulderMotorVoltageFXConfigs = shoulderTalonFXConfigs.Voltage;
+  public CurrentLimitsConfigs shoulderMotorCurrentLimitsConfigs = shoulderTalonFXConfigs.CurrentLimits;
 
   /** Wrist motor config objects */
   public TalonFXSConfiguration wristTalonFXSConfigs = new TalonFXSConfiguration();
@@ -61,6 +65,8 @@ public class Arm extends SubsystemBase {
   public CommutationConfigs clawCommutationFXSConfigs = clawTalonFXSConfigs.Commutation;
   public MotionMagicConfigs clawMotionMagicFXSConfigs = clawTalonFXSConfigs.MotionMagic;
   public MotorOutputConfigs clawMotorOutputFXSConfigs = clawTalonFXSConfigs.MotorOutput;
+
+  double armPos = 0;
 
   /** Creates a new ArmSubsystem. */
   public Arm() {
@@ -136,6 +142,11 @@ public class Arm extends SubsystemBase {
     wristMotorFeedbackFXSConfigs.ExternalFeedbackSensorSource = ExternalFeedbackSensorSourceValue.RemoteCANcoder;
     wristMotorFeedbackFXSConfigs.FeedbackRemoteSensorID = Constants.ArmConstants.WristConstants.encoderID;
 
+    /** Set shoulder current limit configs */
+    shoulderMotorCurrentLimitsConfigs.StatorCurrentLimitEnable = true;
+    shoulderMotorCurrentLimitsConfigs.SupplyCurrentLimit = 60; // 70
+    shoulderMotorCurrentLimitsConfigs.StatorCurrentLimit = 120;
+
     /** Applies motor configs */
     shoulderMotor.getConfigurator().apply(shoulderTalonFXConfigs);
     wristMotor.getConfigurator().apply(wristTalonFXSConfigs);
@@ -152,9 +163,9 @@ public class Arm extends SubsystemBase {
   public Command setWristVertical() {
     MotionMagicVoltage request = new MotionMagicVoltage(0);
     return run(() -> { wristMotor.setControl(request.withPosition(Constants.ArmConstants.WristConstants.verticalPosition));})
-          .until(() -> { return getWristPosition() > Constants.ArmConstants.WristConstants.verticalPosition + 0.1; });
+          .until(() -> { return getWristPosition() < Constants.ArmConstants.WristConstants.verticalPosition + 0.1; });
   }
-
+//.0812
   public double getWristPosition() {
     return wristEncoder.getPosition().getValueAsDouble();
   }
@@ -162,6 +173,7 @@ public class Arm extends SubsystemBase {
   /** Commands to manipulate the shoulder */
   public Command setShoulderPosition(double position, double tolerance) {
     MotionMagicVoltage request = new MotionMagicVoltage(0); // position
+    armPos = position;
     return run(() -> { shoulderMotor.setControl(request.withPosition(position)); })
           .until(() -> { return Math.abs(getShoulderPosition() - position) < tolerance; });
   }
@@ -176,6 +188,10 @@ public class Arm extends SubsystemBase {
           .until(() -> { return getClawVelocity() > 150; });
   }
 
+  public Command setClawIntakeForTOF() {
+    return run(() -> { clawMotor.set(Constants.ArmConstants.ClawConstants.motorIntakeSpeed); });
+  }
+
   // Stops the claw from spinning.
   public Command setClawStop() {
     return run(() -> { clawMotor.set(0); })
@@ -184,12 +200,13 @@ public class Arm extends SubsystemBase {
 
   // Spins the claw backwards, immediately pops the coral out.
   public Command setClawEject() {
-    return run(() -> { clawMotor.set(Constants.ArmConstants.ClawConstants.motorEjectSpeed); });
+    return run(() -> { clawMotor.set(Constants.ArmConstants.ClawConstants.motorEjectSpeed); })
+          .until(() -> { return getClawVelocity() > -150; });
   }
 
   // Intakes the coral, automatically stopping intaking when the coral is in the correct position.
   public Command setClawIntakeWithTimeOfFlight() {
-    return setClawIntake()
+    return setClawIntakeForTOF()
           .until(() -> { return timeOfFlight.getRange() < Constants.ArmConstants.ClawConstants.tofHasCoralUpperBound && timeOfFlight.getRange() > Constants.ArmConstants.ClawConstants.tofHasCoralLowerBound; })
           // .finallyDo(() -> { clawMotor.set(0); });
           .andThen(setClawStop());          
@@ -204,5 +221,27 @@ public class Arm extends SubsystemBase {
 
   public double getClawVelocity() {
     return clawMotor.getVelocity().getValueAsDouble();
+  }
+
+  public double getArmPos() { return armPos; }
+
+  public Command armDown() {
+    MotionMagicVoltage request = new MotionMagicVoltage(0);
+    return run(() -> { 
+      shoulderMotor.setVoltage(3);
+    })
+    .finallyDo(() -> { 
+      shoulderMotor.setControl(request.withPosition(shoulderEncoder.getPosition().getValueAsDouble()));
+    });
+  }
+
+  public Command armUp() {
+    MotionMagicVoltage request = new MotionMagicVoltage(0);
+    return run(() -> { 
+      shoulderMotor.setVoltage(-3);
+    })
+    .finallyDo(() -> { 
+      shoulderMotor.setControl(request.withPosition(shoulderEncoder.getPosition().getValueAsDouble()));
+    });
   }
 }

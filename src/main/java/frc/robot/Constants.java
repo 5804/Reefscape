@@ -22,6 +22,11 @@ public final class Constants {
         };
     } 
 
+    public final class LimelightConstants {
+        public static final double offsetLeft = 0;
+        public static final double offsetRight = 0;
+    }
+
     public final class ElevatorConstants {
         /** PID slot 0 gains */
         public static final double kS = 0.25;
@@ -52,7 +57,7 @@ public final class Constants {
         public static final double l1Position = 0;
         public static final double groundReadyPosition = -4.95;
         public static final double groundPickupPosition = -1.652; // -2.14826
-        public static final double hopperIntakePosition = zeroPosition - 0.5;
+        public static final double hopperIntakePosition = zeroPosition;
 
         // Used to shrink software limits to slightly smaller than the full elevator.
         public static final double softwareLimitSafetyThreshold = 5;
@@ -66,12 +71,12 @@ public final class Constants {
             public static final double kS = 0.50;
             public static final double kV = 0.12;
             public static final double kA = 0.01;
-            public static final double kP = 40.0; // Probably decrease // 90 // 150
+            public static final double kP = 40.0; // 40
             public static final double kI = 0;
             public static final double kD = 0.1;
 
-            public static final double cruiseVelocity = 400 * 6; // 320 // 400
-            public static final double acceleration = 320 * 4;
+            public static final double cruiseVelocity = 400 * 100; // 320 // 400
+            public static final double acceleration = 400 * 100;
             public static final double jerk = 1600;
 
             /**
@@ -84,10 +89,10 @@ public final class Constants {
             public static final double l4Position = 0.16; // 0.13
             public static final double l3Position = 0.14;
             public static final double l2Position = 0.14;
-            public static final double l1Position = 0;
+            public static final double l1Position =  0.13;
             public static final double groundPosition = 0.495117; // 0.062012
             public static final double groundPostpickupPosition = 0.25;
-            public static final double hopperIntakePosition = 0.091553;
+            public static final double hopperIntakePosition = .0712; // 0.091553;
         }
 
         public final class WristConstants {
@@ -97,7 +102,7 @@ public final class Constants {
             public static final double kS = 0.50;
             public static final double kV = 0.12;
             public static final double kA = 0.01;
-            public static final double kP = 40.8;
+            public static final double kP = 60;
             public static final double kI = 0;
             public static final double kD = 0.1;
             public static final double cruiseVelocity = 80;
@@ -109,7 +114,7 @@ public final class Constants {
              * to while placing coral.
              */
             public static final double verticalPosition = 0;
-            public static final double horizontalPosition = 0.248;
+            public static final double horizontalPosition = 0.25;
         }
 
         public final class ClawConstants {
@@ -148,8 +153,8 @@ public final class Constants {
         public static final double acceleration = 200;
         public static final double jerk = 1600;
 
-        public static final double downClimberPosition = 27.60;
-        public static final double climbClimberPosition = 2.6;
-        public static final double stowClimberPosition = 0;
+        public static final double downClimberPosition = 253;
+        public static final double climbClimberPosition = 1; // 5
+        public static final double stowClimberPosition = 0.1;
     }
 }

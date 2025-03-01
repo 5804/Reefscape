@@ -28,6 +28,10 @@ public class ButtonBoard {
         return buttonBoard;
     }
 
+    public JoystickButton[] getButtons() {
+        return buttons;
+    }
+
     public double getAxis(int axisNumber) {
         return buttonBoard.getRawAxis(axisNumber);
     }

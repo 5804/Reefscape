@@ -27,7 +27,7 @@ import frc.robot.Constants;
 
 public class PhotonVision extends SubsystemBase {
   PhotonPoseEstimator photonPoseEstimator;
-  public PhotonCamera frontCamera = new PhotonCamera("front");
+  public PhotonCamera frontCamera = new PhotonCamera("right");
   PhotonCamera[] cameras = {
       frontCamera
   };

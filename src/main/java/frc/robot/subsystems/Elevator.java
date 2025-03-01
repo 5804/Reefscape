@@ -26,6 +26,10 @@ public class Elevator extends SubsystemBase {
   public MotionMagicConfigs elevatorMotionMagicFXConfigs = elevatorTalonFXConfigs.MotionMagic;
   public MotorOutputConfigs elevatorMotorOutputFXConfigs = elevatorTalonFXConfigs.MotorOutput;
   public SoftwareLimitSwitchConfigs elevatorSoftwareLimitSwitchFXConfigs = elevatorTalonFXConfigs.SoftwareLimitSwitch;
+  public CurrentLimitsConfigs elevatorMotorCurrentLimitsConfigs = elevatorTalonFXConfigs.CurrentLimits;
+
+
+  double elevatorPos = 0;
 
   public Elevator() {
     /** Configure objects here */
@@ -59,8 +63,13 @@ public class Elevator extends SubsystemBase {
     /** Set software limit switches */
     // elevatorSoftwareLimitSwitchFXConfigs.ForwardSoftLimitEnable = true; // NEED TO TEST
     // elevatorSoftwareLimitSwitchFXConfigs.ForwardSoftLimitThreshold = ; // NEED TO TEST
-    // softwareLimitSwitch.ReverseSoftLimitEnable = true; // NEED TO TEST
-    // softwareLimitSwitch.ReverseSoftLimitThreshold = 0; // NEED TO TEST
+    elevatorSoftwareLimitSwitchFXConfigs.ReverseSoftLimitEnable = true; // NEED TO TEST
+    elevatorSoftwareLimitSwitchFXConfigs.ReverseSoftLimitThreshold = -36; // NEED TO TEST // -31
+
+    /** Set elevator current limit configs */
+    elevatorMotorCurrentLimitsConfigs.StatorCurrentLimitEnable = true;
+    elevatorMotorCurrentLimitsConfigs.SupplyCurrentLimit = 70; // 70
+    elevatorMotorCurrentLimitsConfigs.StatorCurrentLimit = 120;
 
     /** Applies motor configs */
     leftElevatorMotor.getConfigurator().apply(elevatorTalonFXConfigs);
@@ -73,8 +82,38 @@ public class Elevator extends SubsystemBase {
    */
   public Command setElevatorPosition(double position, double tolerance) {
     MotionMagicVoltage request = new MotionMagicVoltage(0);
+    elevatorPos = position;
     return run(() -> { leftElevatorMotor.setControl(request.withPosition(position)); })
           .until(() -> { return Math.abs(getElevatorPosition() - position) < tolerance; });
+  }
+
+  public Command moveElevatorUp() {
+    MotionMagicVoltage request = new MotionMagicVoltage(0);
+    return run(() -> { 
+      leftElevatorMotor.setVoltage(-1);
+    })
+    .finallyDo(() -> { 
+      leftElevatorMotor.setControl(request.withPosition(leftElevatorMotor.getPosition().getValueAsDouble()));
+    });
+    // .finallyDo(
+    //   () -> {
+    //     leftElevatorMotor.setControl(request.withPosition(leftElevatorMotor.getPosition().getValueAsDouble())); }
+    //   );
+  }
+
+  public Command moveElevatorDown() {
+    MotionMagicVoltage request = new MotionMagicVoltage(0);
+
+    return run(() -> { 
+      leftElevatorMotor.setVoltage(1);
+    })
+    .finallyDo(() -> { 
+      leftElevatorMotor.setControl(request.withPosition(leftElevatorMotor.getPosition().getValueAsDouble()));
+    });
+  }
+
+  public double getCurrentPos() { 
+    return elevatorPos; 
   }
 
   /** 
@@ -89,4 +128,5 @@ public class Elevator extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
 }

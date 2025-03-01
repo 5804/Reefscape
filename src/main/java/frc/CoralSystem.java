@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
 
 /** Add your docs here. */
@@ -22,10 +23,12 @@ import frc.robot.subsystems.Elevator;
 public class CoralSystem extends SubsystemBase {
     Elevator elevator;
     Arm arm;
+    Climber climber;
 
-    public CoralSystem(Elevator elevator, Arm arm) {
+    public CoralSystem(Elevator elevator, Arm arm, Climber climber) {
         this.elevator = elevator;
         this.arm = arm;
+        this.climber = climber;
     }
 
     public Command setCoralSystemHopperIntake() {
@@ -52,9 +55,12 @@ public class CoralSystem extends SubsystemBase {
                   .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.l2Position, 0.01));
     }
 
-    public Command setCoralSystemL1() {
-        return null;
-    }
+    // public Command setCoralSystemL1() {
+    //     return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01)
+    //.andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l1Position, 0.1))
+   // .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.l1Position, 0.01));
+   // .andThen(wrist.setHorizontalPosition(Constants.ArmConstants.WristConstants.horizontalPosition, 0.01))
+    // }
 
     public Command setCoralSystemGroundReady() {
         return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01)
@@ -68,11 +74,25 @@ public class CoralSystem extends SubsystemBase {
                   .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.groundPickupPosition, 0.1))
                   .until(() -> { return arm.timeOfFlight.getRange() < 40 && arm.timeOfFlight.getRange() > 5; })
                   .andThen(arm.setClawStop())
-                  .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.groundPostpickupPosition, 0.01))
-                  .andThen(arm.setWristVertical());
+                  .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.groundPostpickupPosition, 0.01)) //groundPostpickupPosition
+                  .andThen(arm.setWristVertical())
+                  .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.hopperIntakePosition, 0.01)) //groundPostpickupPosition
+                  .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.hopperIntakePosition, 0.1));
     }
 
-    // public Command herdAlgaePosition() {
-    //     return 
-    // }
+    public Command setCoralSystemHerdAlgaePosition() {
+        return arm.setShoulderPosition(0.3, 0.01)
+            .andThen(arm.setWristHorizontal())
+            .andThen(arm.setClawEject())
+            .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.hopperIntakePosition, 0.01));
+
+    }
+    
+    public Command stowAll() {
+        return climber.setClimberStow(0.01)
+                      .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01))
+                      .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.hopperIntakePosition, 0.1))
+                      .andThen(arm.setWristVertical())
+                      .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.hopperIntakePosition, 0.01));
+    }
 }

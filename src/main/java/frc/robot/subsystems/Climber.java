@@ -82,16 +82,19 @@ public class Climber extends SubsystemBase {
     }
 
     /** Methods to set the climber to preset positions. */
-    public Command setClimberDown() {
-        return run(() -> { setClimberPosition(Constants.ClimberConstants.downClimberPosition); });
+    public Command setClimberDown(double tolerance) {
+        return run(() -> { setClimberPosition(Constants.ClimberConstants.downClimberPosition); })
+                .until(() -> { return Math.abs(getClimberPosition() - Constants.ClimberConstants.stowClimberPosition) < tolerance; });
     }
 
-    public Command setClimberClimb() {
-        return run(() -> { setClimberPosition(Constants.ClimberConstants.climbClimberPosition); });
+    public Command setClimberClimb(double tolerance) {
+        return run(() -> { setClimberPosition(Constants.ClimberConstants.climbClimberPosition); })
+                .until(() -> { return Math.abs(getClimberPosition() - Constants.ClimberConstants.stowClimberPosition) < tolerance; });
     }
 
-    public Command setClimberStow() {
-        return run(() -> { setClimberPosition(Constants.ClimberConstants.stowClimberPosition); });
+    public Command setClimberStow(double tolerance) {
+        return run(() -> { setClimberPosition(Constants.ClimberConstants.stowClimberPosition); })
+                .until(() -> { return Math.abs(getClimberPosition() - Constants.ClimberConstants.stowClimberPosition) < tolerance; });
     }
 
     public Command setClimberSpeed() {
@@ -102,11 +105,11 @@ public class Climber extends SubsystemBase {
         return leftClimberMotor.getPosition().getValueAsDouble();
     }
 
-    public Command activateRatchets() {
-        return new ParallelCommandGroup(run(() -> { leftRatchet.setPosition(1); }), run(() -> { rightRatchet.setPosition(1); }));
-    }
+    // public Command activateRatchets() {
+    //     return new ParallelCommandGroup(run(() -> { leftRatchet.setPosition(1); }), run(() -> { rightRatchet.setPosition(1); }));
+    // }
 
-    public Command deactivateRatchets() {
-        return new ParallelCommandGroup(run(() -> { leftRatchet.setPosition(0); }), run(() -> { rightRatchet.setPosition(0); }));
-    }
+    // public Command deactivateRatchets() {
+    //     return new ParallelCommandGroup(run(() -> { leftRatchet.setPosition(0); }), run(() -> { rightRatchet.setPosition(0); }));
+    // }
 }
