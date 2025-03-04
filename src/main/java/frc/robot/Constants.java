@@ -51,7 +51,7 @@ public final class Constants {
         // NEED TO SET ALL OF THESE STILL
         public static final double zeroPosition = 0.15832;
         public static final double minSafePosition = -38;
-        public static final double l4Position = -30.29;
+        public static final double l4Position = -31.73;
         public static final double l3Position = -15.6;
         public static final double l2Position = -5.9;
         public static final double l1Position = 0;
@@ -67,17 +67,16 @@ public final class Constants {
         public final class ShoulderConstants {
             public static final int motorID = 55;
             public static final int encoderID = 60;
-
             public static final double kS = 0.50;
-            public static final double kV = 0.12;
-            public static final double kA = 0.01;
-            public static final double kP = 40.0; // 40
+            public static final double kV = 20.12; // (31.488 Supposed best value)
+            public static final double kA = 20.01;
+            public static final double kP = 20.0; // 40
             public static final double kI = 0;
             public static final double kD = 0.1;
 
             public static final double cruiseVelocity = 400 * 100; // 320 // 400
             public static final double acceleration = 400 * 100;
-            public static final double jerk = 1600;
+            public static final double jerk = 1600; // 1600
 
             /**
              * Shoulder positions based on the shoulder absolute encoder for the shoulder to be set

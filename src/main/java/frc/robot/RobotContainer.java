@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.MathUtil;
@@ -59,8 +60,8 @@ public class RobotContainer {
 
     /** Controllers */
     public final CommandXboxController driveController = new CommandXboxController(0);
-    private final CommandXboxController assistantController = new CommandXboxController(1);
-    public final ButtonBoard buttonBoard = new ButtonBoard(11, 2);
+    // private final CommandXboxController assistantController = new CommandXboxController(1);
+    public final ButtonBoard buttonBoard = new ButtonBoard(11, 1);
 
     /** Subsytem initializations. */
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -80,12 +81,17 @@ public class RobotContainer {
     public RobotContainer() {
         configureBindings();
 
-        autoChooser.addOption("systemsTest", systemsTest());
+        NamedCommands.registerCommand("drop", autoDrop());
+
+        autoChooser.setDefaultOption("Default Auto", onePieceAuto());
+
+        autoChooser.addOption("systemsTest", oneMeter());
         // autoChooser.addOption("oneMeter", oneMeterAuto());
         // autoChooser.addOption("twoMeter", twoMeterAuto());
         // autoChooser.addOption("ninetyDegrees", ninetyDegreesAuto());
         // autoChooser.addOption("plus", plusAuto());
-        autoChooser.addOption("Use This Auto (One Meter Forward)", oneMeter());
+        autoChooser.addOption("One Meter", oneMeter());
+        autoChooser.addOption("One Piece Auto", onePieceAuto());
 
 
 
@@ -119,8 +125,13 @@ public class RobotContainer {
         driveController.y().onTrue(arm.setClawIntakeWithTimeOfFlight());
         driveController.y().onFalse(arm.setClawStop());
         // Toggle Arm Pos (Up and down)
-        driveController.b().onTrue(arm.setClawIntake());
+        // driveController.b().onTrue(arm.setClawIntake());
+        // driveController.b().onFalse(arm.setClawStop());
+        driveController.b().onTrue(arm.setClawEject());
         driveController.b().onFalse(arm.setClawStop());
+
+        driveController.x().onTrue(arm.setClawIntake());
+        driveController.x().onFalse(arm.setClawStop());
 
         // driveController.x().onTrue(coralSystem.setCoralSystemHopperIntake()); // Hopper Intake (Uneeded)
         driveController.a().onTrue(
@@ -189,29 +200,26 @@ public class RobotContainer {
         buttonBoardRawAxis1Negative.whileTrue(elevator.moveElevatorUp()); // ELEVATOR DOWN
 
         /** Assistant controller bindings COMMENTED OUT ARE UNIMPLEMENTED, DON'T DELETE */
-        assistantController.rightTrigger(0.5).onTrue(coralSystem.stowAll());
+        // // assistantController.rightTrigger(0.5).onTrue(coralSystem.stowAll());
         
-        assistantController.a().onTrue(coralSystem.setCoralSystemL2());
-        assistantController.b().onTrue(coralSystem.setCoralSystemL3());
-        assistantController.y().onTrue(coralSystem.setCoralSystemL4());
+        // assistantController.a().onTrue(coralSystem.setCoralSystemL2());
+        // assistantController.b().onTrue(coralSystem.setCoralSystemL3());
+        // assistantController.y().onTrue(coralSystem.setCoralSystemL4());
 
-        assistantController.povRight().whileTrue(arm.armDown());
-        assistantController.povLeft().whileTrue(arm.armUp());
+        // assistantController.povRight().whileTrue(arm.armDown());
+        // assistantController.povLeft().whileTrue(arm.armUp());
 
-        assistantController.leftTrigger(0.5).onTrue(arm.setClawEject());
-        assistantController.leftTrigger(0.5).onFalse(arm.setClawStop());
+        // // assistantController.leftTrigger(0.5).onTrue(arm.setClawEject());..........................................................0000000000000000000000000000000000000'''''''''''''''''''''''''''''
+        // // assistantController.leftTrigger(0.5).onFalse(arm.setClawStop());
 
-        assistantController.povUp().whileTrue(elevator.moveElevatorUp());
-        assistantController.povDown().whileTrue(elevator.moveElevatorDown());
+        // assistantController.povUp().whileTrue(elevator.moveElevatorUp());
+        // assistantController.povDown().whileTrue(elevator.moveElevatorDown());
 
-        assistantController.rightBumper().whileTrue(arm.setWristVertical());
-        assistantController.leftBumper().whileTrue(arm.setWristHorizontal());
-
-        assistantController.back().whileTrue(coralSystem.setCoralSystemHerdAlgaePosition());
-        assistantController.back().onFalse(arm.setClawStop());
-
-
-
+        // assistantController.rightBumper().whileTrue(arm.setWristVertical());
+        // assistantController.leftBumper().whileTrue(arm.setWristHorizontal());
+ 
+        // assistantController.back().whileTrue(coralSystem.setCoralSystemHerdAlgaePosition());
+        // assistantController.back().onFalse(arm.setClawStop());
 
         // Logs telemetry every time the swerve drive updates.
         drivetrain.registerTelemetry(logger::telemeterize);
@@ -312,6 +320,14 @@ public class RobotContainer {
                     .withRotationalRate(0)
         );  
     }
+
+    public Command autoDrop() {
+        return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01)
+                  .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l2Position, 0.1))
+                  .andThen(arm.setShoulderPosition(.2, 0.01))
+                  .andThen(arm.setWristHorizontal())
+                  .andThen(arm.setClawEject());
+    }
  
     public Command oneMeterAuto() {
         return new PathPlannerAuto("OneMeterAuto");
@@ -324,6 +340,10 @@ public class RobotContainer {
     }
     public Command plusAuto() {
         return new PathPlannerAuto("PlusAuto");
+    }
+
+    public Command onePieceAuto() {
+        return new PathPlannerAuto("OnePieceAuto");
     }
 
     public Command oneMeter() {
