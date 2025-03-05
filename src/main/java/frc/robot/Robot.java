@@ -4,25 +4,35 @@
 
 package frc.robot;
 
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.Arm;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 public class Robot extends TimedRobot {
   private Command autonomousCommand;
 
-  // Declaration of robotContainer, which should be used to reference other subsystem objects, ex. robotContainer.arm.elbowEncoder.getAbsolutePosition()
   private final RobotContainer robotContainer;
 
   public Robot() {
     robotContainer = new RobotContainer();
   }
 
+  public void cancelAllActiveCommands() {
+    CommandScheduler.getInstance().cancelAll();
+  }
+
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+
+    SmartDashboard.putNumber("TimeOfFlight", robotContainer.arm.timeOfFlight.getRange());
+
+    // for (int i = 0; i < robotContainer.buttonBoard.getButtons().length; i++) {
+    //   SmartDashboard.putBoolean(i + "", robotContainer.buttonBoard.getButtons()[i].getAsBoolean());
+    // }
   }
 
   @Override
@@ -39,10 +49,15 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    // MAYBE ADD CommandScheduler.getInstance().cancelAll();
     autonomousCommand = robotContainer.getAutonomousCommand();
 
     if (autonomousCommand != null) {
       autonomousCommand.schedule();
+    }
+
+    for (int port = 5800; port <= 5809; port++) {
+      PortForwarder.add(port, "limelight.local", port);
     }
   }
 
@@ -56,8 +71,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    CommandScheduler.getInstance().cancelAll();
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
+    }
+
+    for (int port = 5800; port <= 5809; port++) {
+      PortForwarder.add(port, "limelight.local", port);
     }
   }
 
