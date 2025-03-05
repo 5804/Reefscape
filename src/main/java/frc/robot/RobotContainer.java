@@ -47,7 +47,7 @@ public class RobotContainer {
     }
 
     /** Setting up bindings for necessary control of the swerve drive platform. */
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+    private final SwerveRequest.FieldCentric driveFieldCentric = new SwerveRequest.FieldCentric()
             .withDeadband(maxSpeed * 0.005).withRotationalDeadband(maxAngularRate * 0.005) // Add a 20% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);                       // Use open-loop control for drive motors
 
@@ -108,7 +108,7 @@ public class RobotContainer {
          */
         drivetrain.setDefaultCommand(
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftY(), 0.1), 3) * maxSpeed * speedMultiplier)            // Drive forward with negative Y (forward)
+                driveFieldCentric.withVelocityX(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftY(), 0.1), 3) * maxSpeed * speedMultiplier)            // Drive forward with negative Y (forward)
                      .withVelocityY(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftX(), 0.1), 3) * maxSpeed * speedMultiplier)             // Drive left with negative X (left)
                      .withRotationalRate(-1 * Math.pow(MathUtil.applyDeadband(driveController.getRightX(), 0.1), 3) * maxAngularRate * speedMultiplier) // Drive counterclockwise with negative X (left)
             )
@@ -120,6 +120,8 @@ public class RobotContainer {
 
         //driveController.rightBumper().onTrue(climber.setClimberDown(0.01)); // Lower Climber
         //driveController.rightTrigger().onTrue(climber.setClimberClimb(0.01)); // Raise Climber
+
+        driveController.rightTrigger().whileTrue(limelightAimAtTarget());
 
         // Need to add ratchet. 
         driveController.y().onTrue(arm.setClawIntakeWithTimeOfFlight());
@@ -260,14 +262,14 @@ public class RobotContainer {
                  /** Drivetrain */
                  .andThen(
                     drivetrain.applyRequest(() ->
-                    drive.withVelocityX(-1) // Drive forward with negative Y (forward)
+                    driveFieldCentric.withVelocityX(-1) // Drive forward with negative Y (forward)
                          .withVelocityY(0) // Drive left with negative X (left)
                          .withRotationalRate(0) // Drive counterclockwise with negative X (left)
                     ))
                  .withTimeout(5)
                  .andThen(
                     drivetrain.applyRequest(() ->
-                    drive.withVelocityX(0) // Drive forward with negative Y (forward)
+                    driveFieldCentric.withVelocityX(0) // Drive forward with negative Y (forward)
                          .withVelocityY(-1) // Drive left with negative X (left)
                          .withRotationalRate(0) // Drive counterclockwise with negative X (left)
                     ))
@@ -278,7 +280,7 @@ public class RobotContainer {
     public Command aimAtTarget() {
         double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
         return drivetrain.applyRequest(() -> 
-                drive.withVelocityX(0)
+                driveFieldCentric.withVelocityX(0)
                     .withVelocityY(0)
                     .withRotationalRate(Math.toRadians(PhotonVision.frontTargetYaw) * -1 * MaxAngularRate)
         );
@@ -297,10 +299,10 @@ public class RobotContainer {
     public Command limelightAimAtTarget() {
         double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
         return drivetrain.applyRequest(() -> 
-                drive.withVelocityX(0)
+                driveFieldCentric.withVelocityX(0)
                     .withVelocityY(0)
-                    .withRotationalRate((Math.PI - Math.toRadians(limelight.x/360)) * -1 * MaxAngularRate)
-        );  
+                    .withRotationalRate((limelight.y/180) * -1 * MaxAngularRate)
+        ).finallyDo(() -> drivetrain.applyRequest(() -> driveFieldCentric.withVelocityX(0).withVelocityY(0).withRotationalRate(0)))  ;
     }
 
     public Command limelightMoveToTargetLeft() {

@@ -20,6 +20,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.TalonFXS;
 import com.ctre.phoenix6.signals.ExternalFeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -89,6 +90,8 @@ public class Arm extends SubsystemBase {
     shoulderSlot0FXConfigs.kP = Constants.ArmConstants.ShoulderConstants.kP; // A position error of 2.5 rotations results in 12 V output // 4.8
     shoulderSlot0FXConfigs.kI = Constants.ArmConstants.ShoulderConstants.kI; // no output for integrated error
     shoulderSlot0FXConfigs.kD = Constants.ArmConstants.ShoulderConstants.kD; // A velocity error of 1 rps results in 0.1 V output
+    shoulderSlot0FXConfigs.kG = Constants.ArmConstants.ShoulderConstants.kG;
+    shoulderSlot0FXConfigs.GravityType = GravityTypeValue.Arm_Cosine;    
 
     /** Set wrist slot 0 gains */
     wristSlot0FXSConfigs.kS = Constants.ArmConstants.WristConstants.kS; // Add 0.25 V output to overcome static friction
