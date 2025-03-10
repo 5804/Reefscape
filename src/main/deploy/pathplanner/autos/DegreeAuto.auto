@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "OnePiece"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "LFourDrop"
+            "pathName": "DegreeTest"
           }
         }
       ]

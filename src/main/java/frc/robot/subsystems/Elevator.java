@@ -51,6 +51,10 @@ public class Elevator extends SubsystemBase {
     elevatorSlot0FXConfigs.kI = Constants.ElevatorConstants.kI; // no output for integrated error
     elevatorSlot0FXConfigs.kD = Constants.ElevatorConstants.kD; // A velocity error of 1 rps results in 0.1 V output
 
+    /** Elevator Soft Limits */
+    elevatorSoftwareLimitSwitchFXConfigs.ForwardSoftLimitThreshold = 0;
+    elevatorSoftwareLimitSwitchFXConfigs.ReverseSoftLimitThreshold = -38;
+
     /** Set Motion Magic settings */
     elevatorMotionMagicFXConfigs.MotionMagicCruiseVelocity = Constants.ElevatorConstants.cruiseVelocity; // Target cruise velocity of 80 rps
     elevatorMotionMagicFXConfigs.MotionMagicAcceleration = Constants.ElevatorConstants.acceleration; // Target acceleration of 160 rps/s (0.5 seconds)
@@ -63,8 +67,8 @@ public class Elevator extends SubsystemBase {
     /** Set software limit switches */
     // elevatorSoftwareLimitSwitchFXConfigs.ForwardSoftLimitEnable = true; // NEED TO TEST
     // elevatorSoftwareLimitSwitchFXConfigs.ForwardSoftLimitThreshold = ; // NEED TO TEST
-    elevatorSoftwareLimitSwitchFXConfigs.ReverseSoftLimitEnable = true; // NEED TO TEST
-    elevatorSoftwareLimitSwitchFXConfigs.ReverseSoftLimitThreshold = -36; // NEED TO TEST // -31
+    // elevatorSoftwareLimitSwitchFXConfigs.ReverseSoftLimitEnable = true; // NEED TO TEST
+    // elevatorSoftwareLimitSwitchFXConfigs.ReverseSoftLimitThreshold = -37.65; // NEED TO TEST // -31
 
     /** Set elevator current limit configs */
     elevatorMotorCurrentLimitsConfigs.StatorCurrentLimitEnable = true;

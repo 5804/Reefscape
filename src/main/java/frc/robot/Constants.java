@@ -53,8 +53,12 @@ public final class Constants {
         public static final double minSafePosition = -38;
         public static final double l4Position = -31.73;
         public static final double l3Position = -15.6;
+        public static final double l3TestPosition = -15.355;
+        public static final double l4TestPosition = -35.183; //32.214
+        public static final double l3SCORETestPosition = -7.368;
+        public static final double l4SCORETestPosition = -23.892;
         public static final double l2Position = -5.9;
-        public static final double l1Position = 0;
+        public static final double l1Position = -5.11; // Measured but needs to be tested more
         public static final double groundReadyPosition = -4.95;
         public static final double groundPickupPosition = -1.652; // -2.14826
         public static final double hopperIntakePosition = zeroPosition;
@@ -67,17 +71,17 @@ public final class Constants {
         public final class ShoulderConstants {
             public static final int motorID = 55;
             public static final int encoderID = 60;
-            public static final double kS = 0;
+            public static final double kS = 0.3;
             public static final double kV = 32.57;
             public static final double kA = 0.01;
-            public static final double kP = 1;
+            public static final double kP = 10;
             public static final double kI = 0;
             public static final double kD = 0.1;
-            public static final double kG = 0.07;
+            public static final double kG = 0.00;
 
-            public static final double cruiseVelocity = 500;
-            public static final double acceleration = 800;
-            public static final double jerk = 1600;
+            public static final double cruiseVelocity = 0.75;
+            public static final double acceleration = .75;
+            public static final double jerk = 2;
 
             /**
              * Shoulder positions based on the shoulder absolute encoder for the shoulder to be set
@@ -85,12 +89,14 @@ public final class Constants {
              * Should be used with setShoulderPosition
              */
             // NEED TO SET ALL OF THESE STILL
-            public static final double minSafeValue = 0.13; // 0.12
+            public static final double minSafeValue = 0.147; // 0.13
             public static final double l4Position = 0.16; // 0.13
-            public static final double l3Position = 0.14;
+            public static final double l3Position = 0.1443;
+            public static final double l3TestPosition = 0.184;
+            public static final double l4TestPosition = 0.232;
             public static final double l2Position = 0.14;
-            public static final double l1Position =  0.13;
-            public static final double groundPosition = 0.495117; // 0.062012
+            public static final double l1Position =  0.316;
+            public static final double groundPosition = 0.4922; // 0.062012
             public static final double groundPostpickupPosition = 0.25;
             public static final double hopperIntakePosition = .0712; // 0.091553;
         }
@@ -130,7 +136,7 @@ public final class Constants {
             public static final double acceleration = 160;
             public static final double jerk = 1600;
 
-            public static final double motorIntakeSpeed = 1;
+            public static final double motorIntakeSpeed = .8;
             public static final double motorEjectSpeed = -1;
 
             public static final double tofHasCoralUpperBound = 40; // The maximum distance (mm) away from the time of flight sensor that the coral needs to be to intake

@@ -55,7 +55,7 @@ public class Climber extends SubsystemBase {
          * and says if rightClimberMotor should be inverted relative to
          * leftClimberMotor, so all commands should be run on leftClimberMotor.
          */
-        rightClimberMotor.setControl(new Follower(leftClimberMotor.getDeviceID(), true));
+        // rightClimberMotor.setControl(new Follower(leftClimberMotor.getDeviceID(), true));
 
         // Set slot 0 gains
         climberSlot0Configs.kS = Constants.ClimberConstants.kS; // Add 0.25 V output to overcome static friction
@@ -71,7 +71,7 @@ public class Climber extends SubsystemBase {
         climberMotionMagicConfigs.MotionMagicJerk = Constants.ClimberConstants.jerk; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
         leftClimberMotor.getConfigurator().apply(climberTalonFXConfigs);
-        rightClimberMotor.getConfigurator().apply(climberTalonFXConfigs);
+        // rightClimberMotor.getConfigurator().apply(climberTalonFXConfigs);
 
         this.climberSup = climberSup;
     }
@@ -98,7 +98,7 @@ public class Climber extends SubsystemBase {
     }
 
     public Command setClimberSpeed() {
-        return run(() -> { leftClimberMotor.set(climberSup.getAsDouble() / 5); });
+        return run(() -> { leftClimberMotor.set(climberSup.getAsDouble()); });
     }
 
     public double getClimberPosition() {

@@ -27,12 +27,12 @@ import frc.robot.Constants;
 
 public class PhotonVision extends SubsystemBase {
   PhotonPoseEstimator photonPoseEstimator;
-  public PhotonCamera frontCamera = new PhotonCamera("right");
+  public PhotonCamera frontCamera = new PhotonCamera("Front");
   PhotonCamera[] cameras = {
       frontCamera
   };
   Transform3d[] cameraTransforms = {
-      new Transform3d(0.16, -0.33, 0.4, new Rotation3d(0, 0, 0)), // front
+      new Transform3d(0, 0.124, -0.163, new Rotation3d(0, 0.4363, 0)), // front
   };
   public static double frontTargetYaw = 0.0;
   public static double frontTargetRangeX = 0.0;
@@ -56,8 +56,8 @@ public class PhotonVision extends SubsystemBase {
           PhotonTrackedTarget bestTarget = result.getBestTarget();
           Pose3d estimatedRobotPose = null;
           
-          for (var target : result.getTargets()) {
-              frontTargetYaw = target.getYaw();
+          // for (var target : result.getTargets()) {
+              frontTargetYaw = bestTarget.getYaw();
               targetVisible = true;
 
               frontTargetRangeX = bestTarget.getBestCameraToTarget().getMeasureX().in(Meters);
@@ -66,7 +66,7 @@ public class PhotonVision extends SubsystemBase {
               SmartDashboard.putNumber("Yaw", frontTargetYaw);
               SmartDashboard.putNumber("Range X", frontTargetRangeX);
               SmartDashboard.putNumber("Range Y", frontTargetRangeY);
-          }
+          // }
         }
       }
     }
@@ -85,6 +85,14 @@ public class PhotonVision extends SubsystemBase {
           Pose3d estimatedRobotPose = null;
           String timestamp = "" + java.time.LocalDateTime.now().getHour() + ":" + java.time.LocalDateTime.now().getMinute() + ":" + java.time.LocalDateTime.now().getSecond();
           
+          frontTargetYaw = bestTarget.getYaw();
+          frontTargetRangeX = bestTarget.getBestCameraToTarget().getMeasureX().in(Meters);
+          frontTargetRangeY = bestTarget.getBestCameraToTarget().getMeasureY().in(Meters) - 1; // This value is the offset
+
+          SmartDashboard.putNumber("Yaw", frontTargetYaw);
+          SmartDashboard.putNumber("Range X", frontTargetRangeX);
+          SmartDashboard.putNumber("Range Y", frontTargetRangeY);
+
           SmartDashboard.putNumber(currentCamera.getName() + ".bt.id", bestTarget.getFiducialId());
           SmartDashboard.putNumber(currentCamera.getName() + ".bt.x", trunc(bestTarget.getBestCameraToTarget().getMeasureX().in(Meters)));
           SmartDashboard.putNumber(currentCamera.getName() + ".bt.y", trunc(bestTarget.getBestCameraToTarget().getMeasureY().in(Meters)));
@@ -149,7 +157,8 @@ public class PhotonVision extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // dumpSingleTagCameraData(cameras, cameraTransforms);
-    findYaw(cameras, cameraTransforms);
+    dumpSingleTagCameraData(cameras, cameraTransforms);
+    // dumpMultiTagData(cameraTransforms);
+    // findYaw(cameras, cameraTransforms);
   }
 }

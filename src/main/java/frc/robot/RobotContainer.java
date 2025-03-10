@@ -30,10 +30,12 @@ import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.ArmConstants.ShoulderConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.PhotonVision;
+import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Climber;
 // import frc.robot.subsystems.PhotonVision;
 
@@ -60,19 +62,21 @@ public class RobotContainer {
 
     /** Controllers */
     public final CommandXboxController driveController = new CommandXboxController(0);
-    // private final CommandXboxController assistantController = new CommandXboxController(1);
+    private final CommandXboxController assistantController = new CommandXboxController(2);
     public final ButtonBoard buttonBoard = new ButtonBoard(11, 1);
 
     /** Subsytem initializations. */
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public Arm arm = new Arm();
+    public Claw claw = new Claw();
+    public Wrist wrist = new Wrist();
     public Elevator elevator = new Elevator();
-    public Climber climber = new Climber(() -> { return driveController.getLeftX(); });
+    public Climber climber = new Climber(() -> { return assistantController.getLeftY(); });
     public PhotonVision photonVision = new PhotonVision();
     public Limelight limelight = new Limelight();
 
     // coralSystem is used to set the elevator and arm to states
-    private final CoralSystem coralSystem = new CoralSystem(elevator, arm, climber);
+    private final CoralSystem coralSystem = new CoralSystem(elevator, arm, climber, claw, wrist);
 
     /** Shuffleboard configurations. */
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -81,7 +85,8 @@ public class RobotContainer {
     public RobotContainer() {
         configureBindings();
 
-        NamedCommands.registerCommand("drop", autoDrop());
+        NamedCommands.registerCommand("drop", autoLOneDrop());
+        NamedCommands.registerCommand("LFourDrop", autoLFourDrop());
 
         autoChooser.setDefaultOption("Default Auto", onePieceAuto());
 
@@ -92,6 +97,10 @@ public class RobotContainer {
         // autoChooser.addOption("plus", plusAuto());
         autoChooser.addOption("One Meter", oneMeter());
         autoChooser.addOption("One Piece Auto", onePieceAuto());
+        autoChooser.addOption("One Piece L4 Auto", LFourAuto());
+
+        autoChooser.addOption("Drive One Meter", oneMeterTest());
+        autoChooser.addOption("turn 90 degrees", ninetyDegreeTest());
 
 
 
@@ -114,6 +123,7 @@ public class RobotContainer {
             )
         );
 
+        climber.setDefaultCommand(climber.setClimberSpeed());
         // driveController.leftBumper().whileTrue(); // Strafe
         driveController.leftTrigger().onTrue(coralSystem.setCoralSystemGroundReady()); // Ground Intake
         driveController.leftTrigger().onFalse(coralSystem.setCoralSystemGroundPickup()); // Ground Intake
@@ -121,19 +131,24 @@ public class RobotContainer {
         //driveController.rightBumper().onTrue(climber.setClimberDown(0.01)); // Lower Climber
         //driveController.rightTrigger().onTrue(climber.setClimberClimb(0.01)); // Raise Climber
 
-        driveController.rightTrigger().whileTrue(limelightAimAtTarget());
+        driveController.rightBumper().whileTrue(aimAtTarget());
+        driveController.rightTrigger().whileTrue(moveToTargetRight());
 
         // Need to add ratchet. 
-        driveController.y().onTrue(arm.setClawIntakeWithTimeOfFlight());
-        driveController.y().onFalse(arm.setClawStop());
+        driveController.y().onTrue(claw.setClawIntakeWithTimeOfFlight());
+        driveController.y().onFalse(claw.setClawStop());
         // Toggle Arm Pos (Up and down)
-        // driveController.b().onTrue(arm.setClawIntake());
-        // driveController.b().onFalse(arm.setClawStop());
-        driveController.b().onTrue(arm.setClawEject());
-        driveController.b().onFalse(arm.setClawStop());
+        // driveController.b().onTrue(claw.setClawIntake());
+        // driveController.b().onFalse(claw.setClawStop());
 
-        driveController.x().onTrue(arm.setClawIntake());
-        driveController.x().onFalse(arm.setClawStop());
+        driveController.b().onTrue(coralSystem.scoreL4YAY());
+        // driveController.b().onTrue(claw.setClawEject());
+        // driveController.b().onFalse(claw.setClawStop());
+
+        // driveController.x().onTrue(coralSystem.scoreL3YAY());
+
+        driveController.x().onTrue(claw.setClawIntake());
+        driveController.x().onFalse(claw.setClawStop());
 
         // driveController.x().onTrue(coralSystem.setCoralSystemHopperIntake()); // Hopper Intake (Uneeded)
         driveController.a().onTrue(
@@ -143,20 +158,20 @@ public class RobotContainer {
         driveController.povUp().onTrue(new InstantCommand(() -> { speedMultiplier = 1; }));
         driveController.povDown().onTrue(new InstantCommand(() -> { speedMultiplier = 0.25; }));
 
+        // CHANGE LATER TO BUTTON BOARD BIND
+        driveController.povLeft().onTrue(coralSystem.setAlgaeScore());
+        driveController.povRight().onTrue(coralSystem.setAlgaeBottom());
+
         // Reset the field-centric heading on left bumper press
         driveController.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         driveController.start().onTrue(new InstantCommand(() -> { cancelAllActiveCommands(); }));
 
         /** buttonBoard bindings DON'T DELETE */
-        buttonBoard.getButton(4).whileTrue(coralSystem.setCoralSystemHerdAlgaePosition());
-        buttonBoard.getButton(4).onFalse(arm.setClawStop());
+        buttonBoard.getButton(4).onTrue(coralSystem.setAlgaeTop());
 
 
-        // buttonBoard.getButton(8).onTrue(
-        //     coralSystem.setCoralSystemL1()
-        //                .andThen(() -> speedMultiplier = .75)
-        // ); 
+        buttonBoard.getButton(8).onTrue(coralSystem.setCoralSystemL1()); 
         
         buttonBoard.getButton(9).onTrue(
             coralSystem.setCoralSystemL2()
@@ -171,18 +186,18 @@ public class RobotContainer {
         ); 
         
         buttonBoard.getButton(7).onTrue(
-            coralSystem.setCoralSystemL4()
+            coralSystem.setCoralSystemL4YAY()
         ); 
 
         // buttonBoard.getButton(2).onTrue(climber.deactivateRatchets());
 
         buttonBoard.getButton(3).onTrue(coralSystem.stowAll());
         
-        buttonBoard.getButton(1).onTrue(arm.setClawEject());
-        buttonBoard.getButton(1).onFalse(arm.setClawStop());
+        buttonBoard.getButton(1).onTrue(claw.setClawEject());
+        buttonBoard.getButton(1).onFalse(claw.setClawStop());
 
-        buttonBoard.getButton(11).onTrue(arm.setWristHorizontal());
-        buttonBoard.getButton(6).onTrue(arm.setWristVertical());
+        buttonBoard.getButton(11).onTrue(wrist.setWristHorizontal());
+        buttonBoard.getButton(6).onTrue(wrist.setWristVertical());
 
         // buttonBoard.getButton(11).whileTrue(limelightAimAtTarget());
         // buttonBoard.getButton(5).whileTrue(limelightMoveToTargetLeft());
@@ -211,17 +226,17 @@ public class RobotContainer {
         // assistantController.povRight().whileTrue(arm.armDown());
         // assistantController.povLeft().whileTrue(arm.armUp());
 
-        // // assistantController.leftTrigger(0.5).onTrue(arm.setClawEject());..........................................................0000000000000000000000000000000000000'''''''''''''''''''''''''''''
-        // // assistantController.leftTrigger(0.5).onFalse(arm.setClawStop());
+        // // assistantController.leftTrigger(0.5).onTrue(claw.setClawEject());
+        // // assistantController.leftTrigger(0.5).onFalse(claw.setClawStop());
 
         // assistantController.povUp().whileTrue(elevator.moveElevatorUp());
         // assistantController.povDown().whileTrue(elevator.moveElevatorDown());
 
-        // assistantController.rightBumper().whileTrue(arm.setWristVertical());
-        // assistantController.leftBumper().whileTrue(arm.setWristHorizontal());
+        // assistantController.rightBumper().whileTrue(wrist.setWristVertical());
+        // assistantController.leftBumper().whileTrue(wrist.setWristHorizontal());
  
         // assistantController.back().whileTrue(coralSystem.setCoralSystemHerdAlgaePosition());
-        // assistantController.back().onFalse(arm.setClawStop());
+        // assistantController.back().onFalse(claw.setClawStop());
 
         // Logs telemetry every time the swerve drive updates.
         drivetrain.registerTelemetry(logger::telemeterize);
@@ -237,9 +252,9 @@ public class RobotContainer {
         return 
               /** Arm */
               arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.groundPostpickupPosition, 0.01)
-                 .andThen(arm.setWristHorizontal())
-                 .andThen(arm.setWristVertical())
-                 .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, Constants.ArmConstants.ShoulderConstants.minSafeValue))
+                 .andThen(wrist.setWristHorizontal())
+                 .andThen(wrist.setWristVertical())
+                 .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01))
                  
                  /** Elevator */
                  // NEED TO ADD L1 ONCE WE IMPLEMENT IT
@@ -280,17 +295,26 @@ public class RobotContainer {
     public Command aimAtTarget() {
         double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
         return drivetrain.applyRequest(() -> 
-                driveFieldCentric.withVelocityX(0)
+                driveFieldCentric.withVelocityX(PhotonVision.frontTargetRangeX)
                     .withVelocityY(0)
                     .withRotationalRate(Math.toRadians(PhotonVision.frontTargetYaw) * -1 * MaxAngularRate)
         );
     }
 
-    public Command moveToTarget() {
-        double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    public Command moveToTargetRight() {
+        double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
         return drivetrain.applyRequest(() ->
-            driveRobotCentric.withVelocityX(-1 * MaxSpeed * PhotonVision.frontTargetRangeX)
-                .withVelocityY(-1 * MaxSpeed * PhotonVision.frontTargetRangeY)
+            driveRobotCentric.withVelocityX(PhotonVision.frontTargetRangeX + 0.5)
+                .withVelocityY(0)
+                .withRotationalRate(0)
+        );
+    }
+
+    public Command moveToTargetLeft() {
+        double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
+        return drivetrain.applyRequest(() ->
+            driveRobotCentric.withVelocityX(PhotonVision.frontTargetRangeX - 0.5)
+                .withVelocityY(0)
                 .withRotationalRate(0)
         );
     }
@@ -323,12 +347,24 @@ public class RobotContainer {
         );  
     }
 
-    public Command autoDrop() {
-        return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01)
-                  .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l2Position, 0.1))
-                  .andThen(arm.setShoulderPosition(.2, 0.01))
-                  .andThen(arm.setWristHorizontal())
-                  .andThen(arm.setClawEject());
+    public Command autoLOneDrop() {
+
+        return coralSystem.setCoralSystemL1()
+        // return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01)
+        //           .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l2Position, 0.1))
+        //           .andThen(arm.setShoulderPosition(.2, 0.01))
+        //           .andThen(wrist.setWristHorizontal())
+                  .andThen(claw.setClawEject());
+    }
+
+    public Command autoLFourDrop() {
+
+        return coralSystem.combinedL4();
+        // return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01)
+        //           .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l2Position, 0.1))
+        //           .andThen(arm.setShoulderPosition(.2, 0.01))
+        //           .andThen(wrist.setWristHorizontal())
+                //   .andThen(claw.setClawEject());
     }
  
     public Command oneMeterAuto() {
@@ -350,6 +386,19 @@ public class RobotContainer {
 
     public Command oneMeter() {
         return new PathPlannerAuto("OneMeter");
+    }
+
+    public Command oneMeterTest() {
+        return new PathPlannerAuto("MeterAuto");
+    }
+
+    public Command ninetyDegreeTest() {
+        return new PathPlannerAuto("DegreeAuto");
+    }
+
+    public Command LFourAuto() {
+        return new PathPlannerAuto("LFourAuto");
+        
     }
 
     public void cancelAllActiveCommands() {
