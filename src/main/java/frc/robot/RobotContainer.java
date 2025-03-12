@@ -87,6 +87,9 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("drop", autoLOneDrop());
         NamedCommands.registerCommand("LFourDrop", autoLFourDrop());
+        NamedCommands.registerCommand("leftAlign", moveToTargetLeft());
+        NamedCommands.registerCommand("rightAlign", moveToTargetRight());
+
 
         autoChooser.setDefaultOption("Default Auto", onePieceAuto());
 
@@ -98,6 +101,7 @@ public class RobotContainer {
         autoChooser.addOption("One Meter", oneMeter());
         autoChooser.addOption("One Piece Auto", onePieceAuto());
         autoChooser.addOption("One Piece L4 Auto", LFourAuto());
+        autoChooser.addOption("Left Auto", leftAuto());
 
         autoChooser.addOption("Drive One Meter", oneMeterTest());
         autoChooser.addOption("turn 90 degrees", ninetyDegreeTest());
@@ -131,8 +135,10 @@ public class RobotContainer {
         //driveController.rightBumper().onTrue(climber.setClimberDown(0.01)); // Lower Climber
         //driveController.rightTrigger().onTrue(climber.setClimberClimb(0.01)); // Raise Climber
 
-        driveController.rightBumper().whileTrue(aimAtTarget());
-        driveController.rightTrigger().whileTrue(moveToTargetRight());
+
+        driveController.leftBumper().whileTrue(moveToTargetLeft());
+        driveController.rightBumper().whileTrue(moveToTargetRight());
+        driveController.rightTrigger().whileTrue(aimAtTarget());
 
         // Need to add ratchet. 
         driveController.y().onTrue(claw.setClawIntakeWithTimeOfFlight());
@@ -292,30 +298,32 @@ public class RobotContainer {
 
     }
 
-    public Command aimAtTarget() {
+    public Command moveToTargetRight() {
         double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
         return drivetrain.applyRequest(() -> 
-                driveFieldCentric.withVelocityX(PhotonVision.frontTargetRangeX)
-                    .withVelocityY(0)
-                    .withRotationalRate(Math.toRadians(PhotonVision.frontTargetYaw) * -1 * MaxAngularRate)
-        );
-    }
-
-    public Command moveToTargetRight() {
-        double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
-        return drivetrain.applyRequest(() ->
-            driveRobotCentric.withVelocityX(PhotonVision.frontTargetRangeX + 0.5)
-                .withVelocityY(0)
-                .withRotationalRate(0)
+                driveRobotCentric.withVelocityX((PhotonVision.frontTargetRangeX - 0.6)) // This shoul 0.12 eventually
+                    .withVelocityY((PhotonVision.frontTargetRangeY - 0.19) * 4)
+                    .withRotationalRate(0)
+                    // Math.toRadians(PhotonVision.frontTargetYaw) * -1 * MaxAngularRate
         );
     }
 
     public Command moveToTargetLeft() {
+        double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+        return drivetrain.applyRequest(() -> 
+                driveRobotCentric.withVelocityX((PhotonVision.frontTargetRangeX - 0.6)) // This shoul 0.12 eventually
+                    .withVelocityY((PhotonVision.frontTargetRangeY + 0.19) * 4)
+                    .withRotationalRate(0)
+                    // Math.toRadians(PhotonVision.frontTargetYaw) * -1 * MaxAngularRate
+        );
+    }
+
+    public Command aimAtTarget() {
         double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
         return drivetrain.applyRequest(() ->
-            driveRobotCentric.withVelocityX(PhotonVision.frontTargetRangeX - 0.5)
+            driveRobotCentric.withVelocityX(0)
                 .withVelocityY(0)
-                .withRotationalRate(0)
+                .withRotationalRate(Math.toRadians(PhotonVision.frontTargetYaw + 0) * -1 * MaxAngularRate)
         );
     }
 
@@ -401,6 +409,10 @@ public class RobotContainer {
         
     }
 
+    public Command leftAuto() {
+        return new PathPlannerAuto("leftAuto");
+        
+    }
     public void cancelAllActiveCommands() {
         CommandScheduler.getInstance().cancelAll();
     }

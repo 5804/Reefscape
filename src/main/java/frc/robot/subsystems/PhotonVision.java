@@ -32,7 +32,7 @@ public class PhotonVision extends SubsystemBase {
       frontCamera
   };
   Transform3d[] cameraTransforms = {
-      new Transform3d(0, 0.124, -0.163, new Rotation3d(0, 0.4363, 0)), // front
+      new Transform3d(0, 0.163, 0.124, new Rotation3d(0, 0.3927, 0)), // front
   };
   public static double frontTargetYaw = 0.0;
   public static double frontTargetRangeX = 0.0;
@@ -61,7 +61,7 @@ public class PhotonVision extends SubsystemBase {
               targetVisible = true;
 
               frontTargetRangeX = bestTarget.getBestCameraToTarget().getMeasureX().in(Meters);
-              frontTargetRangeY = bestTarget.getBestCameraToTarget().getMeasureY().in(Meters) - 1; // This value is the offset
+              frontTargetRangeY = bestTarget.getBestCameraToTarget().getMeasureY().in(Meters); // This value is the offset
 
               SmartDashboard.putNumber("Yaw", frontTargetYaw);
               SmartDashboard.putNumber("Range X", frontTargetRangeX);
@@ -87,7 +87,7 @@ public class PhotonVision extends SubsystemBase {
           
           frontTargetYaw = bestTarget.getYaw();
           frontTargetRangeX = bestTarget.getBestCameraToTarget().getMeasureX().in(Meters);
-          frontTargetRangeY = bestTarget.getBestCameraToTarget().getMeasureY().in(Meters) - 1; // This value is the offset
+          frontTargetRangeY = bestTarget.getBestCameraToTarget().getMeasureY().in(Meters);
 
           SmartDashboard.putNumber("Yaw", frontTargetYaw);
           SmartDashboard.putNumber("Range X", frontTargetRangeX);
