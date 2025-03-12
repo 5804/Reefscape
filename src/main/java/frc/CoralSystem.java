@@ -45,30 +45,42 @@ public class CoralSystem extends SubsystemBase {
                   .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.hopperIntakePosition, 0.01));
     }
 
-    public Command setCoralSystemL4() {
-        return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01)
-                  .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l4Position, 0.1))
-                  .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.l4Position, 0.01));
+    // public Command setCoralSystemL4() {
+    //     return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.002)
+    //               .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l4TestPosition, 0.1))
+    //               .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.l4TestPosition, 0.002));
+    // }
+
+    public Command setCoralSystemLevel(double shoulderPosition, double elevatorPosition){
+        return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.002)
+                  .andThen(elevator.setElevatorPosition(elevatorPosition, 0.1))
+                  .andThen(arm.setShoulderPosition(shoulderPosition, 0.002));
     }
 
-    public Command setCoralSystemL3() {
-        return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01)
-                  .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l3Position, 0.1))
-                  .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.l3Position, 0.01));
+    public Command setCoralSystemScoreL4() {
+        return elevator.setElevatorPosition(Constants.ElevatorConstants.l4SCORETestPosition, 0.1)
+                       .unless(() -> (elevator.getElevatorPosition() > -22))
+                       .andThen(setCoralSystemStow());
     }
 
-    public Command setCoralSystemL2() {
-        return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01)
-                  .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l2Position, 0.1))
-                  .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.l2Position, 0.01));
-    }
+    // public Command setCoralSystemL3() {
+    //     return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01)
+    //               .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l3Position, 0.1))
+    //               .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.l3Position, 0.01));
+    // }
 
-     public Command setCoralSystemL1() {
-          return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01)
-                    .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l1Position, 0.1))
-                    .andThen(wrist.setWristHorizontal()) 
-                    .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.l1Position, 0.01));
-     }
+    // public Command setCoralSystemL2() {
+    //     return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01)
+    //               .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l2Position, 0.1))
+    //               .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.l2Position, 0.01));
+    // }
+
+    // public Command setCoralSystemL1() {
+    //       return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01)
+    //                 .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l1Position, 0.1))
+    //                 .andThen(wrist.setWristHorizontal()) 
+    //                 .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.l1Position, 0.01));
+    // }
 
     public Command setCoralSystemGroundReady() {
         return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01)
@@ -93,27 +105,14 @@ public class CoralSystem extends SubsystemBase {
             .andThen(wrist.setWristHorizontal())
             .andThen(claw.setClawEject())
             .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.hopperIntakePosition, 0.01));
-
     }
     
-    public Command stowAll() {
+    public Command setCoralSystemStow() {
         return climber.setClimberStow(0.01)
                       .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01))
                       .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.hopperIntakePosition, 0.1))
                       .andThen(wrist.setWristVertical())
                       .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.hopperIntakePosition, 0.01));
-    }
-
-
-    public Command setCoralSystemL4YAY() {
-        return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.002)
-                  .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l4TestPosition, 0.1))
-                  .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.l4TestPosition, 0.002));
-    }
-    public Command scoreL4YAY() {
-            return elevator.setElevatorPosition(Constants.ElevatorConstants.l4SCORETestPosition, 0.1)
-                           .unless(() -> (elevator.getElevatorPosition() > -22))
-                           .andThen(stowAll());
     }
 
     public Command combinedL4() {
@@ -122,7 +121,7 @@ public class CoralSystem extends SubsystemBase {
                   .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.l4TestPosition, 0.02))
                   .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l4SCORETestPosition, 0.1))
                         //    .unless(() -> (elevator.getElevatorPosition() > -22))
-                           .andThen(stowAll());
+                           .andThen(setCoralSystemStow());
     }
     public Command setAlgaeTop() {
         return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01)

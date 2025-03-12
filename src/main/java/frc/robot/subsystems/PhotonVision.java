@@ -26,50 +26,39 @@ import frc.PhotonCameraWithTransform;
 import frc.robot.Constants;
 
 public class PhotonVision extends SubsystemBase {
-  PhotonPoseEstimator photonPoseEstimator;
+  
+  public PhotonPoseEstimator photonPoseEstimator;
   public PhotonCamera frontCamera = new PhotonCamera("Front");
-  PhotonCamera[] cameras = {
-      frontCamera
-  };
-  Transform3d[] cameraTransforms = {
-      new Transform3d(0, 0.163, 0.124, new Rotation3d(0, 0.3927, 0)), // front
-  };
-  public static double frontTargetYaw = 0.0;
-  public static double frontTargetRangeX = 0.0;
-  public static double frontTargetRangeY = 0.0;
+  public PhotonCamera[] cameras = {frontCamera};
+  public Transform3d[] cameraTransforms = {new Transform3d(0, 0.163, 0.124, new Rotation3d(0, 0.3927, 0))};
+  public static PhotonTrackedTarget[] cameraTargets = {null};
 
-  /** Creates a new PhotonVision. */
-  public PhotonVision() {
-    
+  public PhotonVision() {}
+
+  public void captureBestTargets(){
+    for(int cameraIndex = 0; cameraIndex < cameras.length; cameraIndex++){
+      PhotonCamera currentCamera = cameras[cameraIndex];
+      List<PhotonPipelineResult> frameResults = currentCamera.getAllUnreadResults();
+      int frameIndex = frameResults.size() - 1;
+      cameraTargets[cameraIndex] = (!frameResults.isEmpty() && frameResults.get(frameIndex).hasTargets()) ? frameResults.get(frameIndex).getBestTarget() : null;
+    }
   }
 
-  public void findYaw(PhotonCamera[] cameras, Transform3d[] cameraTransforms) {
+  public double bestTargetYaw(int cameraIndex){
+    return cameraTargets[cameraIndex].getYaw();
+  }
 
-    boolean targetVisible = false;
+  public double bestTargetXMeters(int cameraIndex){
+    return cameraTargets[cameraIndex].getBestCameraToTarget().getMeasureX().in(Meters);
+  }
 
-    var frameResults = frontCamera.getAllUnreadResults();
+  public double bestTargetYMeters(int cameraIndex){
+    return cameraTargets[cameraIndex].getBestCameraToTarget().getMeasureY().in(Meters);
+  }
 
-      if (!frameResults.isEmpty()) {
-        PhotonPipelineResult result = frameResults.get(frameResults.size() - 1);
-
-        if (result.hasTargets()) {          
-          PhotonTrackedTarget bestTarget = result.getBestTarget();
-          Pose3d estimatedRobotPose = null;
-          
-          // for (var target : result.getTargets()) {
-              frontTargetYaw = bestTarget.getYaw();
-              targetVisible = true;
-
-              frontTargetRangeX = bestTarget.getBestCameraToTarget().getMeasureX().in(Meters);
-              frontTargetRangeY = bestTarget.getBestCameraToTarget().getMeasureY().in(Meters); // This value is the offset
-
-              SmartDashboard.putNumber("Yaw", frontTargetYaw);
-              SmartDashboard.putNumber("Range X", frontTargetRangeX);
-              SmartDashboard.putNumber("Range Y", frontTargetRangeY);
-          // }
-        }
-      }
-    }
+  public int bestTargetID(int cameraIndex){
+    return cameraTargets[cameraIndex].getFiducialId();
+  }
 
   public void dumpSingleTagCameraData(PhotonCamera[] cameras, Transform3d[] cameraTransforms) {
     for(int cameraIndex = 0; cameraIndex < cameras.length; cameraIndex++){
@@ -84,14 +73,6 @@ public class PhotonVision extends SubsystemBase {
           PhotonTrackedTarget bestTarget = result.getBestTarget();
           Pose3d estimatedRobotPose = null;
           String timestamp = "" + java.time.LocalDateTime.now().getHour() + ":" + java.time.LocalDateTime.now().getMinute() + ":" + java.time.LocalDateTime.now().getSecond();
-          
-          frontTargetYaw = bestTarget.getYaw();
-          frontTargetRangeX = bestTarget.getBestCameraToTarget().getMeasureX().in(Meters);
-          frontTargetRangeY = bestTarget.getBestCameraToTarget().getMeasureY().in(Meters);
-
-          SmartDashboard.putNumber("Yaw", frontTargetYaw);
-          SmartDashboard.putNumber("Range X", frontTargetRangeX);
-          SmartDashboard.putNumber("Range Y", frontTargetRangeY);
 
           SmartDashboard.putNumber(currentCamera.getName() + ".bt.id", bestTarget.getFiducialId());
           SmartDashboard.putNumber(currentCamera.getName() + ".bt.x", trunc(bestTarget.getBestCameraToTarget().getMeasureX().in(Meters)));
@@ -104,7 +85,6 @@ public class PhotonVision extends SubsystemBase {
 
           estimatedRobotPose = PhotonUtils.estimateFieldToRobotAprilTag(bestTarget.getBestCameraToTarget(), Constants.PhotonVisionConstants.aprilTagFieldLayout.getTagPose(bestTarget.getFiducialId()).get(), currentCameraTransform);
           
-          // Dump information to SmartDashboard. RTE = Robot Transform Estimation. RTE.Rot.X = Robot Transform Estimation's Rotation X. 
           SmartDashboard.putNumber(currentCamera.getName() + ".fr.rte.x", trunc(estimatedRobotPose.getX()));
           SmartDashboard.putNumber(currentCamera.getName() + ".fr.rte.y", trunc(estimatedRobotPose.getY()));
           SmartDashboard.putNumber(currentCamera.getName() + ".fr.rte.z", trunc(estimatedRobotPose.getZ()));
@@ -121,12 +101,11 @@ public class PhotonVision extends SubsystemBase {
     }
   }
 
-  public void dumpMultiTagData(PhotonCameraWithTransform[] photonCamerasWithTransforms) {
+  public void debugMultiTagData(PhotonCameraWithTransform[] photonCamerasWithTransforms) {
     for(int index = 0; index < photonCamerasWithTransforms.length; index++){
-      /** Storing objects in temporary variables */
+
       PhotonCamera currentCamera = photonCamerasWithTransforms[index].getPhotonCamera();
       Transform3d currentCameraTransform = photonCamerasWithTransforms[index].getCameraTransform();
-
       List<PhotonPipelineResult> frameResults = currentCamera.getAllUnreadResults();
 
       photonPoseEstimator = new PhotonPoseEstimator(Constants.PhotonVisionConstants.aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, currentCameraTransform); // Moving this inside of the nex if could be more efficient for memory usage
@@ -138,7 +117,6 @@ public class PhotonVision extends SubsystemBase {
           Pose3d estimatedRobotPose = photonPoseEstimator.update(result).get().estimatedPose;
           String timestamp = "" + java.time.LocalDateTime.now().getHour() + ":" + java.time.LocalDateTime.now().getMinute() + ":" + java.time.LocalDateTime.now().getSecond();
 
-          // Dump information to SmartDashboard. RTE = Robot Transform Estimation. RTE.Rot.X = Robot Transform Estimation's Rotation X. 
           SmartDashboard.putNumber(currentCamera.getName() + ".frmt.rte.x", estimatedRobotPose.getX());
           SmartDashboard.putNumber(currentCamera.getName() + ".frmt.rte.y", estimatedRobotPose.getY());
           SmartDashboard.putNumber(currentCamera.getName() + ".frmt.rte.z", estimatedRobotPose.getZ());
@@ -153,12 +131,5 @@ public class PhotonVision extends SubsystemBase {
 
   public double trunc(double x){
     return Math.floor(x * 1000) / 1000;
-  }
-
-  @Override
-  public void periodic() {
-    dumpSingleTagCameraData(cameras, cameraTransforms);
-    // dumpMultiTagData(cameraTransforms);
-    // findYaw(cameras, cameraTransforms);
   }
 }
