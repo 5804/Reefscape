@@ -114,9 +114,8 @@ public class RobotContainer {
 
         driveController.leftTrigger().onTrue(coralSystem.setCoralSystemGroundReady());   
         driveController.leftTrigger().onFalse(coralSystem.setCoralSystemGroundPickup());
-        driveController.rightTrigger().whileTrue(aimAtTarget());
-        driveController.leftBumper().whileTrue(moveToTargetLeft());
-        driveController.rightBumper().whileTrue(moveToTargetRight());
+        driveController.leftBumper().whileTrue(alignLeft());
+        driveController.rightBumper().whileTrue(alignRight());
         driveController.y().onTrue(claw.setClawIntakeWithTimeOfFlight());
         driveController.y().onFalse(claw.setClawStop());
         driveController.b().onTrue(coralSystem.setCoralSystemScoreL4());
@@ -250,12 +249,20 @@ public class RobotContainer {
         );
     }
 
-    public Command aimAtTarget() {
+    public Command rotateParallelToReefTarget() {
         return drivetrain.applyRequest(() ->
             driveRobotCentric.withVelocityX(0)
                 .withVelocityY(0)
                 .withRotationalRate(Math.toRadians(getDesiredAngleForAprilId(photonVision.bestTargetID(0))) * maxAngularRate)
         );
+    }
+
+    public Command alignLeft(){
+        return moveToTargetLeft().andThen(rotateParallelToReefTarget());
+    }
+
+    public Command alignRight(){
+        return moveToTargetRight().andThen(rotateParallelToReefTarget());
     }
 
     public Command autoLOneDrop() {
