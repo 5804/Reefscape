@@ -49,15 +49,12 @@ public class RobotContainer {
             .withDeadband(maxSpeed * 0.005).withRotationalDeadband(maxAngularRate * 0.005) // Add a 20% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);                       // Use open-loop control for drive motors
 
-
     private final Telemetry logger = new Telemetry(maxSpeed);
 
-    /** Controllers */
     public final CommandXboxController driveController = new CommandXboxController(0);
     private final CommandXboxController assistantController = new CommandXboxController(2);
     public final ButtonBoard buttonBoard = new ButtonBoard(11, 1);
 
-    /** Subsytem initializations. */
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public Arm arm = new Arm();
     public Claw claw = new Claw();
@@ -66,10 +63,7 @@ public class RobotContainer {
     public Climber climber = new Climber(() -> { return assistantController.getLeftY(); });
     public PhotonVision photonVision = new PhotonVision();
 
-    // coralSystem is used to set the elevator and arm to states
     private final CoralSystem coralSystem = new CoralSystem(elevator, arm, climber, claw, wrist);
-
-    /** Shuffleboard configurations. */
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
     private ShuffleboardTab tab1 = Shuffleboard.getTab("Tab1");
 
@@ -139,7 +133,6 @@ public class RobotContainer {
         buttonBoard.getButton(11).onTrue(wrist.setWristHorizontal());
         buttonBoard.getButton(6).onTrue(wrist.setWristVertical());
 
-        // REFACTOR INTO BUTTONBOARD CLASS
         Trigger buttonBoardRawAxis0Positive = new Trigger(() -> { return buttonBoard.getButtonBoard().getRawAxis(0) > 0.7; });
         Trigger buttonBoardRawAxis0Negative = new Trigger(() -> { return buttonBoard.getButtonBoard().getRawAxis(0) < -0.7; });
         Trigger buttonBoardRawAxis1Positive = new Trigger(() -> { return buttonBoard.getButtonBoard().getRawAxis(1) > 0.7; });
@@ -150,29 +143,6 @@ public class RobotContainer {
         buttonBoardRawAxis1Positive.whileTrue(elevator.moveElevatorDown());
         buttonBoardRawAxis1Negative.whileTrue(elevator.moveElevatorUp());
 
-        /** Assistant controller bindings COMMENTED OUT ARE UNIMPLEMENTED, DON'T DELETE */
-        // // assistantController.rightTrigger(0.5).onTrue(coralSystem.stowAll());
-        
-        // assistantController.a().onTrue(coralSystem.setCoralSystemL2());
-        // assistantController.b().onTrue(coralSystem.setCoralSystemL3());
-        // assistantController.y().onTrue(coralSystem.setCoralSystemL4());
-
-        // assistantController.povRight().whileTrue(arm.armDown());
-        // assistantController.povLeft().whileTrue(arm.armUp());
-
-        // // assistantController.leftTrigger(0.5).onTrue(claw.setClawEject());
-        // // assistantController.leftTrigger(0.5).onFalse(claw.setClawStop());
-
-        // assistantController.povUp().whileTrue(elevator.moveElevatorUp());
-        // assistantController.povDown().whileTrue(elevator.moveElevatorDown());
-
-        // assistantController.rightBumper().whileTrue(wrist.setWristVertical());
-        // assistantController.leftBumper().whileTrue(wrist.setWristHorizontal());
- 
-        // assistantController.back().whileTrue(coralSystem.setCoralSystemHerdAlgaePosition());
-        // assistantController.back().onFalse(claw.setClawStop());
-
-        // Logs telemetry every time the swerve drive updates.
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
@@ -231,7 +201,6 @@ public class RobotContainer {
 
         return desiredAngle;
     }
-
 
     public Command moveToTargetRight() {
         return drivetrain.applyRequest(() -> 
@@ -314,7 +283,5 @@ public class RobotContainer {
         return new PathPlannerAuto("leftAuto");
     }
 
-    public void cancelAllActiveCommands() {
-        CommandScheduler.getInstance().cancelAll();
-    }
+
 }
