@@ -27,13 +27,25 @@ import frc.robot.Constants;
 
 public class PhotonVision extends SubsystemBase {
   
-  public PhotonPoseEstimator photonPoseEstimator;
+  public PhotonPoseEstimator debugPhotonPoseEstimator;
   public PhotonCamera frontCamera = new PhotonCamera("Front");
   public PhotonCamera[] cameras = {frontCamera};
   public Transform3d[] cameraTransforms = {new Transform3d(0, 0.172339, 0.13024104, new Rotation3d(0, 0.4799655, 0))};
-  public static PhotonTrackedTarget[] cameraTargets = {null};
+  public PhotonTrackedTarget[] cameraTargets;
+  public PhotonPoseEstimator[] cameraPoseEstimator;
+  public Pose3d[] estimatedPoses;
 
-  public PhotonVision() {}
+  public PhotonVision() {
+    cameraTargets = new PhotonTrackedTarget[cameras.length];
+    estimatedPoses = new Pose3d[cameras.length];
+    cameraPoseEstimator = new PhotonPoseEstimator[cameras.length];
+
+    for(int cameraIndex = 0; cameraIndex < cameras.length; cameraIndex++){
+      cameraTargets[cameraIndex] = null;
+      estimatedPoses[cameraIndex] = null;
+      cameraPoseEstimator[cameraIndex] = new PhotonPoseEstimator(Constants.PhotonVisionConstants.aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cameraTransforms[cameraIndex]);
+    }
+  }
 
   public void captureBestTargets(){
     for(int cameraIndex = 0; cameraIndex < cameras.length; cameraIndex++){
@@ -41,6 +53,15 @@ public class PhotonVision extends SubsystemBase {
       List<PhotonPipelineResult> frameResults = currentCamera.getAllUnreadResults();
       int frameIndex = frameResults.size() - 1;
       cameraTargets[cameraIndex] = (!frameResults.isEmpty() && frameResults.get(frameIndex).hasTargets()) ? frameResults.get(frameIndex).getBestTarget() : null;
+    }
+  }
+
+  public void capturePoseEstimations(){
+    for(int cameraIndex = 0; cameraIndex < cameras.length; cameraIndex++){
+      PhotonCamera currentCamera = cameras[cameraIndex];
+      List<PhotonPipelineResult> frameResults = currentCamera.getAllUnreadResults();
+      PhotonPipelineResult result = (!frameResults.isEmpty()) ? frameResults.get(frameResults.size() - 1) : null;
+      estimatedPoses[cameraIndex] = (!frameResults.isEmpty() && result.getMultiTagResult().isPresent()) ? cameraPoseEstimator[cameraIndex].update(result).get().estimatedPose : null;
     }
   }
 
@@ -60,7 +81,7 @@ public class PhotonVision extends SubsystemBase {
     return cameraTargets[cameraIndex].getFiducialId();
   }
 
-  public void dumpSingleTagCameraData(PhotonCamera[] cameras, Transform3d[] cameraTransforms) {
+  public void debugSingleTagCameraData(PhotonCamera[] cameras, Transform3d[] cameraTransforms) {
     for(int cameraIndex = 0; cameraIndex < cameras.length; cameraIndex++){
       PhotonCamera currentCamera = cameras[cameraIndex];
       Transform3d currentCameraTransform = cameraTransforms[cameraIndex];
@@ -108,13 +129,13 @@ public class PhotonVision extends SubsystemBase {
       Transform3d currentCameraTransform = photonCamerasWithTransforms[index].getCameraTransform();
       List<PhotonPipelineResult> frameResults = currentCamera.getAllUnreadResults();
 
-      photonPoseEstimator = new PhotonPoseEstimator(Constants.PhotonVisionConstants.aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, currentCameraTransform); // Moving this inside of the nex if could be more efficient for memory usage
+      debugPhotonPoseEstimator = new PhotonPoseEstimator(Constants.PhotonVisionConstants.aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, currentCameraTransform); // Moving this inside of the nex if could be more efficient for memory usage
 
       if (!frameResults.isEmpty()) {
         PhotonPipelineResult result = frameResults.get(frameResults.size() - 1);
 
         if (result.getMultiTagResult().isPresent()) {
-          Pose3d estimatedRobotPose = photonPoseEstimator.update(result).get().estimatedPose;
+          Pose3d estimatedRobotPose = debugPhotonPoseEstimator.update(result).get().estimatedPose;
           String timestamp = "" + java.time.LocalDateTime.now().getHour() + ":" + java.time.LocalDateTime.now().getMinute() + ":" + java.time.LocalDateTime.now().getSecond();
 
           SmartDashboard.putNumber(currentCamera.getName() + ".frmt.rte.x", estimatedRobotPose.getX());
@@ -133,7 +154,9 @@ public class PhotonVision extends SubsystemBase {
     return Math.floor(x * 1000) / 1000;
   }
 
+  @Override
   public void periodic() {
     captureBestTargets();
+    capturePoseEstimations();
   }
 }
