@@ -77,13 +77,10 @@ public class RobotContainer {
 
         autoChooser.setDefaultOption("Default Auto", onePieceAuto());
 
-        autoChooser.addOption("systemsTest", oneMeter());
+        autoChooser.addOption("System Test", systemsTest());
         autoChooser.addOption("One Meter", oneMeter());
-        autoChooser.addOption("One Piece Auto", onePieceAuto());
-        autoChooser.addOption("One Piece L4 Auto", LFourAuto());
-        autoChooser.addOption("Left Auto", leftAuto());
-        autoChooser.addOption("Drive One Meter", oneMeterTest());
-        autoChooser.addOption("turn 90 degrees", ninetyDegreeTest());
+        autoChooser.addOption("One Piece", onePieceAuto());
+        autoChooser.addOption("One Piece L4", LFourAuto());
 
         SmartDashboard.putData("Auto choices", autoChooser);
         tab1.add("Auto Chooser", autoChooser);
@@ -282,6 +279,4 @@ public class RobotContainer {
     public Command leftAuto() {
         return new PathPlannerAuto("leftAuto");
     }
-
-
 }

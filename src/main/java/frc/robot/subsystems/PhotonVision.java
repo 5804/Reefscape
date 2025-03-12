@@ -132,4 +132,8 @@ public class PhotonVision extends SubsystemBase {
   public double trunc(double x){
     return Math.floor(x * 1000) / 1000;
   }
+
+  public void periodic() {
+    captureBestTargets();
+  }
 }
