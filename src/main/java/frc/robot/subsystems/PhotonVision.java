@@ -41,8 +41,8 @@ public class PhotonVision extends SubsystemBase {
     cameraPoseEstimator = new PhotonPoseEstimator[cameras.length];
 
     for(int cameraIndex = 0; cameraIndex < cameras.length; cameraIndex++){
-      cameraTargets[cameraIndex] = null;
-      estimatedPoses[cameraIndex] = null;
+      cameraTargets[cameraIndex] = new PhotonTrackedTarget();
+      estimatedPoses[cameraIndex] = new Pose3d();
       cameraPoseEstimator[cameraIndex] = new PhotonPoseEstimator(Constants.PhotonVisionConstants.aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cameraTransforms[cameraIndex]);
     }
   }
@@ -52,7 +52,7 @@ public class PhotonVision extends SubsystemBase {
       PhotonCamera currentCamera = cameras[cameraIndex];
       List<PhotonPipelineResult> frameResults = currentCamera.getAllUnreadResults();
       int frameIndex = frameResults.size() - 1;
-      cameraTargets[cameraIndex] = (!frameResults.isEmpty() && frameResults.get(frameIndex).hasTargets()) ? frameResults.get(frameIndex).getBestTarget() : null;
+      cameraTargets[cameraIndex] = (!frameResults.isEmpty() && frameResults.get(frameIndex).hasTargets()) ? frameResults.get(frameIndex).getBestTarget() : cameraTargets[cameraIndex];
     }
   }
 
@@ -61,7 +61,7 @@ public class PhotonVision extends SubsystemBase {
       PhotonCamera currentCamera = cameras[cameraIndex];
       List<PhotonPipelineResult> frameResults = currentCamera.getAllUnreadResults();
       PhotonPipelineResult result = (!frameResults.isEmpty()) ? frameResults.get(frameResults.size() - 1) : null;
-      estimatedPoses[cameraIndex] = (!frameResults.isEmpty() && result.getMultiTagResult().isPresent()) ? cameraPoseEstimator[cameraIndex].update(result).get().estimatedPose : null;
+      estimatedPoses[cameraIndex] = (!frameResults.isEmpty() && result.getMultiTagResult().isPresent()) ? cameraPoseEstimator[cameraIndex].update(result).get().estimatedPose : estimatedPoses[cameraIndex];
     }
   }
 

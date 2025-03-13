@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -150,39 +149,32 @@ public class RobotContainer {
     public Command systemsTest() {
         return 
               /** Arm */
-              arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.groundPostpickupPosition, 0.01)
+              arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.groundPostpickupPosition, 0.02)
+                 .andThen(() -> { try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}})
                  .andThen(wrist.setWristHorizontal())
+                 .andThen(() -> { try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}})
                  .andThen(wrist.setWristVertical())
-                 .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01))
-                 
-                 /** Elevator */
-                 .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l2Position, 0.1))
-                 .withTimeout(Constants.AutonomousConstants.systemTestDelay)
-                 .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l3Position, 0.1))
-                 .withTimeout(Constants.AutonomousConstants.systemTestDelay)
-                 .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l4Position, 0.1))
-                 .withTimeout(Constants.AutonomousConstants.systemTestDelay)
+                 .andThen(() -> { try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}})
+                 .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.02))
+                 .andThen(() -> { try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}})
 
                  /** Coral System (Combined Subsystems) */
                  .andThen(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l1Position, Constants.ElevatorConstants.l1Position))
-                 .withTimeout(Constants.AutonomousConstants.systemTestDelay)
+                 .andThen(() -> { try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}})
                  .andThen(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l2Position, Constants.ElevatorConstants.l2Position))
-                 .withTimeout(Constants.AutonomousConstants.systemTestDelay)
+                 .andThen(() -> { try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}})
                  .andThen(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l3Position, Constants.ElevatorConstants.l3Position))
-                 .withTimeout(Constants.AutonomousConstants.systemTestDelay)
+                 .andThen(() -> { try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}})
                  .andThen(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ElevatorConstants.l4Position))
-                 .withTimeout(Constants.AutonomousConstants.systemTestDelay)
-                 .andThen(coralSystem.setCoralSystemStow())
-                 .withTimeout(Constants.AutonomousConstants.systemTestDelay)
+                 .andThen(() -> { try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}})
+                 .andThen(coralSystem.setCoralSystemStow());
 
                  /** Climber */
                  // .andThen()
 
                  /** DriveTrain */
-                 .andThen(drivetrain.applyRequest(() -> driveRobotCentric.withVelocityX(-1).withVelocityY(0).withRotationalRate(0)))
-                 .withTimeout(Constants.AutonomousConstants.systemTestDelay)
-                 .andThen(drivetrain.applyRequest(() -> driveRobotCentric.withVelocityX(0).withVelocityY(-1).withRotationalRate(0)))
-                 .withTimeout(Constants.AutonomousConstants.systemTestDelay);
+                //  .andThen(drivetrain.applyRequest(() -> driveRobotCentric.withVelocityX(-1).withVelocityY(0).withRotationalRate(0)))
+                //  .andThen(drivetrain.applyRequest(() -> driveRobotCentric.withVelocityX(0).withVelocityY(-1).withRotationalRate(0)));
 
     }
 
@@ -202,7 +194,7 @@ public class RobotContainer {
     public Command moveToTargetRight() {
         return drivetrain.applyRequest(() -> 
                 driveRobotCentric.withVelocityX((photonVision.bestTargetXMeters(0) - 0.6))
-                    .withVelocityY((photonVision.bestTargetYMeters(0) - 0.19) * 4)
+                    .withVelocityY((photonVision.bestTargetYMeters(0)) * 4)
                     .withRotationalRate(0)
         );
     }
@@ -210,7 +202,7 @@ public class RobotContainer {
     public Command moveToTargetLeft() {
         return drivetrain.applyRequest(() -> 
                 driveRobotCentric.withVelocityX((photonVision.bestTargetXMeters(0) - 0.6))
-                    .withVelocityY((photonVision.bestTargetYMeters(0) + 0.19) * 4)
+                    .withVelocityY((photonVision.bestTargetYMeters(0)) * 4)
                     .withRotationalRate(0)
         );
     }
@@ -224,11 +216,11 @@ public class RobotContainer {
     }
 
     public Command alignLeft(){
-        return moveToTargetLeft().andThen(rotateParallelToReefTarget());
+        return moveToTargetLeft();//.andThen(rotateParallelToReefTarget());
     }
 
     public Command alignRight(){
-        return moveToTargetRight().andThen(rotateParallelToReefTarget());
+        return moveToTargetRight();//.andThen(rotateParallelToReefTarget());
     }
 
     public Command autoLOneDrop() {

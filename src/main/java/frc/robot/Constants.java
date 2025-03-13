@@ -14,7 +14,7 @@ public final class Constants {
     public static final double inversion = -1;
 
     public final class AutonomousConstants {
-        public static final double systemTestDelay = 3;
+        public static final double systemTestDelay = 12;
     }
 
     public final class PhotonVisionConstants {
