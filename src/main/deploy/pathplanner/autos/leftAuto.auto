@@ -9,6 +9,12 @@
           "data": {
             "pathName": "leftPath"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "leftToLoad"
+          }
         }
       ]
     }

@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.photonvision.PhotonCamera;
@@ -15,7 +16,9 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
+import org.photonvision.targeting.TargetCorner;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -28,9 +31,14 @@ import frc.robot.Constants;
 public class PhotonVision extends SubsystemBase {
   
   public PhotonPoseEstimator debugPhotonPoseEstimator;
-  public PhotonCamera frontCamera = new PhotonCamera("Front");
-  public PhotonCamera[] cameras = {frontCamera};
-  public Transform3d[] cameraTransforms = {new Transform3d(0, 0.172339, 0.13024104, new Rotation3d(0, 0.4799655, 0))};
+  public PhotonTrackedTarget noTarget = new PhotonTrackedTarget(0, 0, 0, 0, 0, 0, 0, new Transform3d(), new Transform3d(), 0, new ArrayList<TargetCorner>(), new ArrayList<TargetCorner>());
+  public PhotonCamera camera11 = new PhotonCamera("Front");
+  public PhotonCamera camera13 = new PhotonCamera("Back");
+  public PhotonCamera[] cameras = {camera11, camera13};
+  public Transform3d[] cameraTransforms = {
+    new Transform3d(0.2794, 0.254, 0.1905, new Rotation3d(0, 0.436332, 0)),
+    new Transform3d(0.2794, -0.254, 0.1905, new Rotation3d(0, 0.436332, 0))
+  };
   public PhotonTrackedTarget[] cameraTargets;
   public PhotonPoseEstimator[] cameraPoseEstimator;
   public Pose3d[] estimatedPoses;
@@ -61,12 +69,17 @@ public class PhotonVision extends SubsystemBase {
       PhotonCamera currentCamera = cameras[cameraIndex];
       List<PhotonPipelineResult> frameResults = currentCamera.getAllUnreadResults();
       PhotonPipelineResult result = (!frameResults.isEmpty()) ? frameResults.get(frameResults.size() - 1) : null;
-      estimatedPoses[cameraIndex] = (!frameResults.isEmpty() && result.getMultiTagResult().isPresent()) ? cameraPoseEstimator[cameraIndex].update(result).get().estimatedPose : estimatedPoses[cameraIndex];
+      estimatedPoses[cameraIndex] = (!frameResults.isEmpty() && result.getMultiTagResult().isPresent()) ? cameraPoseEstimator[cameraIndex].update(result).get().estimatedPose : new Pose3d();
+
     }
   }
 
+  public Pose3d[] getEstimatedPoses() {
+    return estimatedPoses;
+  }
+
   public double bestTargetYaw(int cameraIndex){
-    return cameraTargets[cameraIndex].getYaw();
+    return cameraTargets[cameraIndex].getBestCameraToTarget().getRotation().getZ();
   }
 
   public double bestTargetXMeters(int cameraIndex){

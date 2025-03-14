@@ -43,9 +43,8 @@ public final class Constants {
 
         public static final double zeroPosition         = 0.15832;
         public static final double minSafePosition      = -38;
-        public static final double l4Position           = -31.73;
-        public static final double l3Position           = -15.6;
-        public static final double l3TestPosition       = -15.355;
+        public static final double l4Position           = -35.183;
+        public static final double l3Position           = -15.355;
         public static final double l4TestPosition       = -35.183; //32.214
         public static final double l3SCORETestPosition  = -7.368;
         public static final double l4SCORETestPosition  = -23.892;
@@ -81,12 +80,10 @@ public final class Constants {
             public static final double jerk           = 2;
 
             public static final double minSafeValue             = 0.147; 
-            public static final double l4Position               = 0.16; 
-            public static final double l3Position               = 0.1443;
-            public static final double l3TestPosition           = 0.184;
-            public static final double l4TestPosition           = 0.232;
+            public static final double l4Position               = 0.232; 
+            public static final double l3Position               = 0.184;
             public static final double l2Position               = 0.14;
-            public static final double l1Position               =  0.316;
+            public static final double l1Position               = 0.316;
             public static final double groundPosition           = 0.4922; 
             public static final double groundPostpickupPosition = 0.25;
             public static final double hopperIntakePosition     = .0712;

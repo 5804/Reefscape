@@ -4,16 +4,7 @@
 
 package frc;
 
-import javax.lang.model.util.ElementScanner14;
-
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-
-import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
@@ -109,7 +100,7 @@ public class CoralSystem extends SubsystemBase {
     
     public Command setCoralSystemStow() {
         return climber.setClimberStow(0.01)
-                      .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01))
+                      .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.03))
                       .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.hopperIntakePosition, 0.1))
                       .andThen(wrist.setWristVertical())
                       .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.hopperIntakePosition, 0.01));
@@ -118,7 +109,7 @@ public class CoralSystem extends SubsystemBase {
     public Command combinedL4() {
         return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.02)
                   .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l4TestPosition, 0.1))
-                  .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.l4TestPosition, 0.02))
+                  .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.l4Position, 0.02))
                   .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l4SCORETestPosition, 0.1))
                         //    .unless(() -> (elevator.getElevatorPosition() > -22))
                            .andThen(setCoralSystemStow());

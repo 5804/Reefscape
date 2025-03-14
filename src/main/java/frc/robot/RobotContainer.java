@@ -71,15 +71,13 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("drop", autoLOneDrop());
         NamedCommands.registerCommand("LFourDrop", autoLFourDrop());
-        NamedCommands.registerCommand("leftAlign", moveToTargetLeft());
-        NamedCommands.registerCommand("rightAlign", moveToTargetRight());
 
         autoChooser.setDefaultOption("Default Auto", onePieceAuto());
 
-        autoChooser.addOption("System Test", systemsTest());
         autoChooser.addOption("One Meter", oneMeter());
         autoChooser.addOption("One Piece", onePieceAuto());
         autoChooser.addOption("One Piece L4", LFourAuto());
+        autoChooser.addOption("Left Auto", leftAuto());
 
         SmartDashboard.putData("Auto choices", autoChooser);
         tab1.add("Auto Chooser", autoChooser);
@@ -178,49 +176,21 @@ public class RobotContainer {
 
     }
 
-    public int getDesiredAngleForAprilId(int id){
-        int desiredAngle = 0;
-        
-        desiredAngle = (id == 17 || id == 6)  ? -120 : desiredAngle;
-        desiredAngle = (id == 18 || id == 7)  ? 180 : desiredAngle;
-        desiredAngle = (id == 19 || id == 8)  ? 120 : desiredAngle;
-        desiredAngle = (id == 20 || id == 9)  ? -60 : desiredAngle;
-        desiredAngle = (id == 21 || id == 10) ? 0 : desiredAngle;
-        desiredAngle = (id == 22 || id == 11) ? 60 : desiredAngle;
-
-        return desiredAngle;
-    }
-
-    public Command moveToTargetRight() {
+    public Command moveToTarget(int cameraIndex) {
         return drivetrain.applyRequest(() -> 
-                driveRobotCentric.withVelocityX((photonVision.bestTargetXMeters(0) - 0.6))
-                    .withVelocityY((photonVision.bestTargetYMeters(0)) * 4)
-                    .withRotationalRate(0)
-        );
-    }
-
-    public Command moveToTargetLeft() {
-        return drivetrain.applyRequest(() -> 
-                driveRobotCentric.withVelocityX((photonVision.bestTargetXMeters(0) - 0.6))
-                    .withVelocityY((photonVision.bestTargetYMeters(0)) * 4)
-                    .withRotationalRate(0)
-        );
-    }
-
-    public Command rotateParallelToReefTarget() {
-        return drivetrain.applyRequest(() ->
-            driveRobotCentric.withVelocityX(0)
-                .withVelocityY(0)
-                .withRotationalRate(Math.toRadians(getDesiredAngleForAprilId(photonVision.bestTargetID(0))) * maxAngularRate)
+                driveRobotCentric
+                    .withVelocityX((photonVision.bestTargetXMeters(cameraIndex) - 0.3) * 1.5)
+                    .withVelocityY((photonVision.bestTargetYMeters(cameraIndex)) * 1.5)
+                    .withRotationalRate(((Math.PI - (Math.abs(photonVision.bestTargetYaw(cameraIndex)))) * Math.signum(photonVision.bestTargetYaw(cameraIndex))) * Constants.inversion * 0.75 )
         );
     }
 
     public Command alignLeft(){
-        return moveToTargetLeft();//.andThen(rotateParallelToReefTarget());
+        return moveToTarget(1);
     }
 
     public Command alignRight(){
-        return moveToTargetRight();//.andThen(rotateParallelToReefTarget());
+        return moveToTarget(0);
     }
 
     public Command autoLOneDrop() {
@@ -232,36 +202,12 @@ public class RobotContainer {
         return coralSystem.combinedL4();
     }
  
-    public Command oneMeterAuto() {
-        return new PathPlannerAuto("OneMeterAuto");
-    }
-
-    public Command twoMeterAuto() {
-        return new PathPlannerAuto("TwoMeterAuto");
-    }
-
-    public Command ninetyDegreesAuto() {
-        return new PathPlannerAuto("NinetyDegreesAuto");
-    }
-
-    public Command plusAuto() {
-        return new PathPlannerAuto("PlusAuto");
-    }
-
     public Command onePieceAuto() {
         return new PathPlannerAuto("OnePieceAuto");
     }
 
     public Command oneMeter() {
         return new PathPlannerAuto("OneMeter");
-    }
-
-    public Command oneMeterTest() {
-        return new PathPlannerAuto("MeterAuto");
-    }
-
-    public Command ninetyDegreeTest() {
-        return new PathPlannerAuto("DegreeAuto");
     }
 
     public Command LFourAuto() {
