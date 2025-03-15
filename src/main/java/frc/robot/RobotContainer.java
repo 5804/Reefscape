@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.ButtonBoard;
 import frc.CoralSystem;
+import frc.robot.Constants.PhotonVisionConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Claw;
@@ -59,7 +60,7 @@ public class RobotContainer {
     public Claw claw = new Claw();
     public Wrist wrist = new Wrist();
     public Elevator elevator = new Elevator();
-    public Climber climber = new Climber(() -> { return assistantController.getLeftY(); });
+    public Climber climber = new Climber(() -> { return assistantController.getLeftY(); }); //Left Joystick
     public PhotonVision photonVision = new PhotonVision();
 
     private final CoralSystem coralSystem = new CoralSystem(elevator, arm, climber, claw, wrist);
@@ -72,12 +73,21 @@ public class RobotContainer {
         NamedCommands.registerCommand("drop", autoLOneDrop());
         NamedCommands.registerCommand("LFourDrop", autoLFourDrop());
 
+        NamedCommands.registerCommand("CoralAlignLeft", alignLeft().withTimeout(1.0));
+        NamedCommands.registerCommand("CoralAlignRight", alignRight().withTimeout(1.0));
+
+        NamedCommands.registerCommand("PlayerStationAlign", moveToStation(Constants.PhotonVisionConstants.backCameraID).withTimeout(2.0));
+        NamedCommands.registerCommand("CensorIntake", claw.setClawIntakeWithTimeOfFlight());
+
         autoChooser.setDefaultOption("Default Auto", onePieceAuto());
 
         autoChooser.addOption("One Meter", oneMeter());
         autoChooser.addOption("One Piece", onePieceAuto());
         autoChooser.addOption("One Piece L4", LFourAuto());
         autoChooser.addOption("Left Auto", leftAuto());
+
+        autoChooser.addOption("humantoreef", humantoreef());
+
 
         SmartDashboard.putData("Auto choices", autoChooser);
         tab1.add("Auto Chooser", autoChooser);
@@ -115,6 +125,7 @@ public class RobotContainer {
         driveController.povLeft().onTrue(coralSystem.setAlgaeScore());
         driveController.povRight().onTrue(coralSystem.setAlgaeBottom());
         driveController.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        driveController.rightTrigger().whileTrue(moveToStation(Constants.PhotonVisionConstants.backCameraID));
 
         buttonBoard.getButton(4).onTrue(coralSystem.setAlgaeTop());
         buttonBoard.getButton(8).onTrue(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l1Position, Constants.ElevatorConstants.l1Position)); 
@@ -176,21 +187,43 @@ public class RobotContainer {
 
     }
 
-    public Command moveToTarget(int cameraIndex) {
+    public Command moveToReefLeft(int cameraIndex) {
         return drivetrain.applyRequest(() -> 
                 driveRobotCentric
-                    .withVelocityX((photonVision.bestTargetXMeters(cameraIndex) - 0.3) * 1.5)
-                    .withVelocityY((photonVision.bestTargetYMeters(cameraIndex)) * 1.5)
+                    .withVelocityX((photonVision.bestTargetXMeters(cameraIndex) - 0.36) * 0.625 * 4)         // Needs Offset
+                    .withVelocityY((photonVision.bestTargetYMeters(cameraIndex) - 0.07) * 0.625 * 4)       // Needs Offset
                     .withRotationalRate(((Math.PI - (Math.abs(photonVision.bestTargetYaw(cameraIndex)))) * Math.signum(photonVision.bestTargetYaw(cameraIndex))) * Constants.inversion * 0.75 )
         );
     }
 
+    
+    public Command moveToReefRight(int cameraIndex) {
+        return drivetrain.applyRequest(() -> 
+                driveRobotCentric
+                    .withVelocityX((photonVision.bestTargetXMeters(cameraIndex) - 0.35) * 0.625 * 4)       // Needs Offset
+                    .withVelocityY((photonVision.bestTargetYMeters(cameraIndex) + 0.10) * 0.625 * 4)       // Needs Offset
+                    .withRotationalRate(((Math.PI - (Math.abs(photonVision.bestTargetYaw(cameraIndex)))) * Math.signum(photonVision.bestTargetYaw(cameraIndex))) * Constants.inversion * 0.75 )
+        );
+    }
+
+
+    
+     public Command moveToStation(int cameraIndex) {
+        return drivetrain.applyRequest(() -> 
+                driveRobotCentric
+                    .withVelocityX((photonVision.bestTargetXMeters(cameraIndex) - 0.70) * 1.5 * -1.5) // Needs Offset
+                    .withVelocityY((photonVision.bestTargetYMeters(cameraIndex) - 0.04) * 1.5 * -1.5)       // Needs Offset
+                    .withRotationalRate((Math.toRadians(163.5) - Math.abs((photonVision.bestTargetYaw(cameraIndex)))) * Math.signum((Math.toRadians(163.5) - Math.abs((photonVision.bestTargetYaw(cameraIndex))))) * Constants.inversion * 0.75 )
+                    // .withRotationalRate((Math.abs((Math.toRadians(163.5) - (Math.abs(photonVision.bestTargetYaw(cameraIndex))))) * Math.signum(photonVision.bestTargetYaw(cameraIndex))) * Constants.inversion * 1 )
+        );
+    }
+     
     public Command alignLeft(){
-        return moveToTarget(1);
+        return moveToReefLeft(Constants.PhotonVisionConstants.rightCameraID); // Use rightCamera
     }
 
     public Command alignRight(){
-        return moveToTarget(0);
+        return moveToReefRight(Constants.PhotonVisionConstants.leftCameraID); // Use leftCamera
     }
 
     public Command autoLOneDrop() {
@@ -216,5 +249,8 @@ public class RobotContainer {
 
     public Command leftAuto() {
         return new PathPlannerAuto("leftAuto");
+    }
+    public Command humantoreef() {
+        return new PathPlannerAuto("humantoreef");
     }
 }

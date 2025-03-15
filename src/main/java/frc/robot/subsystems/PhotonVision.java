@@ -32,10 +32,12 @@ public class PhotonVision extends SubsystemBase {
   
   public PhotonPoseEstimator debugPhotonPoseEstimator;
   public PhotonTrackedTarget noTarget = new PhotonTrackedTarget(0, 0, 0, 0, 0, 0, 0, new Transform3d(), new Transform3d(), 0, new ArrayList<TargetCorner>(), new ArrayList<TargetCorner>());
-  public PhotonCamera camera11 = new PhotonCamera("Front");
-  public PhotonCamera camera13 = new PhotonCamera("Back");
-  public PhotonCamera[] cameras = {camera11, camera13};
+  public PhotonCamera backCamera = new PhotonCamera("Back");   //CameraID 11, cameraIndex 0
+  public PhotonCamera leftCamera = new PhotonCamera("Left");   //CameraID 12, cameraIndex 1
+  public PhotonCamera rightCamera = new PhotonCamera("Right"); //CameraID 13, cameraIndex 2
+  public PhotonCamera[] cameras = {backCamera, leftCamera, rightCamera};
   public Transform3d[] cameraTransforms = {
+    new Transform3d(-0.02033524, 0.14771624, 0.9484741, new Rotation3d(0, 0.558505, 3.368)),
     new Transform3d(0.2794, 0.254, 0.1905, new Rotation3d(0, 0.436332, 0)),
     new Transform3d(0.2794, -0.254, 0.1905, new Rotation3d(0, 0.436332, 0))
   };
