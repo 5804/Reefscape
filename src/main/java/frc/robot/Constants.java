@@ -47,7 +47,7 @@ public final class Constants {
         public static final double zeroPosition         = 0.15832;
         public static final double minSafePosition      = -38;
         public static final double l4Position           = -35.183;
-        public static final double l3Position           = -15.355;
+        public static final double l3Position           = -15.92;
         public static final double l4TestPosition       = -35.183; //32.214
         public static final double l3SCORETestPosition  = -7.368;
         public static final double l4SCORETestPosition  = -23.892;
@@ -56,10 +56,11 @@ public final class Constants {
         public static final double groundReadyPosition  = -4.95;
         public static final double groundPickupPosition = -1.652; // -2.14826
         public static final double hopperIntakePosition = zeroPosition;
+        public static final double bargePlacePosition   = -39.49;
         
         public static final double softwareLimitSafetyThreshold = 5;
         public static final double forwardSoftLimitThreshold = 0;
-        public static final double reverseSoftLimitThreshold = -38;
+        public static final double reverseSoftLimitThreshold = -39.50;
 
         public static final double manualTravelSpeedVoltage = 1;
         public static final double supplyCurrentLimit = 70;
@@ -84,12 +85,13 @@ public final class Constants {
 
             public static final double minSafeValue             = 0.147; 
             public static final double l4Position               = 0.232; 
-            public static final double l3Position               = 0.184;
-            public static final double l2Position               = 0.14;
+            public static final double l3Position               = 0.1692;
+            public static final double l2Position               = 0.1692;
             public static final double l1Position               = 0.316;
             public static final double groundPosition           = 0.4922; 
             public static final double groundPostpickupPosition = 0.25;
             public static final double hopperIntakePosition     = .0712;
+            public static final double bargePlacePosition       = 0.072;
 
             public static final double manualTravelSpeedVoltage = 5;
             public static final double supplyCurrentLimit = 60;
@@ -154,7 +156,7 @@ public final class Constants {
         public static final double acceleration   = 200;
         public static final double jerk           = 1600;
 
-        public static final double downClimberPosition  = 253;
+        public static final double downClimberPosition  = 247.86;
         public static final double climbClimberPosition = 1;
         public static final double stowClimberPosition  = 0.1;
     }

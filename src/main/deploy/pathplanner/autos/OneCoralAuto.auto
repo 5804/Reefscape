@@ -7,31 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "S2.R5.coralPrep.path"
+            "pathName": "OneCoral"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "CoralAlignLeft"
+            "name": "CoralAlignRight"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "LFourDrop"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "AG1.H1.coralLoad.path"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "PlayerStationAlign"
           }
         }
       ]

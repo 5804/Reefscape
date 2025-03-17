@@ -12,12 +12,15 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.ButtonBoard;
@@ -52,15 +55,18 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(maxSpeed);
 
     public final CommandXboxController driveController = new CommandXboxController(0);
-    private final CommandXboxController assistantController = new CommandXboxController(2);
-    public final ButtonBoard buttonBoard = new ButtonBoard(11, 1);
+    public final ButtonBoard buttonBoard = new ButtonBoard(12, 1);
+
+    public final ButtonBoard buttonBoard2 = new ButtonBoard(12, 2);
+    public final ButtonBoard joystick = new ButtonBoard(12, 3);
+    
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public Arm arm = new Arm();
     public Claw claw = new Claw();
     public Wrist wrist = new Wrist();
     public Elevator elevator = new Elevator();
-    public Climber climber = new Climber(() -> { return assistantController.getLeftY(); }); //Left Joystick
+    public Climber climber = new Climber(() -> { return -joystick.getAxis(1); });
     public PhotonVision photonVision = new PhotonVision();
 
     private final CoralSystem coralSystem = new CoralSystem(elevator, arm, climber, claw, wrist);
@@ -73,11 +79,16 @@ public class RobotContainer {
         NamedCommands.registerCommand("drop", autoLOneDrop());
         NamedCommands.registerCommand("LFourDrop", autoLFourDrop());
 
+        NamedCommands.registerCommand("LFourUp", coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ElevatorConstants.l4Position));
+        NamedCommands.registerCommand("LFourScore", coralSystem.scoreL4Auto());
+        NamedCommands.registerCommand("Stow", coralSystem.setCoralSystemStow());
+
         NamedCommands.registerCommand("CoralAlignLeft", alignLeft().withTimeout(1.0));
         NamedCommands.registerCommand("CoralAlignRight", alignRight().withTimeout(1.0));
 
-        NamedCommands.registerCommand("PlayerStationAlign", moveToStation(Constants.PhotonVisionConstants.backCameraID).withTimeout(2.0));
-        NamedCommands.registerCommand("CensorIntake", claw.setClawIntakeWithTimeOfFlight());
+        NamedCommands.registerCommand("PlayerStationAlign", moveToStation(Constants.PhotonVisionConstants.backCameraID).withTimeout(1.0));
+        NamedCommands.registerCommand("CensorIntake", claw.setClawIntakeWithTimeOfFlight().andThen(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ElevatorConstants.l4Position)));
+        NamedCommands.registerCommand("StopIntake", claw.setClawStop());
 
         autoChooser.setDefaultOption("Default Auto", onePieceAuto());
 
@@ -85,9 +96,7 @@ public class RobotContainer {
         autoChooser.addOption("One Piece", onePieceAuto());
         autoChooser.addOption("One Piece L4", LFourAuto());
         autoChooser.addOption("Left Auto", leftAuto());
-
-        autoChooser.addOption("humantoreef", humantoreef());
-
+        autoChooser.addOption("Vision One Coral Auto", oneCoralAuto());
 
         SmartDashboard.putData("Auto choices", autoChooser);
         tab1.add("Auto Chooser", autoChooser);
@@ -110,43 +119,60 @@ public class RobotContainer {
 
         climber.setDefaultCommand(climber.setClimberSpeed());
 
-        driveController.leftTrigger().onTrue(coralSystem.setCoralSystemGroundReady());   
-        driveController.leftTrigger().onFalse(coralSystem.setCoralSystemGroundPickup());
-        driveController.leftBumper().whileTrue(alignLeft());
-        driveController.rightBumper().whileTrue(alignRight());
+        // USB Controller
+        driveController.leftBumper().onTrue(coralSystem.setCoralSystemGroundReady());   
+        driveController.leftBumper().onFalse(coralSystem.setCoralSystemGroundPickup());
+        driveController.leftTrigger().whileTrue(alignLeft());
+        driveController.rightTrigger().whileTrue(alignRight());
+        driveController.rightBumper().onTrue(climber.setClimberDown(0.01));
+
         driveController.y().onTrue(claw.setClawIntakeWithTimeOfFlight());
         driveController.y().onFalse(claw.setClawStop());
         driveController.b().onTrue(coralSystem.setCoralSystemScoreL4());
         driveController.x().onTrue(claw.setClawIntake());
         driveController.x().onFalse(claw.setClawStop());
         driveController.a().onTrue(coralSystem.setCoralSystemStow());
+
         driveController.povUp().onTrue(new InstantCommand(() -> { speedMultiplier = 1; }));
         driveController.povDown().onTrue(new InstantCommand(() -> { speedMultiplier = 0.25; }));
-        driveController.povLeft().onTrue(coralSystem.setAlgaeScore());
-        driveController.povRight().onTrue(coralSystem.setAlgaeBottom());
+        
         driveController.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         driveController.rightTrigger().whileTrue(moveToStation(Constants.PhotonVisionConstants.backCameraID));
 
-        buttonBoard.getButton(4).onTrue(coralSystem.setAlgaeTop());
-        buttonBoard.getButton(8).onTrue(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l1Position, Constants.ElevatorConstants.l1Position)); 
-        buttonBoard.getButton(9).onTrue(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l2Position, Constants.ElevatorConstants.l2Position));
-        buttonBoard.getButton(5).onTrue(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l3Position, Constants.ElevatorConstants.l3Position)); 
+        // USB Button Board
+        buttonBoard.getButton(4).onTrue(coralSystem.setBargeScore());
+        buttonBoard.getButton(3).onTrue(coralSystem.setAlgaeTop());
+        buttonBoard.getButton(2).onTrue(coralSystem.setAlgaeBottom()); 
+        buttonBoard.getButton(1).onTrue(coralSystem.setAlgaeProcessor());
+        
+        buttonBoard.getButton(5).onTrue(coralSystem.setCoralSystemL1()); 
+        buttonBoard.getButton(6).onTrue(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l2Position, Constants.ElevatorConstants.l2Position));
+        buttonBoard.getButton(10).onTrue(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l3Position, Constants.ElevatorConstants.l3Position)); 
         buttonBoard.getButton(7).onTrue(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ElevatorConstants.l4Position)); 
-        buttonBoard.getButton(3).onTrue(coralSystem.setCoralSystemStow());
-        buttonBoard.getButton(1).onTrue(claw.setClawEject());
-        buttonBoard.getButton(1).onFalse(claw.setClawStop());
-        buttonBoard.getButton(11).onTrue(wrist.setWristHorizontal());
-        buttonBoard.getButton(6).onTrue(wrist.setWristVertical());
+        
+        buttonBoard.getButton(8).onTrue(wrist.setWristHorizontal());
+        buttonBoard.getButton(9).onTrue(wrist.setWristVertical());
 
-        Trigger buttonBoardRawAxis0Positive = new Trigger(() -> { return buttonBoard.getButtonBoard().getRawAxis(0) > 0.7; });
-        Trigger buttonBoardRawAxis0Negative = new Trigger(() -> { return buttonBoard.getButtonBoard().getRawAxis(0) < -0.7; });
-        Trigger buttonBoardRawAxis1Positive = new Trigger(() -> { return buttonBoard.getButtonBoard().getRawAxis(1) > 0.7; });
-        Trigger buttonBoardRawAxis1Negative = new Trigger(() -> { return buttonBoard.getButtonBoard().getRawAxis(1) < -0.7; });
+        // USB Button Board 2
+        buttonBoard2.getButton(1).onTrue(claw.setClawEject());
+        buttonBoard2.getButton(1).onFalse(claw.setClawStop());
+        
+        // buttonBoard2.getButton(2).onTrue(Disable Ratchet); // 
+
+        // USB Joystick
+        joystick.getButton(1).onTrue(climber.setClimberDown(0.01));
+
+        Trigger buttonBoardRawAxis0Positive = new Trigger(() -> { return buttonBoard2.getButtonBoard().getRawAxis(0) > 0.7; });
+        Trigger buttonBoardRawAxis0Negative = new Trigger(() -> { return buttonBoard2.getButtonBoard().getRawAxis(0) < -0.7; });
+        Trigger buttonBoardRawAxis1Positive = new Trigger(() -> { return buttonBoard2.getButtonBoard().getRawAxis(1) > 0.7; });
+        Trigger buttonBoardRawAxis1Negative = new Trigger(() -> { return buttonBoard2.getButtonBoard().getRawAxis(1) < -0.7; });
 
         buttonBoardRawAxis0Positive.whileTrue(arm.manuallyRotateShoulderUp());
         buttonBoardRawAxis0Negative.whileTrue(arm.manuallyRotateShoulderDown());
         buttonBoardRawAxis1Positive.whileTrue(elevator.moveElevatorDown());
         buttonBoardRawAxis1Negative.whileTrue(elevator.moveElevatorUp());
+
+        
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -217,6 +243,24 @@ public class RobotContainer {
                     // .withRotationalRate((Math.abs((Math.toRadians(163.5) - (Math.abs(photonVision.bestTargetYaw(cameraIndex))))) * Math.signum(photonVision.bestTargetYaw(cameraIndex))) * Constants.inversion * 1 )
         );
     }
+
+    public Command moveToReefLeftAlex() {
+        return drivetrain.applyRequest(() -> 
+                driveRobotCentric
+                    .withVelocityX(PhotonVision.frontTargetRangeX - 0.12 )         // Needs Offset
+                    .withVelocityY(PhotonVision.frontTargetRangeY - 0.08)       // Needs Offset
+                    .withRotationalRate(Math.atan(PhotonVision.frontTargetRangeX/PhotonVision.frontTargetRangeY) - PhotonVision.frontTargetYaw)
+        );
+    }
+
+    public Command moveToReefRightAlex() {
+        return drivetrain.applyRequest(() -> 
+                driveRobotCentric
+                    .withVelocityX(PhotonVision.frontTargetRangeX - 0.12 )         // Needs Offset
+                    .withVelocityY(PhotonVision.frontTargetRangeY + 0.08)       // Needs Offset
+                    .withRotationalRate(Math.PI - PhotonVision.frontTargetYaw)
+        );
+    }
      
     public Command alignLeft(){
         return moveToReefLeft(Constants.PhotonVisionConstants.rightCameraID); // Use rightCamera
@@ -250,7 +294,8 @@ public class RobotContainer {
     public Command leftAuto() {
         return new PathPlannerAuto("leftAuto");
     }
-    public Command humantoreef() {
-        return new PathPlannerAuto("humantoreef");
+
+    public Command oneCoralAuto() {
+        return new PathPlannerAuto("OneCoralAuto");
     }
 }

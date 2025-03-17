@@ -53,6 +53,10 @@ public class CoralSystem extends SubsystemBase {
                        .unless(() -> (elevator.getElevatorPosition() > -22))
                        .andThen(setCoralSystemStow());
     }
+    public Command scoreL4Auto() {
+        return elevator.setElevatorPosition(Constants.ElevatorConstants.l4SCORETestPosition, 0.1)
+                       .unless(() -> (elevator.getElevatorPosition() > -22));
+    }
 
     // public Command setCoralSystemL3() {
     //     return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01)
@@ -66,12 +70,12 @@ public class CoralSystem extends SubsystemBase {
     //               .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.l2Position, 0.01));
     // }
 
-    // public Command setCoralSystemL1() {
-    //       return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01)
-    //                 .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l1Position, 0.1))
-    //                 .andThen(wrist.setWristHorizontal()) 
-    //                 .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.l1Position, 0.01));
-    // }
+    public Command setCoralSystemL1() {
+          return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01)
+                    .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l1Position, 0.1))
+                    .andThen(wrist.setWristHorizontal()) 
+                    .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.l1Position, 0.01));
+    }
 
     public Command setCoralSystemGroundReady() {
         return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01)
@@ -124,9 +128,15 @@ public class CoralSystem extends SubsystemBase {
                   .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l2Position, 0.1))
                   .andThen(arm.setShoulderPosition(.191, 0.01));
     }
-    public Command setAlgaeScore() {
+    public Command setAlgaeProcessor() {
         return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01)
                   .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.zeroPosition, 0.1))
                   .andThen(arm.setShoulderPosition(.23, 0.01));
+    }
+
+    public Command setBargeScore() {
+        return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, 0.01)
+                  .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.bargePlacePosition, 0.1))
+                  .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.bargePlacePosition, 0.01));
     }
 }

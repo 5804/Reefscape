@@ -5,9 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "S2.R5.coralPrep.path"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "S2.R5.coralPrep.path"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "LFourUp"
+                }
+              }
+            ]
           }
         },
         {
@@ -19,13 +32,26 @@
         {
           "type": "named",
           "data": {
-            "name": "LFourDrop"
+            "name": "LFourScore"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "AG1.H1.coralLoad.path"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "AG1.H1.coralLoad.path"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Stow"
+                }
+              }
+            ]
           }
         },
         {
@@ -35,15 +61,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "CensorIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "HPtoCoral"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "CensorIntake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "HPtoCoral"
+                }
+              }
+            ]
           }
         },
         {
@@ -55,7 +88,7 @@
         {
           "type": "named",
           "data": {
-            "name": "LFourDrop"
+            "name": "LFourScore"
           }
         }
       ]

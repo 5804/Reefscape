@@ -96,6 +96,11 @@ public class PhotonVision extends SubsystemBase {
     return cameraTargets[cameraIndex].getFiducialId();
   }
 
+  public static double frontTargetYaw = 0;
+  public static double frontTargetRangeX = 0;
+  public static double frontTargetRangeY = 0;
+
+
   public void debugSingleTagCameraData(PhotonCamera[] cameras, Transform3d[] cameraTransforms) {
     for(int cameraIndex = 0; cameraIndex < cameras.length; cameraIndex++){
       PhotonCamera currentCamera = cameras[cameraIndex];
@@ -109,6 +114,14 @@ public class PhotonVision extends SubsystemBase {
           PhotonTrackedTarget bestTarget = result.getBestTarget();
           Pose3d estimatedRobotPose = null;
           String timestamp = "" + java.time.LocalDateTime.now().getHour() + ":" + java.time.LocalDateTime.now().getMinute() + ":" + java.time.LocalDateTime.now().getSecond();
+
+          frontTargetYaw = bestTarget.getYaw();
+          frontTargetRangeX = bestTarget.getBestCameraToTarget().getMeasureX().in(Meters);
+          frontTargetRangeY = bestTarget.getBestCameraToTarget().getMeasureY().in(Meters);
+          SmartDashboard.putNumber("Yaw", frontTargetYaw);
+          SmartDashboard.putNumber("Range X", frontTargetYaw);
+          SmartDashboard.putNumber("Range Y", frontTargetYaw);
+
 
           SmartDashboard.putNumber(currentCamera.getName() + ".bt.id", bestTarget.getFiducialId());
           SmartDashboard.putNumber(currentCamera.getName() + ".bt.x", trunc(bestTarget.getBestCameraToTarget().getMeasureX().in(Meters)));
@@ -133,6 +146,14 @@ public class PhotonVision extends SubsystemBase {
           SmartDashboard.putNumber(currentCamera.getName() + ".bt.fr.tt.y", Constants.PhotonVisionConstants.aprilTagFieldLayout.getTagPose(bestTarget.getFiducialId()).get().getY());
           SmartDashboard.putNumber(currentCamera.getName() + ".bt.fr.tt.z", Constants.PhotonVisionConstants.aprilTagFieldLayout.getTagPose(bestTarget.getFiducialId()).get().getZ());
         } 
+        else {
+          // frontTargetYaw = 0;
+          // frontTargetRangeX = 0;
+          // frontTargetRangeY = 0;
+          // SmartDashboard.putNumber("Yaw", frontTargetYaw);
+          // SmartDashboard.putNumber("Range X", frontTargetYaw);
+          // SmartDashboard.putNumber("Range Y", frontTargetYaw);
+        }
       }
     }
   }
@@ -173,5 +194,7 @@ public class PhotonVision extends SubsystemBase {
   public void periodic() {
     captureBestTargets();
     capturePoseEstimations();
+
+    // debugSingleTagCameraData(cameras, cameraTransforms);
   }
 }

@@ -59,7 +59,7 @@ public class Climber extends SubsystemBase {
 
     public Command setClimberDown(double tolerance) {
         return run(() -> { setClimberPosition(Constants.ClimberConstants.downClimberPosition); })
-                .until(() -> { return Math.abs(getClimberPosition() - Constants.ClimberConstants.stowClimberPosition) < tolerance; });
+                .until(() -> { return Math.abs(getClimberPosition() - Constants.ClimberConstants.downClimberPosition) < tolerance; });
     }
 
     public Command setClimberClimb(double tolerance) {
