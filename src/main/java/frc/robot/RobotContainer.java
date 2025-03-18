@@ -73,6 +73,16 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
     private ShuffleboardTab tab1 = Shuffleboard.getTab("Tab1");
 
+    // public Command AutoDeadline() {
+    //     if (claw.checkTimeOfFlight())
+    //         return new ParallelCommandGroup(alignRight(), coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ElevatorConstants.l4Position));
+    //     else
+    //         return claw.setClawIntakeWithTimeOfFlight()
+    //                 .andThen(new ParallelCommandGroup(alignRight(), coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ElevatorConstants.l4Position)));
+    // }
+
+    // public Command DeadLine() { return AutoDeadline(); }
+
     public RobotContainer() {
         configureBindings();
 
@@ -90,6 +100,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("CensorIntake", claw.setClawIntakeWithTimeOfFlight().andThen(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ElevatorConstants.l4Position)));
         NamedCommands.registerCommand("StopIntake", claw.setClawStop());
 
+        // NamedCommands.registerCommand("DeadlineCommand", DeadLine());
         autoChooser.setDefaultOption("Default Auto", onePieceAuto());
 
         autoChooser.addOption("One Meter", oneMeter());
@@ -97,6 +108,7 @@ public class RobotContainer {
         autoChooser.addOption("One Piece L4", LFourAuto());
         autoChooser.addOption("Left Auto", leftAuto());
         autoChooser.addOption("Vision One Coral Auto", oneCoralAuto());
+        autoChooser.addOption("DeadlineLeftAuto", deadlineLeftAuto());
 
         SmartDashboard.putData("Auto choices", autoChooser);
         tab1.add("Auto Chooser", autoChooser);
@@ -172,8 +184,6 @@ public class RobotContainer {
         buttonBoardRawAxis1Positive.whileTrue(elevator.moveElevatorDown());
         buttonBoardRawAxis1Negative.whileTrue(elevator.moveElevatorUp());
 
-        
-
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
@@ -216,8 +226,8 @@ public class RobotContainer {
     public Command moveToReefLeft(int cameraIndex) {
         return drivetrain.applyRequest(() -> 
                 driveRobotCentric
-                    .withVelocityX((photonVision.bestTargetXMeters(cameraIndex) - 0.36) * 0.625 * 4)         // Needs Offset
-                    .withVelocityY((photonVision.bestTargetYMeters(cameraIndex) - 0.07) * 0.625 * 4)       // Needs Offset
+                    .withVelocityX((photonVision.bestTargetXMeters(cameraIndex) - 0.36) * 0.625 * 4)
+                    .withVelocityY((photonVision.bestTargetYMeters(cameraIndex) - 0.07) * 0.625 * 4)
                     .withRotationalRate(((Math.PI - (Math.abs(photonVision.bestTargetYaw(cameraIndex)))) * Math.signum(photonVision.bestTargetYaw(cameraIndex))) * Constants.inversion * 0.75 )
         );
     }
@@ -226,8 +236,8 @@ public class RobotContainer {
     public Command moveToReefRight(int cameraIndex) {
         return drivetrain.applyRequest(() -> 
                 driveRobotCentric
-                    .withVelocityX((photonVision.bestTargetXMeters(cameraIndex) - 0.35) * 0.625 * 4)       // Needs Offset
-                    .withVelocityY((photonVision.bestTargetYMeters(cameraIndex) + 0.10) * 0.625 * 4)       // Needs Offset
+                    .withVelocityX((photonVision.bestTargetXMeters(cameraIndex) - 0.35) * 0.625 * 4)
+                    .withVelocityY((photonVision.bestTargetYMeters(cameraIndex) + 0.10) * 0.625 * 4)
                     .withRotationalRate(((Math.PI - (Math.abs(photonVision.bestTargetYaw(cameraIndex)))) * Math.signum(photonVision.bestTargetYaw(cameraIndex))) * Constants.inversion * 0.75 )
         );
     }
@@ -237,28 +247,10 @@ public class RobotContainer {
      public Command moveToStation(int cameraIndex) {
         return drivetrain.applyRequest(() -> 
                 driveRobotCentric
-                    .withVelocityX((photonVision.bestTargetXMeters(cameraIndex) - 0.70) * 1.5 * -1.5) // Needs Offset
-                    .withVelocityY((photonVision.bestTargetYMeters(cameraIndex) - 0.04) * 1.5 * -1.5)       // Needs Offset
+                    .withVelocityX((photonVision.bestTargetXMeters(cameraIndex) - 0.70) * 1.5 * -1.5)
+                    .withVelocityY((photonVision.bestTargetYMeters(cameraIndex) - 0.04) * 1.5 * -1.5)
                     .withRotationalRate((Math.toRadians(163.5) - Math.abs((photonVision.bestTargetYaw(cameraIndex)))) * Math.signum((Math.toRadians(163.5) - Math.abs((photonVision.bestTargetYaw(cameraIndex))))) * Constants.inversion * 0.75 )
                     // .withRotationalRate((Math.abs((Math.toRadians(163.5) - (Math.abs(photonVision.bestTargetYaw(cameraIndex))))) * Math.signum(photonVision.bestTargetYaw(cameraIndex))) * Constants.inversion * 1 )
-        );
-    }
-
-    public Command moveToReefLeftAlex() {
-        return drivetrain.applyRequest(() -> 
-                driveRobotCentric
-                    .withVelocityX(PhotonVision.frontTargetRangeX - 0.12 )         // Needs Offset
-                    .withVelocityY(PhotonVision.frontTargetRangeY - 0.08)       // Needs Offset
-                    .withRotationalRate(Math.atan(PhotonVision.frontTargetRangeX/PhotonVision.frontTargetRangeY) - PhotonVision.frontTargetYaw)
-        );
-    }
-
-    public Command moveToReefRightAlex() {
-        return drivetrain.applyRequest(() -> 
-                driveRobotCentric
-                    .withVelocityX(PhotonVision.frontTargetRangeX - 0.12 )         // Needs Offset
-                    .withVelocityY(PhotonVision.frontTargetRangeY + 0.08)       // Needs Offset
-                    .withRotationalRate(Math.PI - PhotonVision.frontTargetYaw)
         );
     }
      
@@ -297,5 +289,9 @@ public class RobotContainer {
 
     public Command oneCoralAuto() {
         return new PathPlannerAuto("OneCoralAuto");
+    }
+
+    public Command deadlineLeftAuto() {
+        return new PathPlannerAuto("DeadlineLeftAuto");
     }
 }

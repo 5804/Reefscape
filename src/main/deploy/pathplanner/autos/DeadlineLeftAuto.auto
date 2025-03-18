@@ -1,0 +1,100 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "S2.R5.coralPrep.path"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "LFourUp"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CoralAlignLeft"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LFourScore"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "AG1.H1.coralLoad.path"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Stow"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PlayerStationAlign"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "CensorIntake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "HPtoCoral"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DeadlineCommand"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LFourScore"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

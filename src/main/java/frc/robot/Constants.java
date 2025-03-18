@@ -44,6 +44,8 @@ public final class Constants {
         public static final int leftElevatorMotorID  = 52;
         public static final int rightElevatorMotorID = 51;
 
+        public static final double tolerance = 0.2;
+
         public static final double zeroPosition         = 0.15832;
         public static final double minSafePosition      = -38;
         public static final double l4Position           = -35.183;
@@ -83,6 +85,8 @@ public final class Constants {
             public static final double acceleration   = .75;
             public static final double jerk           = 2;
 
+            public static final double tolerance = 0.01;
+
             public static final double minSafeValue             = 0.147; 
             public static final double l4Position               = 0.232; 
             public static final double l3Position               = 0.1692;
@@ -112,6 +116,8 @@ public final class Constants {
             public static final double cruiseVelocity = 80;
             public static final double acceleration   = 160;
             public static final double jerk           = 1600;
+
+            public static final double tolerance = 0.1;
 
             public static final double verticalPosition   = 0;
             public static final double horizontalPosition = 0.25;
@@ -155,6 +161,8 @@ public final class Constants {
         public static final double cruiseVelocity = 100;
         public static final double acceleration   = 200;
         public static final double jerk           = 1600;
+
+        public static final double tolerance = 0.1;
 
         public static final double downClimberPosition  = 247.86;
         public static final double climbClimberPosition = 1;

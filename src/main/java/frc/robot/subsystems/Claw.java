@@ -77,6 +77,10 @@ public class Claw extends SubsystemBase {
           .andThen(setClawStop());          
   }
 
+  public boolean checkTimeOfFlight() {
+    return timeOfFlight.getRange() < Constants.ArmConstants.ClawConstants.tofHasCoralUpperBound && timeOfFlight.getRange() > Constants.ArmConstants.ClawConstants.tofHasCoralLowerBound;
+  }
+
   // Ejects the coral, automatically stopping ejecting when the coral is in the correct position.
   public Command setClawEjectWithTimeOfFlight() {
     return setClawEject()
