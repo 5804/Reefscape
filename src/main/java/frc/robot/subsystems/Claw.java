@@ -77,7 +77,7 @@ public class Claw extends SubsystemBase {
           .andThen(setClawStop());          
   }
 
-  public boolean checkTimeOfFlight() {
+  public boolean sensorSeesCoral() {
     return timeOfFlight.getRange() < Constants.ArmConstants.ClawConstants.tofHasCoralUpperBound && timeOfFlight.getRange() > Constants.ArmConstants.ClawConstants.tofHasCoralLowerBound;
   }
 

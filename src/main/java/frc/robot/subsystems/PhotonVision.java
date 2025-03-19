@@ -38,7 +38,7 @@ public class PhotonVision extends SubsystemBase {
   public PhotonCamera rightCamera = new PhotonCamera("Right"); //CameraID 13, cameraIndex 2
   public PhotonCamera[] cameras = {backCamera, leftCamera, rightCamera};
   public Transform3d[] cameraTransforms = {
-    new Transform3d(-0.02033524, 0.14771624, 0.9484741, new Rotation3d(0, 0.558505, 3.368)),
+    new Transform3d(-0.02033524, 0.14771624, 0.9484741, new Rotation3d(0, 0.558505, 0)),
     new Transform3d(0.2794, 0.254, 0.1905, new Rotation3d(0, 0.436332, 0)),
     new Transform3d(0.2794, -0.254, 0.1905, new Rotation3d(0, 0.436332, 0))
   };
@@ -47,7 +47,7 @@ public class PhotonVision extends SubsystemBase {
   public PhotonPoseEstimator[] cameraPoseEstimator;
   public Pose3d[] estimatedPoses;
 
-  public int frameThreshold = 30;
+  public int frameThreshold = 50;
   public int[] thresholdFrameCounts = new int[4];
   public boolean[] cameraIsLive = new boolean[4];
 
@@ -72,14 +72,12 @@ public class PhotonVision extends SubsystemBase {
     }
   }
 
-
   public void captureClosestTargets() {
-    PhotonTrackedTarget closestTarget = new PhotonTrackedTarget();
-    double closestDistance = Double.MAX_VALUE;
-
     for(int cameraIndex = 0; cameraIndex < cameras.length; cameraIndex++) {
       PhotonCamera currentCamera = cameras[cameraIndex];
+      PhotonTrackedTarget closestTarget = new PhotonTrackedTarget();
       List<PhotonPipelineResult> frameResults = currentCamera.getAllUnreadResults();
+      double closestDistance = Double.MAX_VALUE;
       int frameIndex = frameResults.size() - 1;
 
       if(!frameResults.isEmpty() && frameResults.get(frameIndex).hasTargets()) {
@@ -93,6 +91,7 @@ public class PhotonVision extends SubsystemBase {
             closestDistance = distanceToTag;
           }
         }
+
         cameraClosestTargets[cameraIndex] = closestTarget;
       }
     }
@@ -102,14 +101,12 @@ public class PhotonVision extends SubsystemBase {
     for(int cameraIndex = 0; cameraIndex < cameras.length; cameraIndex++){
       PhotonCamera currentCamera = cameras[cameraIndex];
       List<PhotonPipelineResult> frameResults = currentCamera.getAllUnreadResults();
-      PhotonPipelineResult result = (!frameResults.isEmpty()) ? frameResults.get(frameResults.size() - 1) : null;
-      estimatedPoses[cameraIndex] = (!frameResults.isEmpty() && result.getMultiTagResult().isPresent()) ? cameraPoseEstimator[cameraIndex].update(result).get().estimatedPose : new Pose3d();
-
+      for (PhotonPipelineResult frame : frameResults){
+        if (frame.getMultiTagResult().isPresent()){
+          estimatedPoses[cameraIndex] = cameraPoseEstimator[cameraIndex].update(frame).get().estimatedPose;
+        }
+      }
     }
-  }
-
-  public void getClosestTarget() {
-
   }
 
   public Pose3d[] getEstimatedPoses() {
@@ -132,10 +129,21 @@ public class PhotonVision extends SubsystemBase {
     return cameraBestTargets[cameraIndex].getFiducialId();
   }
 
-  public static double frontTargetYaw = 0;
-  public static double frontTargetRangeX = 0;
-  public static double frontTargetRangeY = 0;
+  public double closestTargetYaw(int cameraIndex){
+    return cameraClosestTargets[cameraIndex].getBestCameraToTarget().getRotation().getZ();
+  }
 
+  public double closestTargetXMeters(int cameraIndex){
+    return cameraClosestTargets[cameraIndex].getBestCameraToTarget().getMeasureX().in(Meters);
+  }
+
+  public double closestTargetYMeters(int cameraIndex){
+    return cameraClosestTargets[cameraIndex].getBestCameraToTarget().getMeasureY().in(Meters);
+  }
+
+  public int closestTargetID(int cameraIndex){
+    return cameraClosestTargets[cameraIndex].getFiducialId();
+  }
 
   public void debugSingleTagCameraData(PhotonCamera[] cameras, Transform3d[] cameraTransforms) {
     for(int cameraIndex = 0; cameraIndex < cameras.length; cameraIndex++){
@@ -229,8 +237,7 @@ public class PhotonVision extends SubsystemBase {
   @Override
   public void periodic() {
     captureBestTargets();
+    captureClosestTargets();
     capturePoseEstimations();
-
-    // debugSingleTagCameraData(cameras, cameraTransforms);
   }
 }

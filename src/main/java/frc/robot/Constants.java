@@ -1,14 +1,7 @@
 package frc.robot;
 
-
-
-import org.photonvision.PhotonCamera;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import frc.PhotonCameraWithTransform;
 
 public final class Constants {
     public static final double inversion = -1;
@@ -19,15 +12,17 @@ public final class Constants {
 
     public final class PhotonVisionConstants {
         public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark); // SWITCH AT WORLDS, IF WE MAKE IT
-        public static final PhotonCameraWithTransform photonCamerasWithTransforms[] = {
-            new PhotonCameraWithTransform(new PhotonCamera("front"), new Transform3d(0, 0, 0, new Rotation3d(0, 0, 0))),
-            new PhotonCameraWithTransform(new PhotonCamera("left"), new Transform3d(0, 0, 0, new Rotation3d(0, 0, 0))),
-            new PhotonCameraWithTransform(new PhotonCamera("back"), new Transform3d(0, 0, 0, new Rotation3d(0, 0, 0))),
-            new PhotonCameraWithTransform(new PhotonCamera("right"), new Transform3d(0, 0, 0, new Rotation3d(0, 0, 0)))
-        };
+
         public static final int backCameraID = 0;
         public static final int leftCameraID = 1;
         public static final int rightCameraID = 2;
+
+        public static final double visionOrthogonalSpeedScale = 2.25;
+        public static final double visionRotationalSpeedScale = 0.75;
+        public static final double reefOffsetMagnitudeX = 0.35;
+        public static final double reefOffsetMagnitudeY = 0.10;
+        public static final double stationOffsetMagnitudeX = 0.70;
+        public static final double stationOffsetMagnitudeY = 0.5;
     } 
 
     public final class ElevatorConstants {

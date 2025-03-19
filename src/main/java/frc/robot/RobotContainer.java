@@ -73,16 +73,6 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
     private ShuffleboardTab tab1 = Shuffleboard.getTab("Tab1");
 
-    // public Command AutoDeadline() {
-    //     if (claw.checkTimeOfFlight())
-    //         return new ParallelCommandGroup(alignRight(), coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ElevatorConstants.l4Position));
-    //     else
-    //         return claw.setClawIntakeWithTimeOfFlight()
-    //                 .andThen(new ParallelCommandGroup(alignRight(), coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ElevatorConstants.l4Position)));
-    // }
-
-    // public Command DeadLine() { return AutoDeadline(); }
-
     public RobotContainer() {
         configureBindings();
 
@@ -100,7 +90,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("CensorIntake", claw.setClawIntakeWithTimeOfFlight().andThen(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ElevatorConstants.l4Position)));
         NamedCommands.registerCommand("StopIntake", claw.setClawStop());
 
-        // NamedCommands.registerCommand("DeadlineCommand", DeadLine());
+        NamedCommands.registerCommand("DeadlineCommand", DeadLine());
+        
         autoChooser.setDefaultOption("Default Auto", onePieceAuto());
 
         autoChooser.addOption("One Meter", oneMeter());
@@ -224,39 +215,45 @@ public class RobotContainer {
     }
 
     public Command moveToReefLeft(int cameraIndex) {
+        // x:-0.36, y:-0.07
         return drivetrain.applyRequest(() -> 
                 driveRobotCentric
-                    .withVelocityX((photonVision.bestTargetXMeters(cameraIndex) - 0.36) * 0.625 * 4)
-                    .withVelocityY((photonVision.bestTargetYMeters(cameraIndex) - 0.07) * 0.625 * 4)
-                    .withRotationalRate(((Math.PI - (Math.abs(photonVision.bestTargetYaw(cameraIndex)))) * Math.signum(photonVision.bestTargetYaw(cameraIndex))) * Constants.inversion * 0.75 )
+                    .withVelocityX((photonVision.closestTargetXMeters(cameraIndex) - Constants.PhotonVisionConstants.reefOffsetMagnitudeX) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
+                    .withVelocityY((photonVision.closestTargetYMeters(cameraIndex) - Constants.PhotonVisionConstants.reefOffsetMagnitudeY) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
+                    .withRotationalRate(((Math.PI - (Math.abs(photonVision.closestTargetYaw(cameraIndex)))) * Math.signum(photonVision.closestTargetYaw(cameraIndex))) * Constants.inversion * Constants.PhotonVisionConstants.visionRotationalSpeedScale )
         );
     }
 
     public Command moveToReefRight(int cameraIndex) {
+        // x:-0.35, y:0.10
         return drivetrain.applyRequest(() -> 
                 driveRobotCentric
-                    .withVelocityX((photonVision.bestTargetXMeters(cameraIndex) - 0.35) * 0.625 * 4)
-                    .withVelocityY((photonVision.bestTargetYMeters(cameraIndex) + 0.10) * 0.625 * 4)
-                    .withRotationalRate(((Math.PI - (Math.abs(photonVision.bestTargetYaw(cameraIndex)))) * Math.signum(photonVision.bestTargetYaw(cameraIndex))) * Constants.inversion * 0.75 )
+                    .withVelocityX((photonVision.closestTargetXMeters(cameraIndex) - Constants.PhotonVisionConstants.reefOffsetMagnitudeX) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
+                    .withVelocityY((photonVision.closestTargetYMeters(cameraIndex) + Constants.PhotonVisionConstants.reefOffsetMagnitudeY) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
+                    .withRotationalRate(((Math.PI - (Math.abs(photonVision.closestTargetYaw(cameraIndex)))) * Math.signum(photonVision.closestTargetYaw(cameraIndex))) * Constants.inversion * Constants.PhotonVisionConstants.visionRotationalSpeedScale )
         );
     }
 
      public Command moveToStation(int cameraIndex) {
         return drivetrain.applyRequest(() -> 
                 driveRobotCentric
-                    .withVelocityX((photonVision.bestTargetXMeters(cameraIndex) - 0.70) * 1.5 * -1.5)
-                    .withVelocityY((photonVision.bestTargetYMeters(cameraIndex) - 0.04) * 1.5 * -1.5)
-                    .withRotationalRate((Math.toRadians(163.5) - Math.abs((photonVision.bestTargetYaw(cameraIndex)))) * Math.signum((Math.toRadians(163.5) - Math.abs((photonVision.bestTargetYaw(cameraIndex))))) * Constants.inversion * 0.75 )
-                    // .withRotationalRate((Math.abs((Math.toRadians(163.5) - (Math.abs(photonVision.bestTargetYaw(cameraIndex))))) * Math.signum(photonVision.bestTargetYaw(cameraIndex))) * Constants.inversion * 1 )
+                    .withVelocityX((photonVision.closestTargetXMeters(cameraIndex) - Constants.PhotonVisionConstants.stationOffsetMagnitudeX) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale * Constants.inversion)
+                    .withVelocityY((photonVision.closestTargetYMeters(cameraIndex) - Constants.PhotonVisionConstants.stationOffsetMagnitudeY) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale * Constants.inversion)
+                    .withRotationalRate(((Math.PI - (Math.abs(photonVision.closestTargetYaw(cameraIndex)))) * Math.signum(photonVision.closestTargetYaw(cameraIndex))) * Constants.PhotonVisionConstants.visionRotationalSpeedScale )
         );
+    }
+
+    public Command DeadLine() {
+        return claw.setClawIntakeWithTimeOfFlight().unless(() -> !claw.sensorSeesCoral())
+                   .andThen(new ParallelCommandGroup(alignRight(), coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ElevatorConstants.l4Position)));
     }
      
     public Command alignLeft(){
-        return moveToReefLeft(Constants.PhotonVisionConstants.rightCameraID); // Use rightCamera
+        return moveToReefLeft(Constants.PhotonVisionConstants.rightCameraID);
     }
 
     public Command alignRight(){
-        return moveToReefRight(Constants.PhotonVisionConstants.leftCameraID); // Use leftCamera
+        return moveToReefRight(Constants.PhotonVisionConstants.leftCameraID);
     }
 
     public Command autoLOneDrop() {
