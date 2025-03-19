@@ -12,6 +12,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -56,9 +57,8 @@ public class RobotContainer {
 
     public final CommandXboxController driveController = new CommandXboxController(0);
     public final ButtonBoard buttonBoard = new ButtonBoard(12, 1);
-
     public final ButtonBoard buttonBoard2 = new ButtonBoard(12, 2);
-    public final ButtonBoard joystick = new ButtonBoard(12, 3);
+    public final Joystick joystick = new Joystick(3);
     
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -66,7 +66,7 @@ public class RobotContainer {
     public Claw claw = new Claw();
     public Wrist wrist = new Wrist();
     public Elevator elevator = new Elevator();
-    public Climber climber = new Climber(() -> { return -joystick.getAxis(1); });
+    public Climber climber = new Climber(() -> { return -1 * joystick.getRawAxis(1); });
     public PhotonVision photonVision = new PhotonVision();
 
     private final CoralSystem coralSystem = new CoralSystem(elevator, arm, climber, claw, wrist);
@@ -127,7 +127,6 @@ public class RobotContainer {
         driveController.leftBumper().onFalse(coralSystem.setCoralSystemGroundPickup());
         driveController.leftTrigger().whileTrue(alignLeft());
         driveController.rightTrigger().whileTrue(alignRight());
-        driveController.rightBumper().onTrue(climber.setClimberDown(0.01));
 
         driveController.y().onTrue(claw.setClawIntakeWithTimeOfFlight());
         driveController.y().onFalse(claw.setClawStop());
@@ -160,11 +159,6 @@ public class RobotContainer {
         buttonBoard2.getButton(1).onTrue(claw.setClawEject());
         buttonBoard2.getButton(1).onFalse(claw.setClawStop());
         
-        // buttonBoard2.getButton(2).onTrue(Disable Ratchet); // 
-
-        // USB Joystick
-        joystick.getButton(1).onTrue(climber.setClimberDown(0.01));
-
         Trigger buttonBoardRawAxis0Positive = new Trigger(() -> { return buttonBoard2.getButtonBoard().getRawAxis(0) > 0.7; });
         Trigger buttonBoardRawAxis0Negative = new Trigger(() -> { return buttonBoard2.getButtonBoard().getRawAxis(0) < -0.7; });
         Trigger buttonBoardRawAxis1Positive = new Trigger(() -> { return buttonBoard2.getButtonBoard().getRawAxis(1) > 0.7; });
@@ -206,7 +200,7 @@ public class RobotContainer {
                  .andThen(coralSystem.setCoralSystemStow());
 
                  /** Climber */
-                 // .andThen()
+                 //.andThen(climber.)
 
                  /** DriveTrain */
                 //  .andThen(drivetrain.applyRequest(() -> driveRobotCentric.withVelocityX(-1).withVelocityY(0).withRotationalRate(0)))
