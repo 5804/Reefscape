@@ -232,7 +232,6 @@ public class RobotContainer {
         );
     }
 
-    
     public Command moveToReefRight(int cameraIndex) {
         return drivetrain.applyRequest(() -> 
                 driveRobotCentric
@@ -242,8 +241,6 @@ public class RobotContainer {
         );
     }
 
-
-    
      public Command moveToStation(int cameraIndex) {
         return drivetrain.applyRequest(() -> 
                 driveRobotCentric

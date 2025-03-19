@@ -22,6 +22,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -41,28 +42,59 @@ public class PhotonVision extends SubsystemBase {
     new Transform3d(0.2794, 0.254, 0.1905, new Rotation3d(0, 0.436332, 0)),
     new Transform3d(0.2794, -0.254, 0.1905, new Rotation3d(0, 0.436332, 0))
   };
-  public PhotonTrackedTarget[] cameraTargets;
+  public PhotonTrackedTarget[] cameraBestTargets;
+  public PhotonTrackedTarget[] cameraClosestTargets;
   public PhotonPoseEstimator[] cameraPoseEstimator;
   public Pose3d[] estimatedPoses;
 
+  public int frameThreshold = 30;
+  public int[] thresholdFrameCounts = new int[4];
+  public boolean[] cameraIsLive = new boolean[4];
+
   public PhotonVision() {
-    cameraTargets = new PhotonTrackedTarget[cameras.length];
+    cameraBestTargets = new PhotonTrackedTarget[cameras.length];
     estimatedPoses = new Pose3d[cameras.length];
     cameraPoseEstimator = new PhotonPoseEstimator[cameras.length];
 
     for(int cameraIndex = 0; cameraIndex < cameras.length; cameraIndex++){
-      cameraTargets[cameraIndex] = new PhotonTrackedTarget();
+      cameraBestTargets[cameraIndex] = new PhotonTrackedTarget();
       estimatedPoses[cameraIndex] = new Pose3d();
       cameraPoseEstimator[cameraIndex] = new PhotonPoseEstimator(Constants.PhotonVisionConstants.aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cameraTransforms[cameraIndex]);
     }
   }
 
-  public void captureBestTargets(){
+  public void captureBestTargets() {
     for(int cameraIndex = 0; cameraIndex < cameras.length; cameraIndex++){
       PhotonCamera currentCamera = cameras[cameraIndex];
       List<PhotonPipelineResult> frameResults = currentCamera.getAllUnreadResults();
       int frameIndex = frameResults.size() - 1;
-      cameraTargets[cameraIndex] = (!frameResults.isEmpty() && frameResults.get(frameIndex).hasTargets()) ? frameResults.get(frameIndex).getBestTarget() : cameraTargets[cameraIndex];
+      cameraBestTargets[cameraIndex] = (!frameResults.isEmpty() && frameResults.get(frameIndex).hasTargets()) ? frameResults.get(frameIndex).getBestTarget() : cameraBestTargets[cameraIndex];
+    }
+  }
+
+
+  public void captureClosestTargets() {
+    PhotonTrackedTarget closestTarget = new PhotonTrackedTarget();
+    double closestDistance = Double.MAX_VALUE;
+
+    for(int cameraIndex = 0; cameraIndex < cameras.length; cameraIndex++) {
+      PhotonCamera currentCamera = cameras[cameraIndex];
+      List<PhotonPipelineResult> frameResults = currentCamera.getAllUnreadResults();
+      int frameIndex = frameResults.size() - 1;
+
+      if(!frameResults.isEmpty() && frameResults.get(frameIndex).hasTargets()) {
+        PhotonPipelineResult result = frameResults.get(frameIndex);
+        List<PhotonTrackedTarget> targets = result.getTargets();
+
+        for(int targetIndex = 0; targetIndex < targets.size(); targetIndex++) {
+          double distanceToTag = targets.get(targetIndex).getBestCameraToTarget().getTranslation().getDistance(new Translation3d(0, 0, 0));
+          if(distanceToTag < closestDistance) {
+            closestTarget = targets.get(targetIndex);
+            closestDistance = distanceToTag;
+          }
+        }
+        cameraClosestTargets[cameraIndex] = closestTarget;
+      }
     }
   }
 
@@ -76,24 +108,28 @@ public class PhotonVision extends SubsystemBase {
     }
   }
 
+  public void getClosestTarget() {
+
+  }
+
   public Pose3d[] getEstimatedPoses() {
     return estimatedPoses;
   }
 
   public double bestTargetYaw(int cameraIndex){
-    return cameraTargets[cameraIndex].getBestCameraToTarget().getRotation().getZ();
+    return cameraBestTargets[cameraIndex].getBestCameraToTarget().getRotation().getZ();
   }
 
   public double bestTargetXMeters(int cameraIndex){
-    return cameraTargets[cameraIndex].getBestCameraToTarget().getMeasureX().in(Meters);
+    return cameraBestTargets[cameraIndex].getBestCameraToTarget().getMeasureX().in(Meters);
   }
 
   public double bestTargetYMeters(int cameraIndex){
-    return cameraTargets[cameraIndex].getBestCameraToTarget().getMeasureY().in(Meters);
+    return cameraBestTargets[cameraIndex].getBestCameraToTarget().getMeasureY().in(Meters);
   }
 
   public int bestTargetID(int cameraIndex){
-    return cameraTargets[cameraIndex].getFiducialId();
+    return cameraBestTargets[cameraIndex].getFiducialId();
   }
 
   public static double frontTargetYaw = 0;
