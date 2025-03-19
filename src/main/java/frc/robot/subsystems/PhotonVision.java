@@ -159,14 +159,6 @@ public class PhotonVision extends SubsystemBase {
           Pose3d estimatedRobotPose = null;
           String timestamp = "" + java.time.LocalDateTime.now().getHour() + ":" + java.time.LocalDateTime.now().getMinute() + ":" + java.time.LocalDateTime.now().getSecond();
 
-          frontTargetYaw = bestTarget.getYaw();
-          frontTargetRangeX = bestTarget.getBestCameraToTarget().getMeasureX().in(Meters);
-          frontTargetRangeY = bestTarget.getBestCameraToTarget().getMeasureY().in(Meters);
-          SmartDashboard.putNumber("Yaw", frontTargetYaw);
-          SmartDashboard.putNumber("Range X", frontTargetYaw);
-          SmartDashboard.putNumber("Range Y", frontTargetYaw);
-
-
           SmartDashboard.putNumber(currentCamera.getName() + ".bt.id", bestTarget.getFiducialId());
           SmartDashboard.putNumber(currentCamera.getName() + ".bt.x", trunc(bestTarget.getBestCameraToTarget().getMeasureX().in(Meters)));
           SmartDashboard.putNumber(currentCamera.getName() + ".bt.y", trunc(bestTarget.getBestCameraToTarget().getMeasureY().in(Meters)));
