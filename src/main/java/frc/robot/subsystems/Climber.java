@@ -39,8 +39,9 @@ public class Climber extends SubsystemBase {
         climberMotionMagicConfigs.MotionMagicAcceleration = Constants.ClimberConstants.acceleration;
         climberMotionMagicConfigs.MotionMagicJerk = Constants.ClimberConstants.jerk;
 
+        climberMotorOutputFXConfigs.NeutralMode = NeutralModeValue.Brake;
+
         climberMotor.getConfigurator().apply(climberTalonFXConfigs);
-        climberMotor.setNeutralMode(NeutralModeValue.Brake);
         
         this.climberSup = climberSup;
     }
