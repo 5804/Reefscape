@@ -18,11 +18,11 @@ public final class Constants {
         public static final int rightCameraID = 2;
 
         public static final double visionOrthogonalSpeedScale = 2.25;
-        public static final double visionRotationalSpeedScale = 0.75;
+        public static final double visionRotationalSpeedScale = 0.95;
         public static final double reefOffsetMagnitudeX = 0.35;
         public static final double reefOffsetMagnitudeY = 0.10;
-        public static final double stationOffsetMagnitudeX = 0.70;
-        public static final double stationOffsetMagnitudeY = 0.5;
+        public static final double stationOffsetMagnitudeX = 0.60;
+        public static final double stationOffsetMagnitudeY = 0.14;
     } 
 
     public final class ElevatorConstants {
@@ -39,7 +39,7 @@ public final class Constants {
         public static final int leftElevatorMotorID  = 52;
         public static final int rightElevatorMotorID = 51;
 
-        public static final double tolerance = 0.2;
+        public static final double tolerance = 0.25;
 
         public static final double zeroPosition         = 0.15832;
         public static final double minSafePosition      = -38;
@@ -80,7 +80,7 @@ public final class Constants {
             public static final double acceleration   = .75;
             public static final double jerk           = 2;
 
-            public static final double tolerance = 0.01;
+            public static final double tolerance = 0.03;
 
             public static final double minSafeValue             = 0.147; 
             public static final double l4Position               = 0.232; 
@@ -141,10 +141,8 @@ public final class Constants {
     }
 
     public final class ClimberConstants {
-        public static final int leftMotorID  = 53;
-        public static final int rightMotorID = 54;
+        public static final int climbMotorID  = 53;
         public static final int leftRachetPWMChannel  = 1;
-        public static final int rightRachetPWMChannel = 2;
 
         public static final double kS = 0.25;
         public static final double kV = 0.12;
@@ -159,8 +157,8 @@ public final class Constants {
 
         public static final double tolerance = 0.1;
 
-        public static final double downClimberPosition  = 247.86;
+        public static final double downClimberPosition  = 2;
         public static final double climbClimberPosition = 1;
-        public static final double stowClimberPosition  = 0.1;
+        public static final double stowClimberPosition  = 0.5;
     }
 }

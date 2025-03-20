@@ -53,11 +53,13 @@ public class PhotonVision extends SubsystemBase {
 
   public PhotonVision() {
     cameraBestTargets = new PhotonTrackedTarget[cameras.length];
+    cameraClosestTargets = new PhotonTrackedTarget[cameras.length];
     estimatedPoses = new Pose3d[cameras.length];
     cameraPoseEstimator = new PhotonPoseEstimator[cameras.length];
 
     for(int cameraIndex = 0; cameraIndex < cameras.length; cameraIndex++){
       cameraBestTargets[cameraIndex] = new PhotonTrackedTarget();
+      cameraClosestTargets[cameraIndex] = new PhotonTrackedTarget();
       estimatedPoses[cameraIndex] = new Pose3d();
       cameraPoseEstimator[cameraIndex] = new PhotonPoseEstimator(Constants.PhotonVisionConstants.aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cameraTransforms[cameraIndex]);
     }

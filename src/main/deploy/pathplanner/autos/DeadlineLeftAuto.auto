@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "S2.R5.coralPrep.path"
+                  "pathName": "StartToHPLeft"
                 }
               },
               {
@@ -42,7 +42,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "AG1.H1.coralLoad.path"
+                  "pathName": "FirstScoreToHPLeft"
                 }
               },
               {
@@ -73,7 +73,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "HPtoCoral"
+                  "pathName": "HPtoCoralLeft"
                 }
               }
             ]

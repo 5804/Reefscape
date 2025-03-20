@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "StartToHPLeft"
+                  "pathName": "StartRight"
                 }
               },
               {
@@ -26,7 +26,7 @@
         {
           "type": "named",
           "data": {
-            "name": "CoralAlignLeft"
+            "name": "CoralAlignRight"
           }
         },
         {
@@ -42,7 +42,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "FirstScoreToHPLeft"
+                  "pathName": "ToHPRight"
                 }
               },
               {
@@ -73,7 +73,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "HPtoCoralLeft"
+                  "pathName": "HPToScoreRight"
                 }
               }
             ]
@@ -82,7 +82,7 @@
         {
           "type": "named",
           "data": {
-            "name": "CoralAlignRight"
+            "name": "CoralAlignLeft"
           }
         },
         {
