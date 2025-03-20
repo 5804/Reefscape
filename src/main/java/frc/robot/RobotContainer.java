@@ -213,7 +213,7 @@ public class RobotContainer {
                  .andThen(climber.setClimberPosition(Constants.ClimberConstants.downClimberPosition, Constants.ClimberConstants.tolerance))
                  .andThen(() -> { try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}})
                  .andThen(climber.setClimberPosition(Constants.ClimberConstants.stowClimberPosition, Constants.ClimberConstants.tolerance))
-                 .andThen(() -> { try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}})
+                 .andThen(() -> { try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}});
 
                  /** DriveTrain */
                 //  .andThen(drivetrain.applyRequest(() -> driveRobotCentric.withVelocityX(-1).withVelocityY(0).withRotationalRate(0)))
