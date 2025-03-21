@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -90,6 +91,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("PlayerStationAlign", moveToStation(Constants.PhotonVisionConstants.backCameraID).withTimeout(1.5));
         NamedCommands.registerCommand("CensorIntake", claw.setClawIntakeWithTimeOfFlight().andThen(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ElevatorConstants.l4Position)));
         NamedCommands.registerCommand("StopIntake", claw.setClawStop());
+        NamedCommands.registerCommand("Ejectintake", claw.setClawEject());
 
         NamedCommands.registerCommand("DeadlineCommand", DeadLine());
         
@@ -163,6 +165,7 @@ public class RobotContainer {
         // USB Button Board 2
         buttonBoard2.getButton(1).onTrue(claw.setClawEject());
         buttonBoard2.getButton(1).onFalse(claw.setClawStop());
+        buttonBoard2.getButton(2).onTrue(new InstantCommand(() -> {CommandScheduler.getInstance().cancelAll();}));
         
         Trigger buttonBoardRawAxis0Positive = new Trigger(() -> { return buttonBoard2.getButtonBoard().getRawAxis(0) > 0.7; });
         Trigger buttonBoardRawAxis0Negative = new Trigger(() -> { return buttonBoard2.getButtonBoard().getRawAxis(0) < -0.7; });

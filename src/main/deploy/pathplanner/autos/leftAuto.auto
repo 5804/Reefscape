@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "StartToHPLeft"
+                  "pathName": "StartToCoralLeft"
                 }
               },
               {
@@ -42,7 +42,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "FirstScoreToHPLeft"
+                  "pathName": "ScoreToHPLeft"
                 }
               },
               {
@@ -89,6 +89,12 @@
           "type": "named",
           "data": {
             "name": "LFourScore"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Ejectintake"
           }
         }
       ]
