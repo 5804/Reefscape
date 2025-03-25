@@ -76,14 +76,14 @@ public class Arm extends SubsystemBase {
   }
 
   public Command manuallyRotateShoulderDown() {
-    MotionMagicVoltage request = new MotionMagicVoltage(0);
-    return run(() -> { shoulderMotor.setVoltage(Constants.ArmConstants.ShoulderConstants.manualTravelSpeedVoltage);})
-          .finallyDo(() -> { shoulderMotor.setControl(request.withPosition(shoulderEncoder.getPosition().getValueAsDouble()));});
+    // MotionMagicVoltage request = new MotionMagicVoltage(0);
+    return run(() -> { shoulderMotor.setVoltage(Constants.ArmConstants.ShoulderConstants.manualTravelSpeedVoltage); })
+          .finallyDo(() -> { shoulderMotor.setVoltage(0); }); // shoulderMotor.setControl(request.withPosition(shoulderEncoder.getPosition().getValueAsDouble()));
   }
 
   public Command manuallyRotateShoulderUp() {
-    MotionMagicVoltage request = new MotionMagicVoltage(0);
-    return run(() -> { shoulderMotor.setVoltage(Constants.inversion * Constants.ArmConstants.ShoulderConstants.manualTravelSpeedVoltage);})
-          .finallyDo(() -> { shoulderMotor.setControl(request.withPosition(shoulderEncoder.getPosition().getValueAsDouble()));});
+    // MotionMagicVoltage request = new MotionMagicVoltage(0);
+    return run(() -> { shoulderMotor.setVoltage(Constants.inversion * Constants.ArmConstants.ShoulderConstants.manualTravelSpeedVoltage); })
+          .finallyDo(() -> { shoulderMotor.setVoltage(0); }); // shoulderMotor.setControl(request.withPosition(shoulderEncoder.getPosition().getValueAsDouble()));
   }
 }

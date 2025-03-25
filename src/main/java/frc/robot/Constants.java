@@ -19,10 +19,12 @@ public final class Constants {
 
         public static final double visionOrthogonalSpeedScale = 2.25;
         public static final double visionRotationalSpeedScale = 0.95;
-        public static final double reefOffsetMagnitudeX = 0.35;
-        public static final double reefOffsetMagnitudeY = 0.10;
-        public static final double stationOffsetMagnitudeX = 0.60;
-        public static final double stationOffsetMagnitudeY = 0.14;
+        public static final double reefLeftOffsetMagnitudeX = 0.36; // 0.35 home
+        public static final double reefLeftOffsetMagnitudeY = 0.09; // 0.10 home
+        public static final double reefRightOffsetMagnitudeX = 0.36; // 0.35 home
+        public static final double reefRightOffsetMagnitudeY = 0.11; // 0.10 home
+        public static final double stationOffsetMagnitudeX = 0.60; // 0.60 home
+        public static final double stationOffsetMagnitudeY = 0.14; // 0.14 home
     } 
 
     public final class ElevatorConstants {
@@ -69,9 +71,9 @@ public final class Constants {
             public static final int motorID = 55;
             public static final int encoderID = 60;
             public static final double kS = 0.3;
-            public static final double kV = 32.57;
-            public static final double kA = 0.01;
-            public static final double kP = 10;
+            public static final double kV = 32.57; //32.57
+            public static final double kA = 0.01; //0.01
+            public static final double kP = 10; //10
             public static final double kI = 0;
             public static final double kD = 0.1;
             public static final double kG = 0.00;
