@@ -18,7 +18,6 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.TargetCorner;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -46,9 +45,6 @@ public class PhotonVision extends SubsystemBase {
   public PhotonTrackedTarget[] cameraClosestTargets;
   public PhotonPoseEstimator[] cameraPoseEstimator;
   public Pose3d[] estimatedPoses;
-
-  public int frameThreshold = 50;
-  public int[] thresholdFrameCounts = new int[4];
   public boolean[] cameraIsLive = new boolean[4];
 
   public PhotonVision() {
@@ -58,8 +54,10 @@ public class PhotonVision extends SubsystemBase {
     cameraPoseEstimator = new PhotonPoseEstimator[cameras.length];
 
     for(int cameraIndex = 0; cameraIndex < cameras.length; cameraIndex++){
-      cameraBestTargets[cameraIndex] = new PhotonTrackedTarget();
-      cameraClosestTargets[cameraIndex] = new PhotonTrackedTarget();
+      cameraBestTargets[cameraIndex] = new PhotonTrackedTarget(0.0, 0.0, 0.0, 0.0, 0, 0, (float) 0.0, new Transform3d(0,0,0, new Rotation3d(0,0,0)), new Transform3d(0,0,0, new Rotation3d(0,0,0)), 0.0, new ArrayList<TargetCorner>(), new ArrayList<TargetCorner>());
+      cameraBestTargets[cameraIndex].bestCameraToTarget = new Transform3d(0,0,0, new Rotation3d(0,0,0));
+      cameraClosestTargets[cameraIndex] = new PhotonTrackedTarget(0.0, 0.0, 0.0, 0.0, 0, 0, (float) 0.0, new Transform3d(0,0,0, new Rotation3d(0,0,0)), new Transform3d(0,0,0, new Rotation3d(0,0,0)), 0.0, new ArrayList<TargetCorner>(), new ArrayList<TargetCorner>());
+      cameraClosestTargets[cameraIndex].bestCameraToTarget = new Transform3d(0,0,0, new Rotation3d(0,0,0));
       estimatedPoses[cameraIndex] = new Pose3d();
       cameraPoseEstimator[cameraIndex] = new PhotonPoseEstimator(Constants.PhotonVisionConstants.aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cameraTransforms[cameraIndex]);
     }
@@ -69,8 +67,18 @@ public class PhotonVision extends SubsystemBase {
     for(int cameraIndex = 0; cameraIndex < cameras.length; cameraIndex++){
       PhotonCamera currentCamera = cameras[cameraIndex];
       List<PhotonPipelineResult> frameResults = currentCamera.getAllUnreadResults();
-      int frameIndex = frameResults.size() - 1;
-      cameraBestTargets[cameraIndex] = (!frameResults.isEmpty() && frameResults.get(frameIndex).hasTargets()) ? frameResults.get(frameIndex).getBestTarget() : cameraBestTargets[cameraIndex];
+      PhotonPipelineResult selectedFrame = new PhotonPipelineResult();
+
+      if (!frameResults.isEmpty()){
+        for(int i=frameResults.size()-1; i>=0; i--){
+          if (!frameResults.isEmpty() && frameResults.get(i).hasTargets()){
+            selectedFrame = frameResults.get(i);
+            break;
+          }
+        }
+
+        cameraBestTargets[cameraIndex] = selectedFrame.getBestTarget();
+      }
     }
   }
 
@@ -231,7 +239,7 @@ public class PhotonVision extends SubsystemBase {
   @Override
   public void periodic() {
     captureBestTargets();
-    captureClosestTargets();
-    capturePoseEstimations();
+    //captureClosestTargets();
+    //capturePoseEstimations();
   }
 }
