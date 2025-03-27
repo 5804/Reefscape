@@ -82,4 +82,8 @@ public class Wrist extends SubsystemBase {
   public double getWristPosition() {
     return wristEncoder.getPosition().getValueAsDouble();
   }
+
+  public Command zeroWristPosition() {
+    return runOnce(() -> { wristMotor.setPosition(0); });
+  }
 }

@@ -78,4 +78,8 @@ public class Elevator extends SubsystemBase {
   public double getElevatorPosition() {
     return leftElevatorMotor.getPosition().getValueAsDouble();
   }
+
+  public Command zeroElevatorPosition() {
+    return runOnce(() -> { leftElevatorMotor.setPosition(0); });
+  }
 }

@@ -124,15 +124,27 @@ public class PhotonVision extends SubsystemBase {
   }
 
   public double bestTargetYaw(int cameraIndex){
-    return cameraBestTargets[cameraIndex].getBestCameraToTarget().getRotation().getZ();
+    if (cameraBestTargets[cameraIndex] != null) {
+      return cameraBestTargets[cameraIndex].getBestCameraToTarget().getRotation().getZ();
+    } else {
+      return 0;
+    }
   }
 
   public double bestTargetXMeters(int cameraIndex){
-    return cameraBestTargets[cameraIndex].getBestCameraToTarget().getMeasureX().in(Meters);
+    if (cameraBestTargets[cameraIndex] != null) {
+      return cameraBestTargets[cameraIndex].getBestCameraToTarget().getMeasureX().in(Meters);
+    } else {
+      return 0;
+    }
   }
 
   public double bestTargetYMeters(int cameraIndex){
-    return cameraBestTargets[cameraIndex].getBestCameraToTarget().getMeasureY().in(Meters);
+    if (cameraBestTargets[cameraIndex] != null) {
+      return cameraBestTargets[cameraIndex].getBestCameraToTarget().getMeasureY().in(Meters);
+    } else {
+      return 0;
+    }
   }
 
   public int bestTargetID(int cameraIndex){

@@ -42,10 +42,6 @@ public class RobotContainer {
     private final double maxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
     private double speedMultiplier = 1;
 
-    public void increaseSpeedMultiplier(double value) {
-        speedMultiplier += value;
-    }
-
     private final SwerveRequest.FieldCentric driveFieldCentric = new SwerveRequest.FieldCentric()
             .withDeadband(maxSpeed * 0.005).withRotationalDeadband(maxAngularRate * 0.005) // Add a 20% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);                       // Use open-loop control for drive motors
@@ -181,7 +177,7 @@ public class RobotContainer {
 
         joystickTrigger.whileTrue(new InstantCommand(() -> { this.triggerHeld=1; }));
         joystickTrigger.whileFalse(new InstantCommand(() -> { this.triggerHeld=0; }));
-        joystickButton2Trigger.whileTrue(new InstantCommand(() -> {CommandScheduler.getInstance().cancelAll();}));
+        joystickButton2Trigger.onTrue(elevator.zeroElevatorPosition());
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
