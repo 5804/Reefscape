@@ -70,7 +70,7 @@ public class PhotonVision extends SubsystemBase {
       PhotonPipelineResult selectedFrame = new PhotonPipelineResult();
 
       if (!frameResults.isEmpty()){
-        for(int i=frameResults.size()-1; i>=0; i--){
+        for(int i=frameResults.size() - 1; i >= 0; i--) {
           if (!frameResults.isEmpty() && frameResults.get(i).hasTargets()){
             selectedFrame = frameResults.get(i);
             break;
@@ -156,7 +156,11 @@ public class PhotonVision extends SubsystemBase {
   }
 
   public double closestTargetXMeters(int cameraIndex){
-    return cameraClosestTargets[cameraIndex].getBestCameraToTarget().getMeasureX().in(Meters);
+    if (cameraClosestTargets[cameraIndex] != null) {
+      return cameraClosestTargets[cameraIndex].getBestCameraToTarget().getMeasureX().in(Meters)
+    } else {
+      return 0;
+    }
   }
 
   public double closestTargetYMeters(int cameraIndex){
@@ -250,8 +254,8 @@ public class PhotonVision extends SubsystemBase {
 
   @Override
   public void periodic() {
-    captureBestTargets();
-    //captureClosestTargets();
+    // captureBestTargets();
+    captureClosestTargets();
     //capturePoseEstimations();
   }
 }

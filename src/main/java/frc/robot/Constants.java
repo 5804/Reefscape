@@ -71,16 +71,16 @@ public final class Constants {
             public static final int motorID = 55;
             public static final int encoderID = 60;
             public static final double kS = 0.3;
-            public static final double kV = 32.57; //32.57
-            public static final double kA = 0.01; //0.01
-            public static final double kP = 10; //10
+            public static final double kV = 31.78; // 32.57
+            public static final double kA = 0.02; // 0.01
+            public static final double kP = 10; // 10
             public static final double kI = 0;
-            public static final double kD = 0.1;
-            public static final double kG = 0.00;
+            public static final double kD = 0;
+            public static final double kG = 0.08;
 
             public static final double cruiseVelocity = 0.75;
-            public static final double acceleration   = .75;
-            public static final double jerk           = 2;
+            public static final double acceleration   = 1.5;
+            public static final double jerk           = 0;
 
             public static final double tolerance = 0.03;
 
@@ -95,7 +95,7 @@ public final class Constants {
             public static final double bargePlacePosition       = 0.072;
 
             public static final double manualTravelSpeedVoltage = 5;
-            public static final double supplyCurrentLimit = 60;
+            public static final double supplyCurrentLimit = 70;
             public static final double statorCurrentLimit = 120;
         }
 

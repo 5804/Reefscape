@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "StartToCoralLeft"
+                  "pathName": "StartToCoralLeftSmooth"
                 }
               },
               {
@@ -42,7 +42,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "ScoreToHPLeft"
+                  "pathName": "ScoreToHPLeftSmooth"
                 }
               },
               {
@@ -52,43 +52,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "PlayerStationAlign"
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "CensorIntake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "HPtoCoralLeft"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "DeadlineCommand"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "LFourScore"
           }
         }
       ]

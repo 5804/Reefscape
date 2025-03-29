@@ -41,6 +41,8 @@ public class Elevator extends SubsystemBase {
 
     elevatorSoftwareLimitSwitchFXConfigs.ForwardSoftLimitThreshold = Constants.ElevatorConstants.forwardSoftLimitThreshold;
     elevatorSoftwareLimitSwitchFXConfigs.ReverseSoftLimitThreshold = Constants.ElevatorConstants.reverseSoftLimitThreshold;
+    elevatorSoftwareLimitSwitchFXConfigs.ForwardSoftLimitEnable = true;
+    elevatorSoftwareLimitSwitchFXConfigs.ReverseSoftLimitEnable = true;
 
     elevatorMotionMagicFXConfigs.MotionMagicCruiseVelocity = Constants.ElevatorConstants.cruiseVelocity;
     elevatorMotionMagicFXConfigs.MotionMagicAcceleration   = Constants.ElevatorConstants.acceleration;
