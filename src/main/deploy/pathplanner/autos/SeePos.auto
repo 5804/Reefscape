@@ -5,7 +5,7 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
@@ -18,6 +18,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "LFourDrop"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -26,8 +32,26 @@
                 "data": {
                   "pathName": "ScoreToHPLeftSmooth"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeTOF"
+                }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of ScoreToHPLeftSmooth"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LFourDrop"
           }
         }
       ]

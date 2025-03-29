@@ -157,7 +157,7 @@ public class PhotonVision extends SubsystemBase {
 
   public double closestTargetXMeters(int cameraIndex){
     if (cameraClosestTargets[cameraIndex] != null) {
-      return cameraClosestTargets[cameraIndex].getBestCameraToTarget().getMeasureX().in(Meters)
+      return cameraClosestTargets[cameraIndex].getBestCameraToTarget().getMeasureX().in(Meters);
     } else {
       return 0;
     }
