@@ -45,15 +45,15 @@ import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Climber;
 
 public class RobotContainer {
-    private final double maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);               // kSpeedAt12Volts desired top speed
-    private final double maxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    private static final double maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);               // kSpeedAt12Volts desired top speed
+    private static final double maxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
     private double speedMultiplier = 1;
 
-    private final SwerveRequest.FieldCentric driveFieldCentric = new SwerveRequest.FieldCentric()
+    public static final SwerveRequest.FieldCentric driveFieldCentric = new SwerveRequest.FieldCentric()
             .withDeadband(maxSpeed * 0.005).withRotationalDeadband(maxAngularRate * 0.005) // Add a 20% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);                       // Use open-loop control for drive motors
 
-    private final SwerveRequest.RobotCentric driveRobotCentric = new SwerveRequest.RobotCentric()
+    public static final SwerveRequest.RobotCentric driveRobotCentric = new SwerveRequest.RobotCentric()
             .withDeadband(maxSpeed * 0.005).withRotationalDeadband(maxAngularRate * 0.005) // Add a 20% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);                       // Use open-loop control for drive motors
 
@@ -151,8 +151,8 @@ public class RobotContainer {
         // USB Controller
         driveController.leftBumper().onTrue(coralSystem.setCoralSystemGroundReady());   
         driveController.leftBumper().onFalse(coralSystem.setCoralSystemGroundPickup());
-        // driveController.leftTrigger().whileTrue(alignLeft());
-        // driveController.rightTrigger().whileTrue(alignRight());
+        driveController.leftTrigger().whileTrue(rightVisionSubsystem.alignLeft());
+        driveController.rightTrigger().whileTrue(LeftVisionSubsystem.alignRight());
 
         driveController.y().onTrue(claw.setClawIntakeWithTimeOfFlight());
         driveController.y().onFalse(claw.setClawStop());
@@ -301,13 +301,6 @@ public class RobotContainer {
     //                .andThen(new ParallelCommandGroup(alignRight(), coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ElevatorConstants.l4Position)));
     // }
      
-    // public Command alignLeft(){
-    //     return moveToReefLeft(Constants.PhotonVisionConstants.rightCameraID);
-    // }
-
-    // public Command alignRight(){
-    //     return moveToReefRight(Constants.PhotonVisionConstants.leftCameraID);
-    // }
 
     public Command autoLOneDrop() {
         return coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l1Position, Constants.ElevatorConstants.l1Position)
