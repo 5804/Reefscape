@@ -41,7 +41,7 @@ public final class Constants {
         public static final int leftElevatorMotorID  = 52;
         public static final int rightElevatorMotorID = 51;
 
-        public static final double tolerance = 0.25;
+        public static final double tolerance = 0.5;
 
         public static final double zeroPosition         = 0.15832;
         public static final double minSafePosition      = -38;

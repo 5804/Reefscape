@@ -89,7 +89,8 @@ public class CoralSystem extends SubsystemBase {
         return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, Constants.ArmConstants.ShoulderConstants.tolerance)
                       .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.hopperIntakePosition, Constants.ElevatorConstants.tolerance))
                       .andThen(wrist.setWristVertical())
-                      .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.hopperIntakePosition, Constants.ArmConstants.ShoulderConstants.tolerance));
+                      .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.hopperIntakePosition, Constants.ArmConstants.ShoulderConstants.tolerance))
+                      .finallyDo(() -> { elevator.leftElevatorMotor.setVoltage(0); });
     }
 
     public Command combinedL4() {

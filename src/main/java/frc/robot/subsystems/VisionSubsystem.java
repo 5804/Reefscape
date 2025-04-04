@@ -12,7 +12,6 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Vector;
 
 import edu.wpi.first.math.geometry.Transform3d;
@@ -34,7 +33,6 @@ public class VisionSubsystem extends SubsystemBase{
     private boolean safetyOverride = false;
     private String cameraName;
     private Vector<N3> visionMeasurementStdDevs;
-
     private PhotonTrackedTarget cameraClosestTarget;
    
     /**
@@ -56,7 +54,6 @@ public class VisionSubsystem extends SubsystemBase{
 
     public void captureClosestTargets(List<PhotonPipelineResult> frameResults) {
       PhotonTrackedTarget closestTarget = null;
-    //   List<PhotonPipelineResult> frameResults = photonCamera.getAllUnreadResults();
       double closestDistance = Double.MAX_VALUE;
       int frameIndex = frameResults.size() - 1;
 
@@ -72,39 +69,25 @@ public class VisionSubsystem extends SubsystemBase{
           }
         }
         cameraClosestTarget = closestTarget;
+      } else {
+        cameraClosestTarget = null;
       }
     }
 
     public double closestTargetYaw(int cameraIndex){
-        if (cameraClosestTarget != null) {
-            return cameraClosestTarget.getBestCameraToTarget().getRotation().getZ();
-        } else {
-            return 0;
-        }
+        return cameraClosestTarget != null ? cameraClosestTarget.getBestCameraToTarget().getRotation().getZ() : 0;
     }
 
     public double closestTargetXMeters(int cameraIndex){
-        if (cameraClosestTarget != null) {
-            return cameraClosestTarget.getBestCameraToTarget().getMeasureX().in(Meters);
-        } else {
-            return 0;
-        }
+        return cameraClosestTarget != null ? cameraClosestTarget.getBestCameraToTarget().getMeasureX().in(Meters) : 0;
     }
 
     public double closestTargetYMeters(int cameraIndex){
-        if (cameraClosestTarget != null) {
-            return cameraClosestTarget.getBestCameraToTarget().getMeasureY().in(Meters);
-        } else {
-            return 0;
-        }
+        return cameraClosestTarget != null ? cameraClosestTarget.getBestCameraToTarget().getMeasureY().in(Meters) : 0;
     }
 
     public int closestTargetID(int cameraIndex){
-        if (cameraClosestTarget != null) {
-            return cameraClosestTarget.getFiducialId();
-        } else {
-            return 0;
-        }
+        return cameraClosestTarget != null ? cameraClosestTarget.getFiducialId() : 0;
     }
 
     public Command alignLeft(){
@@ -116,22 +99,20 @@ public class VisionSubsystem extends SubsystemBase{
     }
 
     public Command moveToReefLeft(int cameraIndex) {
-        // x:-0.36, y:-0.07
         return drivetrain.applyRequest(() -> 
             RobotContainer.driveRobotCentric
-                .withVelocityX((closestTargetXMeters(cameraIndex) - Constants.PhotonVisionConstants.reefLeftOffsetMagnitudeX) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
-                .withVelocityY((closestTargetYMeters(cameraIndex) - Constants.PhotonVisionConstants.reefLeftOffsetMagnitudeY) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
-                .withRotationalRate(((Math.PI - (Math.abs(closestTargetYaw(cameraIndex)))) * Math.signum(closestTargetYaw(cameraIndex))) * Constants.inversion * Constants.PhotonVisionConstants.visionRotationalSpeedScale)
+                .withVelocityX(this.cameraClosestTarget == null ? 0 : (closestTargetXMeters(cameraIndex) - Constants.PhotonVisionConstants.reefLeftOffsetMagnitudeX) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
+                .withVelocityY(this.cameraClosestTarget == null ? 0 : (closestTargetYMeters(cameraIndex) - Constants.PhotonVisionConstants.reefLeftOffsetMagnitudeY) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
+                .withRotationalRate(this.cameraClosestTarget == null ? 0 : ((Math.PI - (Math.abs(closestTargetYaw(cameraIndex)))) * Math.signum(closestTargetYaw(cameraIndex))) * Constants.inversion * Constants.PhotonVisionConstants.visionRotationalSpeedScale)
             );
     }
 
     public Command moveToReefRight(int cameraIndex) {
-        // x:-0.35, y:0.10
         return drivetrain.applyRequest(() -> 
             RobotContainer.driveRobotCentric
-                .withVelocityX((closestTargetXMeters(cameraIndex) - Constants.PhotonVisionConstants.reefRightOffsetMagnitudeX) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
-                .withVelocityY((closestTargetYMeters(cameraIndex) + Constants.PhotonVisionConstants.reefRightOffsetMagnitudeY) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
-                .withRotationalRate(((Math.PI - (Math.abs(closestTargetYaw(cameraIndex)))) * Math.signum(closestTargetYaw(cameraIndex))) * Constants.inversion * Constants.PhotonVisionConstants.visionRotationalSpeedScale)
+                .withVelocityX(this.cameraClosestTarget == null ? 0 : (closestTargetXMeters(cameraIndex) - Constants.PhotonVisionConstants.reefRightOffsetMagnitudeX) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
+                .withVelocityY(this.cameraClosestTarget == null ? 0 : (closestTargetYMeters(cameraIndex) + Constants.PhotonVisionConstants.reefRightOffsetMagnitudeY) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
+                .withRotationalRate(this.cameraClosestTarget == null ? 0 : ((Math.PI - (Math.abs(closestTargetYaw(cameraIndex)))) * Math.signum(closestTargetYaw(cameraIndex))) * Constants.inversion * Constants.PhotonVisionConstants.visionRotationalSpeedScale)
             );
     }
 
@@ -172,7 +153,9 @@ public class VisionSubsystem extends SubsystemBase{
         Optional<EstimatedRobotPose> visionEst = Optional.empty();
         List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
         // do our processing, save our data to our variables then we get both
-        captureClosestTargets(results);
+        
+        if (results.isEmpty())
+            captureClosestTargets(results);
 
         for (PhotonPipelineResult change : results) {
             visionEst = poseEstimator.update(change);

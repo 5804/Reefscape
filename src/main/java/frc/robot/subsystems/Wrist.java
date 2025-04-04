@@ -78,7 +78,17 @@ public class Wrist extends SubsystemBase {
     return run(() -> { wristMotor.setControl(request.withPosition(Constants.ArmConstants.WristConstants.verticalPosition));})
           .until(() -> { return getWristPosition() < Constants.ArmConstants.WristConstants.verticalPosition + 0.1; });
   }
-    //.0812
+
+  public Command moveWristHorizontal() {
+    return run(() -> { wristMotor.setVoltage(1);})
+           .finallyDo(() -> { wristMotor.setVoltage(0); });
+  }
+
+  public Command moveWristVertical() {
+    return run(() -> { wristMotor.setVoltage(-1);})
+           .finallyDo(() -> { wristMotor.setVoltage(0); });
+  }
+
   public double getWristPosition() {
     return wristEncoder.getPosition().getValueAsDouble();
   }

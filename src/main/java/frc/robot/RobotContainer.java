@@ -72,7 +72,6 @@ public class RobotContainer {
     public Wrist wrist = new Wrist();
     public Elevator elevator = new Elevator();
     public Climber climber = new Climber(() -> { return -1 * joystick.getRawAxis(1) * triggerHeld; });
-    // public PhotonVision photonVision = new PhotonVision();
 
     public final CoralSystem coralSystem = new CoralSystem(elevator, arm, climber, claw, wrist);
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -91,41 +90,19 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("drop", autoLOneDrop());
         NamedCommands.registerCommand("LFourDrop", autoLFourDrop());
-
         NamedCommands.registerCommand("LFourUp", coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ElevatorConstants.l4Position));
         NamedCommands.registerCommand("LFourScore", coralSystem.scoreL4Auto());
         NamedCommands.registerCommand("Stow", coralSystem.setCoralSystemStow());
-
-        // NamedCommands.registerCommand("CoralAlignLeft", alignLeft().withTimeout(1.0));
-        // NamedCommands.registerCommand("CoralAlignRight", alignRight().withTimeout(1.0));
-
-        // NamedCommands.registerCommand("PlayerStationAlign", moveToStation(Constants.PhotonVisionConstants.backCameraID).withTimeout(1.5));
         NamedCommands.registerCommand("CensorIntake", claw.setClawIntakeWithTimeOfFlight().andThen(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ElevatorConstants.l4Position)));
         NamedCommands.registerCommand("StopIntake", claw.setClawStop());
         NamedCommands.registerCommand("Ejectintake", claw.setClawEject());
-
         NamedCommands.registerCommand("IntakeTOF", claw.setClawIntakeWithTimeOfFlight());
 
-
-        // NamedCommands.registerCommand("DeadlineCommand", DeadLine());
-        
         autoChooser.setDefaultOption("Default Auto", oneMeter());
-
-        // autoChooser.addOption("One Meter", oneMeter());
-        // autoChooser.addOption("One Piece", onePieceAuto());
-        // autoChooser.addOption("One Piece L4", LFourAuto());
-
-        autoChooser.addOption("System Test", systemsTest());
-
-        autoChooser.addOption("Left Auto", leftAuto());
-        autoChooser.addOption("Vision One Coral Auto", oneCoralAuto());
-        autoChooser.addOption("RightAuto", rightAuto());
-        autoChooser.addOption("Temporary Auto", tempAuto());
-        autoChooser.addOption("StartToCoralLeftSmoothAuto", newLeftAuto());
-
-        autoChooser.addOption("Vision Auto", SeePos());
-        autoChooser.addOption("Vision Auto No Score", seePosWithoutScore());
-
+        autoChooser.addOption("1 Coral Center - Error driven", oneCoralAuto());
+        autoChooser.addOption("2 Corl Left - Error driven", leftAuto());
+        autoChooser.addOption("2 Corl Right - Error driven", rightAuto());
+        autoChooser.addOption("3 Coral Left", threeCoralLeft());
 
         SmartDashboard.putData("Auto choices", autoChooser);
         tab1.add("Auto Chooser", autoChooser);
@@ -178,8 +155,8 @@ public class RobotContainer {
         buttonBoard.getButton(10).onTrue(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l3Position, Constants.ElevatorConstants.l3Position)); 
         buttonBoard.getButton(7).onTrue(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ElevatorConstants.l4Position)); 
         
-        buttonBoard.getButton(8).onTrue(wrist.setWristHorizontal());
-        buttonBoard.getButton(9).onTrue(wrist.setWristVertical());
+        buttonBoard.getButton(8).whileTrue(wrist.moveWristHorizontal());
+        buttonBoard.getButton(9).whileTrue(wrist.moveWristVertical());
 
         // USB Button Board 2
         buttonBoard2.getButton(1).onTrue(claw.setClawEject());
@@ -232,75 +209,7 @@ public class RobotContainer {
                  .andThen(() -> { try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}})
                  .andThen(coralSystem.setCoralSystemStow())
                  .andThen(() -> { try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}});
-
-                //  /** Climber */
-                //  .andThen(climber.setClimberPosition(Constants.ClimberConstants.downClimberPosition, Constants.ClimberConstants.tolerance))
-                //  .andThen(() -> { try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}})
-                //  .andThen(climber.setClimberPosition(Constants.ClimberConstants.stowClimberPosition, Constants.ClimberConstants.tolerance))
-                //  .andThen(() -> { try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}})
-
-                 /** DriveTrain */
-                //  .andThen(drivetrain.applyRequest(() -> driveRobotCentric.withVelocityX(-1).withVelocityY(0).withRotationalRate(0)))
-                //  .andThen(drivetrain.applyRequest(() -> driveRobotCentric.withVelocityX(1).withVelocityY(0).withRotationalRate(0)))
-                //  .andThen(drivetrain.applyRequest(() -> driveRobotCentric.withVelocityX(0).withVelocityY(-1).withRotationalRate(0)))
-                //  .andThen(drivetrain.applyRequest(() -> driveRobotCentric.withVelocityX(0).withVelocityY(1).withRotationalRate(0)))
-                //  .andThen(drivetrain.applyRequest(() -> driveRobotCentric.withVelocityX(0).withVelocityY(0).withRotationalRate(-1)))
-                //  .andThen(drivetrain.applyRequest(() -> driveRobotCentric.withVelocityX(0).withVelocityY(0).withRotationalRate(1)))
-
-                 /** Vision */
-                //  .andThen(runWhileTagDetected(Constants.PhotonVisionConstants.leftCameraID))
-                //  .andThen(() -> { try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}})
-                //  .andThen(runWhileTagDetected(Constants.PhotonVisionConstants.rightCameraID))
-                //  .andThen(() -> { try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}})
-                //  .andThen(runWhileTagDetected(Constants.PhotonVisionConstants.backCameraID))
-                //  .andThen(() -> { try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}});
-
     }
-
-    // public Command moveToReefLeft(int cameraIndex) {
-    //     // x:-0.36, y:-0.07
-    //     return drivetrain.applyRequest(() -> 
-    //             driveRobotCentric
-    //                 .withVelocityX((photonVision.closestTargetXMeters(cameraIndex) - Constants.PhotonVisionConstants.reefLeftOffsetMagnitudeX) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
-    //                 .withVelocityY((photonVision.closestTargetYMeters(cameraIndex) - Constants.PhotonVisionConstants.reefLeftOffsetMagnitudeY) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
-    //                 .withRotationalRate(((Math.PI - (Math.abs(photonVision.closestTargetYaw(cameraIndex)))) * Math.signum(photonVision.closestTargetYaw(cameraIndex))) * Constants.inversion * Constants.PhotonVisionConstants.visionRotationalSpeedScale )
-    //     );
-    // }
-
-    // public Command moveToReefRight(int cameraIndex) {
-    //     // x:-0.35, y:0.10
-    //     return drivetrain.applyRequest(() -> 
-    //             driveRobotCentric
-    //                 .withVelocityX((photonVision.closestTargetXMeters(cameraIndex) - Constants.PhotonVisionConstants.reefRightOffsetMagnitudeX) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
-    //                 .withVelocityY((photonVision.closestTargetYMeters(cameraIndex) + Constants.PhotonVisionConstants.reefRightOffsetMagnitudeY) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
-    //                 .withRotationalRate(((Math.PI - (Math.abs(photonVision.closestTargetYaw(cameraIndex)))) * Math.signum(photonVision.closestTargetYaw(cameraIndex))) * Constants.inversion * Constants.PhotonVisionConstants.visionRotationalSpeedScale )
-    //     );
-    // }
-
-    //  public Command moveToStation(int cameraIndex) {
-    //     return drivetrain.applyRequest(() -> 
-    //             driveRobotCentric
-    //                 .withVelocityX((photonVision.closestTargetXMeters(cameraIndex) - Constants.PhotonVisionConstants.stationOffsetMagnitudeX) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale * Constants.inversion)
-    //                 .withVelocityY((photonVision.closestTargetYMeters(cameraIndex) - Constants.PhotonVisionConstants.stationOffsetMagnitudeY) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale * Constants.inversion)
-    //                 .withRotationalRate(((Math.PI - (Math.abs(photonVision.closestTargetYaw(cameraIndex)))) * Math.signum(photonVision.closestTargetYaw(cameraIndex))) * Constants.inversion * Constants.PhotonVisionConstants.visionRotationalSpeedScale )
-    //     );
-    // }
-
-    // public Command runWhileTagDetected(int cameraIndex){
-    //     return drivetrain.applyRequest(() -> 
-    //             driveRobotCentric
-    //                 .withVelocityX((photonVision.closestTargetXMeters(cameraIndex) - Constants.PhotonVisionConstants.stationOffsetMagnitudeX) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale * Constants.inversion)
-    //                 .withVelocityY(0)
-    //                 .withRotationalRate(0)
-    //     )
-    //     .until(() -> { return (photonVision.closestTargetXMeters(cameraIndex) - Constants.PhotonVisionConstants.stationOffsetMagnitudeX) < 0.125; });
-    // }
-
-    // public Command DeadLine() {
-    //     return claw.setClawIntakeWithTimeOfFlight().unless(() -> !claw.sensorSeesCoral())
-    //                .andThen(new ParallelCommandGroup(alignRight(), coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ElevatorConstants.l4Position)));
-    // }
-     
 
     public Command autoLOneDrop() {
         return coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l1Position, Constants.ElevatorConstants.l1Position)
@@ -331,25 +240,12 @@ public class RobotContainer {
         return new PathPlannerAuto("OneCoralAuto");
     }
 
-    public Command deadlineLeftAuto() {
-        return new PathPlannerAuto("DeadlineLeftAuto");
-    }
     public Command rightAuto() {
         return new PathPlannerAuto("RightAuto");
     }
-    public Command tempAuto() {
-        return new PathPlannerAuto("tempPath");
-    }
-    public Command newLeftAuto() {
-        return new PathPlannerAuto("StartToCoralLeftSmoothAuto");
-    }
-    public Command SeePos() {
+    
+    public Command threeCoralLeft() {
         return new PathPlannerAuto("SeePos");
     }
-    public Command seePosWithoutScore() {
-        return new PathPlannerAuto("seePosWithoutScore");
-    }
-    // public Command startToCoralLeftSmoothAuto() {
-    //     return new PathPlannerAuto("StartToCoralLeftSmoothAuto");
-    // }
+    
 }

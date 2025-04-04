@@ -25,11 +25,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-
-    // SmartDashboard.putNumber("TimeOfFlight", robotContainer.arm.timeOfFlight.getRange());
-    // for(int i=0; i<robotContainer.photonVision.getEstimatedPoses().length; i++) {
-    //   robotContainer.drivetrain.addVisionMeasurement(robotContainer.photonVision.getEstimatedPoses()[i].toPose2d(), kDefaultPeriod);
-    // }
   }
 
   @Override
