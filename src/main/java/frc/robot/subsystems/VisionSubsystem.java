@@ -116,7 +116,6 @@ public class VisionSubsystem extends SubsystemBase{
             );
     }
 
-
     /**
      * GaCo's Stuff
      * @param safetyOverride

@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "StartToCoralLeftSmooth"
+                  "pathName": "StartToCoral_R"
                 }
               },
               {
@@ -36,7 +36,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "ScoreToHPLeftSmooth"
+                  "pathName": "FirstScoreToHP_R"
                 }
               },
               {
@@ -71,7 +71,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Copy of ScoreToHPLeftSmooth"
+                        "pathName": "HPToLeftScore_R"
                       }
                     }
                   ]
@@ -99,7 +99,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "ScoretoHPAGAIN"
+                  "pathName": "ScoreLeftToHP_R"
                 }
               }
             ]
@@ -128,7 +128,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "HpToScoreLEFT"
+                        "pathName": "HPToRightScore_R"
                       }
                     }
                   ]
@@ -153,6 +153,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Three Coral Autos",
   "choreoAuto": false
 }

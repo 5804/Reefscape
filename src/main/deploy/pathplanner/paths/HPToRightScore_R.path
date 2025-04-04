@@ -4,24 +4,24 @@
     {
       "anchor": {
         "x": 1.155,
-        "y": 7.046
+        "y": 0.9540000000000002
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.8735474006583273,
-        "y": 5.161942476838075
+        "x": 3.7809843371268315,
+        "y": 3.0675253827030375
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.974,
-        "y": 5.118
+        "x": 3.7245,
+        "y": 3.028
       },
       "prevControl": {
-        "x": 1.509740087693999,
-        "y": 6.788568582955648
+        "x": 1.2377148040939665,
+        "y": 1.109475469769558
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -59.03624346792643
+    "rotation": 59.036
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Three Coral Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -53.71353848674992
+    "rotation": 53.714
   },
   "useDefaultConstraints": false
 }

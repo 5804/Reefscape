@@ -81,10 +81,10 @@ public class RobotContainer {
     static final Vector<N3> leftCamStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(5));
     public Transform3d rightCameraTransforms = new Transform3d(0.26035, -0.20657312, 0.19354292, new Rotation3d(0, 0.436332, 0));
     static final Vector<N3> rightCamStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(5));
-    
+       
     public final VisionSubsystem LeftVisionSubsystem = new VisionSubsystem(drivetrain, "Left", leftCameraTransforms, leftCamStdDevs);
     public final VisionSubsystem rightVisionSubsystem = new VisionSubsystem(drivetrain, "Right", rightCameraTransforms, rightCamStdDevs);
-    
+
     public RobotContainer() {
         configureBindings();
 
@@ -97,13 +97,17 @@ public class RobotContainer {
         NamedCommands.registerCommand("StopIntake", claw.setClawStop());
         NamedCommands.registerCommand("Ejectintake", claw.setClawEject());
         NamedCommands.registerCommand("IntakeTOF", claw.setClawIntakeWithTimeOfFlight());
+
+        NamedCommands.registerCommand("CoralAlignLeft", LeftVisionSubsystem.alignRight().withTimeout(1.0));
+        NamedCommands.registerCommand("CoralAlignRight", rightVisionSubsystem.alignLeft().withTimeout(1.0));
         // NamedCommands.registerCommand("PlayerStationAlign", moveToStation(Constants.PhotonVisionConstants.backCameraID).withTimeout(1.5));
 
         autoChooser.setDefaultOption("Default Auto", oneMeter());
-        // autoChooser.addOption("1 Coral Center - Error driven", oneCoralAuto());
+        autoChooser.addOption("1 Coral Center", oneCoralAuto());
         // autoChooser.addOption("2 Corl Left - Error driven", leftAuto());
         // autoChooser.addOption("2 Corl Right - Error driven", rightAuto());
         autoChooser.addOption("3 Coral Left", threeCoralLeft());
+        autoChooser.addOption("3 Coral Right", threeCoralRight());
 
         SmartDashboard.putData("Auto choices", autoChooser);
         tab1.add("Auto Chooser", autoChooser);
@@ -116,11 +120,18 @@ public class RobotContainer {
          * and Y is defined as to the left according to WPILib convention. 
          * As a default command the drive train will call this continually.
          */
+        // drivetrain.setDefaultCommand(
+        //     drivetrain.applyRequest(() ->
+        //         driveFieldCentric.withVelocityX(-1 * Math.pow(Math.abs(MathUtil.applyDeadband(driveController.getLeftY(), 0.1)), 3/2) * Math.signum(driveController.getLeftY()) * maxSpeed * speedMultiplier) // Drive forward with negative Y (forward)
+        //              .withVelocityY(-1 * Math.pow(Math.abs(MathUtil.applyDeadband(driveController.getLeftX(), 0.1)), 3/2) * Math.signum(driveController.getLeftX()) * maxSpeed * speedMultiplier)             // Drive left with negative X (left)
+        //              .withRotationalRate(-1 * Math.pow(Math.abs(MathUtil.applyDeadband(driveController.getRightX(), 0.05)), 3/2) * Math.signum(driveController.getRightX()) * maxAngularRate * speedMultiplier) // Drive counterclockwise with negative X (left)
+        //     )
+        // );
         drivetrain.setDefaultCommand(
             drivetrain.applyRequest(() ->
-                driveFieldCentric.withVelocityX(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftY(), 0.1), 1) * maxSpeed * speedMultiplier) // Drive forward with negative Y (forward)
-                     .withVelocityY(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftX(), 0.1), 1) * maxSpeed * speedMultiplier)             // Drive left with negative X (left)
-                     .withRotationalRate(-1 * Math.pow(MathUtil.applyDeadband(driveController.getRightX(), 0.1), 1) * maxAngularRate * speedMultiplier) // Drive counterclockwise with negative X (left)
+                driveFieldCentric.withVelocityX(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftY(), 0.1), 3) * maxSpeed * speedMultiplier) // Drive forward with negative Y (forward)
+                     .withVelocityY(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftX(), 0.1), 3) * maxSpeed * speedMultiplier)             // Drive left with negative X (left)
+                     .withRotationalRate(-1 * Math.pow(MathUtil.applyDeadband(driveController.getRightX(), 0.05), 3) * maxAngularRate * speedMultiplier) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -137,7 +148,8 @@ public class RobotContainer {
         driveController.b().onTrue(coralSystem.setCoralSystemScoreL4());
         driveController.x().onTrue(claw.setClawIntake());
         driveController.x().onFalse(claw.setClawStop());
-        driveController.a().onTrue(coralSystem.setCoralSystemStow());
+        // driveController.a().onTrue(coralSystem.setCoralSystemStow());
+        driveController.a().onTrue(coralSystem.setStowPositions());
 
         driveController.povUp().onTrue(new InstantCommand(() -> { speedMultiplier = 1; }));
         driveController.povDown().onTrue(new InstantCommand(() -> { speedMultiplier = 0.25; }));
@@ -146,16 +158,28 @@ public class RobotContainer {
         // driveController.rightBumper().whileTrue(moveToStation(Constants.PhotonVisionConstants.backCameraID));
 
         // USB Button Board
-        buttonBoard.getButton(4).onTrue(coralSystem.setBargeScore());
-        buttonBoard.getButton(3).onTrue(coralSystem.setAlgaeTop());
-        buttonBoard.getButton(2).onTrue(coralSystem.setAlgaeBottom()); 
-        buttonBoard.getButton(1).onTrue(coralSystem.setAlgaeProcessor());
+        // buttonBoard.getButton(4).onTrue(coralSystem.setBargeScore());
+        // buttonBoard.getButton(3).onTrue(coralSystem.setAlgaeTop());
+        // buttonBoard.getButton(2).onTrue(coralSystem.setAlgaeBottom()); 
+        // buttonBoard.getButton(1).onTrue(coralSystem.setAlgaeProcessor());
         
-        buttonBoard.getButton(5).onTrue(coralSystem.setCoralSystemL1()); 
-        buttonBoard.getButton(6).onTrue(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l2Position, Constants.ElevatorConstants.l2Position));
-        buttonBoard.getButton(10).onTrue(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l3Position, Constants.ElevatorConstants.l3Position)); 
-        buttonBoard.getButton(7).onTrue(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ElevatorConstants.l4Position)); 
+        // buttonBoard.getButton(5).onTrue(coralSystem.setCoralSystemL1()); 
+        // buttonBoard.getButton(6).onTrue(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l2Position, Constants.ElevatorConstants.l2Position));
+        // buttonBoard.getButton(10).onTrue(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l3Position, Constants.ElevatorConstants.l3Position)); 
+        // buttonBoard.getButton(7).onTrue(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ElevatorConstants.l4Position)); 
         
+        // PARALLEL COMMANDS
+
+        buttonBoard.getButton(4).onTrue(coralSystem.setSystemPositions(Constants.ArmConstants.ShoulderConstants.bargePlacePosition, Constants.ElevatorConstants.bargePlacePosition));
+        buttonBoard.getButton(3).onTrue(coralSystem.setSystemPositions(.192, -17.129));
+        buttonBoard.getButton(2).onTrue(coralSystem.setSystemPositions(.191, Constants.ElevatorConstants.l2Position)); 
+        buttonBoard.getButton(1).onTrue(coralSystem.setSystemPositions(.23, Constants.ElevatorConstants.zeroPosition));
+        
+        buttonBoard.getButton(5).onTrue(coralSystem.setTrough()); 
+        buttonBoard.getButton(6).onTrue(coralSystem.setSystemPositions(Constants.ArmConstants.ShoulderConstants.l2Position, Constants.ElevatorConstants.l2Position));
+        buttonBoard.getButton(10).onTrue(coralSystem.setSystemPositions(Constants.ArmConstants.ShoulderConstants.l3Position, Constants.ElevatorConstants.l3Position)); 
+        buttonBoard.getButton(7).onTrue(coralSystem.setSystemPositions(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ElevatorConstants.l4Position));
+
         buttonBoard.getButton(8).whileTrue(wrist.moveWristHorizontal());
         buttonBoard.getButton(9).whileTrue(wrist.moveWristVertical());
 
@@ -246,7 +270,10 @@ public class RobotContainer {
     }
     
     public Command threeCoralLeft() {
-        return new PathPlannerAuto("SeePos");
+        return new PathPlannerAuto("threeCoralLeft");
+    }
+    public Command threeCoralRight() {
+        return new PathPlannerAuto("threeCoralRight");
     }
     
 }

@@ -5,6 +5,7 @@
 package frc;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
@@ -92,6 +93,26 @@ public class CoralSystem extends SubsystemBase {
                       .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.hopperIntakePosition, Constants.ArmConstants.ShoulderConstants.tolerance))
                       .finallyDo(() -> { elevator.leftElevatorMotor.setVoltage(0); });
     }
+
+    // Parallel Commands Addition
+    public Command setStowPositions() {
+        return new ParallelCommandGroup(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, Constants.ArmConstants.ShoulderConstants.tolerance),
+                      elevator.setElevatorPosition(Constants.ElevatorConstants.hopperIntakePosition, Constants.ElevatorConstants.tolerance),
+                      wrist.setWristVertical())
+                      .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.hopperIntakePosition, Constants.ArmConstants.ShoulderConstants.tolerance))
+                      .finallyDo(() -> { elevator.leftElevatorMotor.setVoltage(0); });
+    }
+    public Command setTrough() {
+        return new ParallelCommandGroup(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.l1Position, Constants.ArmConstants.ShoulderConstants.tolerance),
+                  elevator.setElevatorPosition(Constants.ElevatorConstants.l1Position, Constants.ElevatorConstants.tolerance)
+                  .andThen(wrist.setWristHorizontal()));
+    }
+    public Command setSystemPositions(double shoulderPosition, double elevatorPosition){
+        return new ParallelCommandGroup(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, Constants.ArmConstants.ShoulderConstants.tolerance),
+                  elevator.setElevatorPosition(elevatorPosition, Constants.ElevatorConstants.tolerance))
+                  .andThen(arm.setShoulderPosition(shoulderPosition, Constants.ArmConstants.ShoulderConstants.tolerance));
+    }
+    // End of Parallel
 
     public Command combinedL4() {
         return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, Constants.ArmConstants.ShoulderConstants.tolerance)

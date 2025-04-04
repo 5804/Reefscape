@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "StartToCoralLeftSmooth"
+                  "pathName": "StartToCoral_L"
                 }
               }
             ]
@@ -24,7 +24,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "ScoreToHPLeftSmooth"
+                  "pathName": "FirstScoreToHP_L"
                 }
               }
             ]
