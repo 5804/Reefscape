@@ -97,11 +97,12 @@ public class RobotContainer {
         NamedCommands.registerCommand("StopIntake", claw.setClawStop());
         NamedCommands.registerCommand("Ejectintake", claw.setClawEject());
         NamedCommands.registerCommand("IntakeTOF", claw.setClawIntakeWithTimeOfFlight());
+        // NamedCommands.registerCommand("PlayerStationAlign", moveToStation(Constants.PhotonVisionConstants.backCameraID).withTimeout(1.5));
 
         autoChooser.setDefaultOption("Default Auto", oneMeter());
-        autoChooser.addOption("1 Coral Center - Error driven", oneCoralAuto());
-        autoChooser.addOption("2 Corl Left - Error driven", leftAuto());
-        autoChooser.addOption("2 Corl Right - Error driven", rightAuto());
+        // autoChooser.addOption("1 Coral Center - Error driven", oneCoralAuto());
+        // autoChooser.addOption("2 Corl Left - Error driven", leftAuto());
+        // autoChooser.addOption("2 Corl Right - Error driven", rightAuto());
         autoChooser.addOption("3 Coral Left", threeCoralLeft());
 
         SmartDashboard.putData("Auto choices", autoChooser);
@@ -117,9 +118,9 @@ public class RobotContainer {
          */
         drivetrain.setDefaultCommand(
             drivetrain.applyRequest(() ->
-                driveFieldCentric.withVelocityX(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftY(), 0.1), 3) * maxSpeed * speedMultiplier) // Drive forward with negative Y (forward)
-                     .withVelocityY(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftX(), 0.1), 3) * maxSpeed * speedMultiplier)             // Drive left with negative X (left)
-                     .withRotationalRate(-1 * Math.pow(MathUtil.applyDeadband(driveController.getRightX(), 0.1), 3) * maxAngularRate * speedMultiplier) // Drive counterclockwise with negative X (left)
+                driveFieldCentric.withVelocityX(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftY(), 0.1), 1) * maxSpeed * speedMultiplier) // Drive forward with negative Y (forward)
+                     .withVelocityY(-1 * Math.pow(MathUtil.applyDeadband(driveController.getLeftX(), 0.1), 1) * maxSpeed * speedMultiplier)             // Drive left with negative X (left)
+                     .withRotationalRate(-1 * Math.pow(MathUtil.applyDeadband(driveController.getRightX(), 0.1), 1) * maxAngularRate * speedMultiplier) // Drive counterclockwise with negative X (left)
             )
         );
 

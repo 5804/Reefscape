@@ -101,12 +101,6 @@
                 "data": {
                   "pathName": "ScoretoHPAGAIN"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeTOF"
-                }
               }
             ]
           }

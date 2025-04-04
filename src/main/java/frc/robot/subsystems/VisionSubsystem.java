@@ -154,7 +154,7 @@ public class VisionSubsystem extends SubsystemBase{
         List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
         // do our processing, save our data to our variables then we get both
         
-        if (results.isEmpty())
+        if (!results.isEmpty())
             captureClosestTargets(results);
 
         for (PhotonPipelineResult change : results) {
