@@ -28,6 +28,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -101,12 +104,13 @@ public class RobotContainer {
         NamedCommands.registerCommand("Ejectintake", claw.setClawEject());
         NamedCommands.registerCommand("IntakeTOF", claw.setClawIntakeWithTimeOfFlight());
 
-        NamedCommands.registerCommand("CoralAlignLeft", LeftVisionSubsystem.alignRight().withTimeout(1.0));
-        NamedCommands.registerCommand("CoralAlignRight", rightVisionSubsystem.alignLeft().withTimeout(1.0));
+        NamedCommands.registerCommand("CoralAlignRight", LeftVisionSubsystem.alignRight().withTimeout(1.0));
+        NamedCommands.registerCommand("CoralAlignLeft", rightVisionSubsystem.alignLeft().withTimeout(1.0));
         NamedCommands.registerCommand("PlayerStationAlign", backVisionSubsystem.alignBack().withTimeout(1.0));
 
         autoChooser.setDefaultOption("Default Auto", oneMeter());
         autoChooser.addOption("1 Coral Center", oneCoralAuto());
+        autoChooser.addOption("1 Coral Center with Algae", oneCoralWithAlgaeAuto());
         autoChooser.addOption("2 Coral Left - Error driven", leftAuto());
         autoChooser.addOption("2 Coral Right - Error driven", rightAuto());
         autoChooser.addOption("3 Coral Left", threeCoralLeft());
@@ -247,6 +251,10 @@ public class RobotContainer {
     public Command autoLFourDrop() {
         return coralSystem.combinedL4();
     }
+
+    public Command autoLFourDropStop() {
+        return coralSystem.combinedL4NoStow();
+   }
  
     public Command onePieceAuto() {
         return new PathPlannerAuto("OnePieceAuto");
@@ -264,8 +272,40 @@ public class RobotContainer {
         return new PathPlannerAuto("leftAuto");
     }
 
+    public Command stopIfCoralHeld() {
+        return claw.setClawStopInf().until(() -> {return !claw.sensorSeesCoral();});
+    }
+
     public Command oneCoralAuto() {
-        return new PathPlannerAuto("OneCoralAuto");
+        // return new PathPlannerAuto("OneCoralAuto");
+        return new SequentialCommandGroup(
+        new WaitCommand(5),
+        LeftVisionSubsystem.alignRight().withTimeout(2.0), 
+        autoLFourDrop());
+        }
+
+    public Command oneCoralWithAlgaeAuto() {
+        return 
+        new SequentialCommandGroup(
+        new WaitCommand(5),
+        LeftVisionSubsystem.alignRight().withTimeout(2.0), 
+        autoLFourDropStop(),
+        stopIfCoralHeld(),
+        coralSystem.setAlgaeBottom(),
+        LeftVisionSubsystem.alignAlgae().withTimeout(2.0),
+        claw.setClawIntakeWithTimeOfFlight(),
+        claw.setClawIntake().withTimeout(1),
+        claw.setClawStop(),
+        drivetrain.applyRequest(() -> driveRobotCentric
+        .withVelocityX(0)
+        .withVelocityY(-2)
+        .withRotationalRate(0)).withTimeout(0.5)
+        );
+
+        // new SequentialCommandGroup(
+        //     stopIfCoralHeld(),
+        //     claw.setClawIntake().withTimeout(3));
+
     }
 
     public Command rightAuto() {

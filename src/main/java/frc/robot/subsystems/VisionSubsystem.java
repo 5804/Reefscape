@@ -102,6 +102,10 @@ public class VisionSubsystem extends SubsystemBase{
         return moveToStation(Constants.PhotonVisionConstants.backCameraID);
     }
 
+    public Command alignAlgae(){
+        return moveToAlage(Constants.PhotonVisionConstants.leftCameraID);
+    }
+
     public Command moveToReefLeft(int cameraIndex) {
         return drivetrain.applyRequest(() -> 
             RobotContainer.driveRobotCentric
@@ -115,6 +119,15 @@ public class VisionSubsystem extends SubsystemBase{
         return drivetrain.applyRequest(() -> 
             RobotContainer.driveRobotCentric
                 .withVelocityX(this.cameraClosestTarget == null ? 0 : (closestTargetXMeters(cameraIndex) - Constants.PhotonVisionConstants.reefRightOffsetMagnitudeX) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
+                .withVelocityY(this.cameraClosestTarget == null ? 0 : (closestTargetYMeters(cameraIndex) + Constants.PhotonVisionConstants.reefRightOffsetMagnitudeY) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
+                .withRotationalRate(this.cameraClosestTarget == null ? 0 : ((Math.PI - (Math.abs(closestTargetYaw(cameraIndex)))) * Math.signum(closestTargetYaw(cameraIndex))) * Constants.inversion * Constants.PhotonVisionConstants.visionRotationalSpeedScale)
+            );
+    }
+
+    public Command moveToAlage(int cameraIndex) {
+        return drivetrain.applyRequest(() -> 
+            RobotContainer.driveRobotCentric
+                .withVelocityX(this.cameraClosestTarget == null ? 0 : (closestTargetXMeters(cameraIndex)) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
                 .withVelocityY(this.cameraClosestTarget == null ? 0 : (closestTargetYMeters(cameraIndex) + Constants.PhotonVisionConstants.reefRightOffsetMagnitudeY) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
                 .withRotationalRate(this.cameraClosestTarget == null ? 0 : ((Math.PI - (Math.abs(closestTargetYaw(cameraIndex)))) * Math.signum(closestTargetYaw(cameraIndex))) * Constants.inversion * Constants.PhotonVisionConstants.visionRotationalSpeedScale)
             );

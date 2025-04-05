@@ -65,6 +65,10 @@ public class Claw extends SubsystemBase {
           .until(() -> { return getClawVelocity() < 40; });
   }
 
+  public Command setClawStopInf() {
+    return run(() -> { clawMotor.set(0); });
+  }
+
   public Command setClawEject() {
     return run(() -> { clawMotor.set(Constants.ArmConstants.ClawConstants.motorEjectSpeed); })
           .until(() -> { return getClawVelocity() > -150; });
@@ -80,6 +84,7 @@ public class Claw extends SubsystemBase {
   public boolean sensorSeesCoral() {
     return timeOfFlight.getRange() < Constants.ArmConstants.ClawConstants.tofHasCoralUpperBound && timeOfFlight.getRange() > Constants.ArmConstants.ClawConstants.tofHasCoralLowerBound;
   }
+
 
   // Ejects the coral, automatically stopping ejecting when the coral is in the correct position.
   public Command setClawEjectWithTimeOfFlight() {

@@ -121,6 +121,14 @@ public class CoralSystem extends SubsystemBase {
                   .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l4SCORETestPosition, Constants.ElevatorConstants.tolerance))
                   .andThen(setCoralSystemStow());
     }
+
+    public Command combinedL4NoStow() {
+        return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, Constants.ArmConstants.ShoulderConstants.tolerance)
+                  .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l4TestPosition, Constants.ElevatorConstants.tolerance))
+                  .andThen(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ArmConstants.ShoulderConstants.tolerance))
+                  .andThen(elevator.setElevatorPosition(Constants.ElevatorConstants.l4SCORETestPosition, Constants.ElevatorConstants.tolerance));
+    }
+
     public Command setAlgaeTop() {
         return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, Constants.ArmConstants.ShoulderConstants.tolerance)
                   .andThen(elevator.setElevatorPosition(-17.129, Constants.ElevatorConstants.tolerance))
