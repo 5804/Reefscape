@@ -98,6 +98,10 @@ public class VisionSubsystem extends SubsystemBase{
         return moveToReefRight(Constants.PhotonVisionConstants.leftCameraID);
     }
 
+    public Command alignBack(){
+        return moveToStation(Constants.PhotonVisionConstants.backCameraID);
+    }
+
     public Command moveToReefLeft(int cameraIndex) {
         return drivetrain.applyRequest(() -> 
             RobotContainer.driveRobotCentric
@@ -116,6 +120,15 @@ public class VisionSubsystem extends SubsystemBase{
             );
     }
 
+    public Command moveToStation(int cameraIndex) {
+        return drivetrain.applyRequest(() -> 
+            RobotContainer.driveRobotCentric
+                .withVelocityX(this.cameraClosestTarget == null ? 0 : (closestTargetXMeters(cameraIndex) - Constants.PhotonVisionConstants.reefRightOffsetMagnitudeX) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale * Constants.inversion)
+                .withVelocityY(this.cameraClosestTarget == null ? 0 : (closestTargetYMeters(cameraIndex) - Constants.PhotonVisionConstants.reefRightOffsetMagnitudeY) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale * Constants.inversion)
+                .withRotationalRate(this.cameraClosestTarget == null ? 0 : ((Math.PI - (Math.abs(closestTargetYaw(cameraIndex)))) * Math.signum(closestTargetYaw(cameraIndex))) * Constants.inversion * Constants.PhotonVisionConstants.visionRotationalSpeedScale)
+            );
+    }
+
     /**
      * GaCo's Stuff
      * @param safetyOverride
@@ -126,7 +139,7 @@ public class VisionSubsystem extends SubsystemBase{
 
     public void periodic(){
         estimatedRobotPose = getEstimatedGlobalPose();
-        if (estimatedRobotPose.isPresent()){
+        if (estimatedRobotPose.isPresent() && !this.cameraName.equalsIgnoreCase("Back")){
             // send this new vision position to drivetrain to adjust odometry if we are within 1 M of out last position
             // validate the position before using it.
             if ((drivetrain.getState().Pose.getTranslation().getDistance(estimatedRobotPose.get().estimatedPose.toPose2d().getTranslation()) <= 0.5) || (DriverStation.isDisabled()) || safetyOverride) {

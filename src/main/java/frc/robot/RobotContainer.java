@@ -81,9 +81,12 @@ public class RobotContainer {
     static final Vector<N3> leftCamStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(5));
     public Transform3d rightCameraTransforms = new Transform3d(0.26035, -0.20657312, 0.19354292, new Rotation3d(0, 0.436332, 0));
     static final Vector<N3> rightCamStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(5));
+    public Transform3d backCameraTransforms = new Transform3d(-0.02033524, 0.14771624, 0.9484741, new Rotation3d(0, 0.558505, 0));
+    static final Vector<N3> backCamStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(5));
        
     public final VisionSubsystem LeftVisionSubsystem = new VisionSubsystem(drivetrain, "Left", leftCameraTransforms, leftCamStdDevs);
     public final VisionSubsystem rightVisionSubsystem = new VisionSubsystem(drivetrain, "Right", rightCameraTransforms, rightCamStdDevs);
+    public final VisionSubsystem backVisionSubsystem = new VisionSubsystem(drivetrain, "Back", backCameraTransforms, backCamStdDevs);
 
     public RobotContainer() {
         configureBindings();
@@ -100,12 +103,12 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("CoralAlignLeft", LeftVisionSubsystem.alignRight().withTimeout(1.0));
         NamedCommands.registerCommand("CoralAlignRight", rightVisionSubsystem.alignLeft().withTimeout(1.0));
-        // NamedCommands.registerCommand("PlayerStationAlign", moveToStation(Constants.PhotonVisionConstants.backCameraID).withTimeout(1.5));
+        NamedCommands.registerCommand("PlayerStationAlign", backVisionSubsystem.alignBack().withTimeout(1.0));
 
         autoChooser.setDefaultOption("Default Auto", oneMeter());
         autoChooser.addOption("1 Coral Center", oneCoralAuto());
-        // autoChooser.addOption("2 Corl Left - Error driven", leftAuto());
-        // autoChooser.addOption("2 Corl Right - Error driven", rightAuto());
+        autoChooser.addOption("2 Coral Left - Error driven", leftAuto());
+        autoChooser.addOption("2 Coral Right - Error driven", rightAuto());
         autoChooser.addOption("3 Coral Left", threeCoralLeft());
         autoChooser.addOption("3 Coral Right", threeCoralRight());
 
