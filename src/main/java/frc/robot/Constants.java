@@ -84,15 +84,15 @@ public final class Constants {
 
             public static final double tolerance = 0.03;
 
-            public static final double minSafeValue             = 0.147; 
-            public static final double l4Position               = 0.232; 
-            public static final double l3Position               = 0.1692;
-            public static final double l2Position               = 0.1692;
-            public static final double l1Position               = 0.316;
-            public static final double groundPosition           = 0.4922; 
-            public static final double groundPostpickupPosition = 0.25;
-            public static final double hopperIntakePosition     = .0712;
-            public static final double bargePlacePosition       = 0.072;
+            public static final double minSafeValue             = 0.147 -.0712; 
+            public static final double l4Position               = 0.232 -.0712; 
+            public static final double l3Position               = 0.1692 -.0712;
+            public static final double l2Position               = 0.1692 - .0712;
+            public static final double l1Position               = 0.316 - .0712;
+            public static final double groundPosition           = 0.4922 - .0712; 
+            public static final double groundPostpickupPosition = 0.25 - .0712;
+            public static final double hopperIntakePosition     = .0712 - .0712;
+            public static final double bargePlacePosition       = 0.072 - .0712;
 
             public static final double manualTravelSpeedVoltage = 5;
             public static final double supplyCurrentLimit = 70;

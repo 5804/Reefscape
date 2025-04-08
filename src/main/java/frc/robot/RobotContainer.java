@@ -178,9 +178,9 @@ public class RobotContainer {
         // PARALLEL COMMANDS
 
         buttonBoard.getButton(4).onTrue(coralSystem.setSystemPositions(Constants.ArmConstants.ShoulderConstants.bargePlacePosition, Constants.ElevatorConstants.bargePlacePosition));
-        buttonBoard.getButton(3).onTrue(coralSystem.setSystemPositions(.192, -17.129));
-        buttonBoard.getButton(2).onTrue(coralSystem.setSystemPositions(.191, Constants.ElevatorConstants.l2Position)); 
-        buttonBoard.getButton(1).onTrue(coralSystem.setSystemPositions(.23, Constants.ElevatorConstants.zeroPosition));
+        buttonBoard.getButton(3).onTrue(coralSystem.setSystemPositions(.192 -.0712, -17.129));
+        buttonBoard.getButton(2).onTrue(coralSystem.setSystemPositions(.191 -.0712, Constants.ElevatorConstants.l2Position)); 
+        buttonBoard.getButton(1).onTrue(coralSystem.setSystemPositions(.23 -.0712, Constants.ElevatorConstants.zeroPosition));
         
         buttonBoard.getButton(5).onTrue(coralSystem.setTrough()); 
         buttonBoard.getButton(6).onTrue(coralSystem.setSystemPositions(Constants.ArmConstants.ShoulderConstants.l2Position, Constants.ElevatorConstants.l2Position));
