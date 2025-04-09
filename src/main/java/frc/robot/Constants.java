@@ -17,6 +17,7 @@ public final class Constants {
         public static final int leftCameraID = 1;
         public static final int rightCameraID = 2;
 
+        // Still need to tune these. Changing them made a difference in accuracy
         public static final double visionOrthogonalSpeedScale = 2.25;
         public static final double visionRotationalSpeedScale = 0.95;
         public static final double reefLeftOffsetMagnitudeX = 0.36; // 0.35 home

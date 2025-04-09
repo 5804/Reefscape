@@ -115,6 +115,7 @@ public class RobotContainer {
         autoChooser.addOption("2 Coral Right - Error driven", rightAuto());
         autoChooser.addOption("3 Coral Left", threeCoralLeft());
         autoChooser.addOption("3 Coral Right", threeCoralRight());
+        autoChooser.addOption("3 Coral Right Accurate", ac_3Coral_R());
 
         SmartDashboard.putData("Auto choices", autoChooser);
         tab1.add("Auto Chooser", autoChooser);
@@ -318,5 +319,8 @@ public class RobotContainer {
     public Command threeCoralRight() {
         return new PathPlannerAuto("threeCoralRight");
     }
-    
+    // Tried and it was probably too much acceleration still
+    public Command ac_3Coral_R() {
+        return new PathPlannerAuto("Ac_3Coral_R");
+    }
 }

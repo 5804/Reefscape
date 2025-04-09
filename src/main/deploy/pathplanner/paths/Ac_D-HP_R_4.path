@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.292,
-        "y": 2.777
+        "x": 3.974,
+        "y": 2.8819999999999997
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7055598699522583,
-        "y": 0.722188135622285
+        "x": 1.1867843121119863,
+        "y": 1.020195454059933
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.352,
-        "y": 0.647
+        "x": 1.155,
+        "y": 0.9540000000000002
       },
       "prevControl": {
-        "x": 4.875564689191637,
-        "y": 2.589976435641015
+        "x": 3.785485665951243,
+        "y": 2.7661657096747883
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 48.01278750418324
+    "rotation": 53.714
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Accurate Three Coral Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.753581
+    "rotation": 59.036
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
