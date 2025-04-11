@@ -104,7 +104,7 @@ public class CoralSystem extends SubsystemBase {
     }
     public Command setTrough() {
         return new ParallelCommandGroup(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.l1Position, Constants.ArmConstants.ShoulderConstants.tolerance),
-                  elevator.setElevatorPosition(Constants.ElevatorConstants.l1Position, Constants.ElevatorConstants.tolerance)
+                  elevator.setElevatorPosition(-7.706, Constants.ElevatorConstants.tolerance)
                   .andThen(wrist.setWristHorizontal()));
     }
     public Command setSystemPositions(double shoulderPosition, double elevatorPosition){

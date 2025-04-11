@@ -66,6 +66,7 @@ public class RobotContainer {
     public final ButtonBoard buttonBoard = new ButtonBoard(12, 1);
     public final ButtonBoard buttonBoard2 = new ButtonBoard(12, 2);
     public final Joystick joystick = new Joystick(3);
+    public final ButtonBoard joystickButtons = new ButtonBoard(12, 3);
     public int triggerHeld = 0;
     
 
@@ -146,13 +147,16 @@ public class RobotContainer {
         climber.setDefaultCommand(climber.setClimberSpeed());
 
         // USB Controller
-        driveController.leftBumper().onTrue(coralSystem.setCoralSystemGroundReady());   
-        driveController.leftBumper().onFalse(coralSystem.setCoralSystemGroundPickup());
-        driveController.leftTrigger().whileTrue(rightVisionSubsystem.alignLeft());
-        driveController.rightTrigger().whileTrue(LeftVisionSubsystem.alignRight());
+        // driveController.leftBumper().onTrue(coralSystem.setCoralSystemGroundReady());   
+        // driveController.leftBumper().onFalse(coralSystem.setCoralSystemGroundPickup());
+        driveController.leftTrigger().whileTrue(rightVisionSubsystem.alignLeftLow());
+        driveController.rightTrigger().whileTrue(LeftVisionSubsystem.alignRightLow());
+
+        driveController.leftBumper().whileTrue(rightVisionSubsystem.alignLeft());
+        driveController.rightBumper().whileTrue(LeftVisionSubsystem.alignRight());
 
         driveController.y().onTrue(claw.setClawIntakeWithTimeOfFlight());
-        driveController.y().onFalse(claw.setClawStop());
+        // driveController.y().onFalse(claw.setClawStop());
         driveController.b().onTrue(coralSystem.setCoralSystemScoreL4());
         driveController.x().onTrue(claw.setClawIntake());
         driveController.x().onFalse(claw.setClawStop());
@@ -163,7 +167,6 @@ public class RobotContainer {
         driveController.povDown().onTrue(new InstantCommand(() -> { speedMultiplier = 0.25; }));
         
         driveController.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-        // driveController.rightBumper().whileTrue(moveToStation(Constants.PhotonVisionConstants.backCameraID));
 
         // USB Button Board
         // buttonBoard.getButton(4).onTrue(coralSystem.setBargeScore());
@@ -179,8 +182,8 @@ public class RobotContainer {
         // PARALLEL COMMANDS
 
         buttonBoard.getButton(4).onTrue(coralSystem.setSystemPositions(Constants.ArmConstants.ShoulderConstants.bargePlacePosition, Constants.ElevatorConstants.bargePlacePosition));
-        buttonBoard.getButton(3).onTrue(coralSystem.setSystemPositions(.192 -.0712, -17.129));
-        buttonBoard.getButton(2).onTrue(coralSystem.setSystemPositions(.191 -.0712, Constants.ElevatorConstants.l2Position)); 
+        buttonBoard.getButton(3).onTrue(coralSystem.setSystemPositions(.168, -17.129)); //.192 -.0712
+        buttonBoard.getButton(2).onTrue(coralSystem.setSystemPositions(.168, Constants.ElevatorConstants.l2Position)); //.191 -.0712
         buttonBoard.getButton(1).onTrue(coralSystem.setSystemPositions(.23 -.0712, Constants.ElevatorConstants.zeroPosition));
         
         buttonBoard.getButton(5).onTrue(coralSystem.setTrough()); 
@@ -200,6 +203,7 @@ public class RobotContainer {
         Trigger buttonBoardRawAxis0Negative = new Trigger(() -> { return buttonBoard2.getButtonBoard().getRawAxis(0) < -0.7; });
         Trigger buttonBoardRawAxis1Positive = new Trigger(() -> { return buttonBoard2.getButtonBoard().getRawAxis(1) > 0.7; });
         Trigger buttonBoardRawAxis1Negative = new Trigger(() -> { return buttonBoard2.getButtonBoard().getRawAxis(1) < -0.7; });
+
         Trigger joystickTrigger = new Trigger(() -> { return joystick.getTrigger(); });
         Trigger joystickButton2Trigger = new Trigger(() -> { return joystick.getRawButton(2); });
 
@@ -208,9 +212,18 @@ public class RobotContainer {
         buttonBoardRawAxis1Positive.whileTrue(elevator.moveElevatorDown());
         buttonBoardRawAxis1Negative.whileTrue(elevator.moveElevatorUp());
 
+
+
         joystickTrigger.whileTrue(new InstantCommand(() -> { this.triggerHeld=1; }));
         joystickTrigger.whileFalse(new InstantCommand(() -> { this.triggerHeld=0; }));
         joystickButton2Trigger.onTrue(elevator.zeroElevatorPosition());
+
+        joystickButtons.getButton(10).whileTrue(claw.setClawIntakeHalfSpeed());
+        joystickButtons.getButton(10).onFalse(claw.setClawStop());
+        joystickButtons.getButton(12).onTrue(coralSystem.setSystemPositions(.283, Constants.ElevatorConstants.zeroPosition));
+
+        joystickButtons.getButton(9).onTrue(coralSystem.setSystemPositions(.071, Constants.ElevatorConstants.zeroPosition));
+
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

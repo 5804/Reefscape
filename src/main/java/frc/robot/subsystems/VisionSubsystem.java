@@ -98,6 +98,14 @@ public class VisionSubsystem extends SubsystemBase{
         return moveToReefRight(Constants.PhotonVisionConstants.leftCameraID);
     }
 
+    public Command alignLeftLow(){
+        return moveToReefLeftLow(Constants.PhotonVisionConstants.rightCameraID);
+    }
+
+    public Command alignRightLow(){
+        return moveToReefRightLow(Constants.PhotonVisionConstants.leftCameraID);
+    }
+
     public Command alignBack(){
         return moveToStation(Constants.PhotonVisionConstants.backCameraID);
     }
@@ -119,6 +127,24 @@ public class VisionSubsystem extends SubsystemBase{
         return drivetrain.applyRequest(() -> 
             RobotContainer.driveRobotCentric
                 .withVelocityX(this.cameraClosestTarget == null ? 0 : (closestTargetXMeters(cameraIndex) - Constants.PhotonVisionConstants.reefRightOffsetMagnitudeX) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
+                .withVelocityY(this.cameraClosestTarget == null ? 0 : (closestTargetYMeters(cameraIndex) + Constants.PhotonVisionConstants.reefRightOffsetMagnitudeY) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
+                .withRotationalRate(this.cameraClosestTarget == null ? 0 : ((Math.PI - (Math.abs(closestTargetYaw(cameraIndex)))) * Math.signum(closestTargetYaw(cameraIndex))) * Constants.inversion * Constants.PhotonVisionConstants.visionRotationalSpeedScale)
+            );
+    }
+
+    public Command moveToReefLeftLow(int cameraIndex) {
+        return drivetrain.applyRequest(() -> 
+            RobotContainer.driveRobotCentric
+                .withVelocityX(this.cameraClosestTarget == null ? 0 : (closestTargetXMeters(cameraIndex) - Constants.PhotonVisionConstants.reefLowLeftOffsetMagnitudeX) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
+                .withVelocityY(this.cameraClosestTarget == null ? 0 : (closestTargetYMeters(cameraIndex) - Constants.PhotonVisionConstants.reefLeftOffsetMagnitudeY) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
+                .withRotationalRate(this.cameraClosestTarget == null ? 0 : ((Math.PI - (Math.abs(closestTargetYaw(cameraIndex)))) * Math.signum(closestTargetYaw(cameraIndex))) * Constants.inversion * Constants.PhotonVisionConstants.visionRotationalSpeedScale)
+            );
+    }
+
+    public Command moveToReefRightLow(int cameraIndex) {
+        return drivetrain.applyRequest(() -> 
+            RobotContainer.driveRobotCentric
+                .withVelocityX(this.cameraClosestTarget == null ? 0 : (closestTargetXMeters(cameraIndex) - Constants.PhotonVisionConstants.reefLowRightOffsetMagnitudeX) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
                 .withVelocityY(this.cameraClosestTarget == null ? 0 : (closestTargetYMeters(cameraIndex) + Constants.PhotonVisionConstants.reefRightOffsetMagnitudeY) * Constants.PhotonVisionConstants.visionOrthogonalSpeedScale)
                 .withRotationalRate(this.cameraClosestTarget == null ? 0 : ((Math.PI - (Math.abs(closestTargetYaw(cameraIndex)))) * Math.signum(closestTargetYaw(cameraIndex))) * Constants.inversion * Constants.PhotonVisionConstants.visionRotationalSpeedScale)
             );

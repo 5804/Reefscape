@@ -24,6 +24,10 @@ public final class Constants {
         public static final double reefLeftOffsetMagnitudeY = 0.09; // 0.10 home
         public static final double reefRightOffsetMagnitudeX = 0.36; // 0.35 home
         public static final double reefRightOffsetMagnitudeY = 0.11; // 0.10 home
+
+        public static final double reefLowRightOffsetMagnitudeX = 0.25; // 0.10 home
+        public static final double reefLowLeftOffsetMagnitudeX = 0.25; // 0.10 home
+
         public static final double stationOffsetMagnitudeX = 0.60; // 0.60 home
         public static final double stationOffsetMagnitudeY = 0.14; // 0.14 home
     } 
@@ -93,7 +97,7 @@ public final class Constants {
             public static final double groundPosition           = 0.4922 - .0712; 
             public static final double groundPostpickupPosition = 0.25 - .0712;
             public static final double hopperIntakePosition     = .0712 - .0712;
-            public static final double bargePlacePosition       = 0.072 - .0712;
+            public static final double bargePlacePosition       = 0.06;//0.072 - .0712;
 
             public static final double manualTravelSpeedVoltage = 5;
             public static final double supplyCurrentLimit = 70;
@@ -135,7 +139,8 @@ public final class Constants {
             public static final double acceleration   = 160;
             public static final double jerk           = 1600;
 
-            public static final double motorIntakeSpeed = .8;
+            public static final double motorIntakeSpeed = 1;
+            public static final double motorIntakeTOFSpeed = .8;
             public static final double motorEjectSpeed  = -1;
 
             public static final double tofHasCoralUpperBound = 40; // The maximum distance (mm) away from the time of flight sensor that the coral needs to be to intake
