@@ -165,7 +165,7 @@ public final class Constants {
 
         public static final double tolerance = 0.1;
 
-        public static final double downClimberPosition  = 2;
+        public static final double downClimberPosition  = 260;
         public static final double climbClimberPosition = 1;
         public static final double stowClimberPosition  = 0.5;
     }

@@ -184,15 +184,25 @@ public class RobotContainer {
         buttonBoard.getButton(4).onTrue(coralSystem.setSystemPositions(Constants.ArmConstants.ShoulderConstants.bargePlacePosition, Constants.ElevatorConstants.bargePlacePosition));
         buttonBoard.getButton(3).onTrue(coralSystem.setSystemPositions(.168, -17.129)); //.192 -.0712
         buttonBoard.getButton(2).onTrue(coralSystem.setSystemPositions(.168, Constants.ElevatorConstants.l2Position)); //.191 -.0712
-        buttonBoard.getButton(1).onTrue(coralSystem.setSystemPositions(.23 -.0712, Constants.ElevatorConstants.zeroPosition));
+        buttonBoard.getButton(12).onTrue(coralSystem.setSystemPositions(.23 -.0712, Constants.ElevatorConstants.zeroPosition));
+
+        buttonBoard.getButton(4).whileTrue(claw.setClawIntakeHalfSpeed());
+        buttonBoard.getButton(4).onFalse(claw.setClawStop());
+
+        buttonBoard.getButton(12).whileTrue(claw.setClawIntakeHalfSpeed());
+        buttonBoard.getButton(12).onFalse(claw.setClawStop());
         
-        buttonBoard.getButton(5).onTrue(coralSystem.setTrough()); 
+        buttonBoard.getButton(11).onTrue(coralSystem.setTrough()); 
         buttonBoard.getButton(6).onTrue(coralSystem.setSystemPositions(Constants.ArmConstants.ShoulderConstants.l2Position, Constants.ElevatorConstants.l2Position));
         buttonBoard.getButton(10).onTrue(coralSystem.setSystemPositions(Constants.ArmConstants.ShoulderConstants.l3Position, Constants.ElevatorConstants.l3Position)); 
         buttonBoard.getButton(7).onTrue(coralSystem.setSystemPositions(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ElevatorConstants.l4Position));
 
         buttonBoard.getButton(8).whileTrue(wrist.moveWristHorizontal());
         buttonBoard.getButton(9).whileTrue(wrist.moveWristVertical());
+
+        buttonBoard.getButton(1).onTrue(coralSystem.setSystemPositions(.283, Constants.ElevatorConstants.zeroPosition)); // Algae Pickup
+        buttonBoard.getButton(5).onTrue(coralSystem.setSystemPositions(.071, Constants.ElevatorConstants.zeroPosition)); // Verticle Trough
+
 
         // USB Button Board 2
         buttonBoard2.getButton(1).onTrue(claw.setClawEject());
@@ -212,18 +222,13 @@ public class RobotContainer {
         buttonBoardRawAxis1Positive.whileTrue(elevator.moveElevatorDown());
         buttonBoardRawAxis1Negative.whileTrue(elevator.moveElevatorUp());
 
-
-
         joystickTrigger.whileTrue(new InstantCommand(() -> { this.triggerHeld=1; }));
         joystickTrigger.whileFalse(new InstantCommand(() -> { this.triggerHeld=0; }));
-        joystickButton2Trigger.onTrue(elevator.zeroElevatorPosition());
+        // joystickButton2Trigger.onTrue(elevator.zeroElevatorPosition());
+        joystickButton2Trigger.onTrue(climber.setClimberPosition(Constants.ClimberConstants.downClimberPosition, .5));
 
-        joystickButtons.getButton(10).whileTrue(claw.setClawIntakeHalfSpeed());
-        joystickButtons.getButton(10).onFalse(claw.setClawStop());
-        joystickButtons.getButton(12).onTrue(coralSystem.setSystemPositions(.283, Constants.ElevatorConstants.zeroPosition));
-
-        joystickButtons.getButton(9).onTrue(coralSystem.setSystemPositions(.071, Constants.ElevatorConstants.zeroPosition));
-
+        joystickButtons.getButton(12).whileTrue(claw.setClawIntakeHalfSpeed());
+        joystickButtons.getButton(12).onFalse(claw.setClawStop());
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
