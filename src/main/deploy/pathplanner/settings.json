@@ -4,6 +4,7 @@
   "holonomicMode": true,
   "pathFolders": [
     "Accurate Three Coral Paths",
+    "AlgaeAuto",
     "Three Coral Paths"
   ],
   "autoFolders": [
@@ -20,9 +21,9 @@
   "robotTrackwidth": 0.546,
   "driveWheelRadius": 0.0508,
   "driveGearing": 7.125,
-  "maxDriveSpeed": 3.911,
+  "maxDriveSpeed": 4.45,
   "driveMotorType": "krakenX60",
-  "driveCurrentLimit": 70.0,
+  "driveCurrentLimit": 43.0,
   "wheelCOF": 1.2,
   "flModuleX": 0.289,
   "flModuleY": 0.289,

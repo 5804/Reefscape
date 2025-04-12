@@ -7,6 +7,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.fasterxml.jackson.databind.util.Named;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -104,6 +105,14 @@ public class RobotContainer {
         NamedCommands.registerCommand("StopIntake", claw.setClawStop());
         NamedCommands.registerCommand("Ejectintake", claw.setClawEject());
         NamedCommands.registerCommand("IntakeTOF", claw.setClawIntakeWithTimeOfFlight());
+        NamedCommands.registerCommand("StopIfHeld", stopIfCoralHeld());
+
+        NamedCommands.registerCommand("SlowIntake", claw.setClawIntakeHalfSpeed());
+
+        NamedCommands.registerCommand("BottomAlgae", coralSystem.setSystemPositions(.260, -16.0));
+
+        NamedCommands.registerCommand("CoralAlignRightLong", LeftVisionSubsystem.alignRight().withTimeout(2.0));
+        NamedCommands.registerCommand("DropAndStop", autoLFourDropStop());
 
         NamedCommands.registerCommand("CoralAlignRight", LeftVisionSubsystem.alignRight().withTimeout(1.0));
         NamedCommands.registerCommand("CoralAlignLeft", rightVisionSubsystem.alignLeft().withTimeout(1.0));
@@ -116,7 +125,12 @@ public class RobotContainer {
         autoChooser.addOption("2 Coral Right - Error driven", rightAuto());
         autoChooser.addOption("3 Coral Left", threeCoralLeft());
         autoChooser.addOption("3 Coral Right", threeCoralRight());
-        autoChooser.addOption("3 Coral Right Accurate", ac_3Coral_R());
+        autoChooser.addOption("3 Coral Left New Start", ac_3Coral_R());
+        autoChooser.addOption("3 Coral Right New Start", newThreeCoralRight());
+
+
+        autoChooser.addOption("MiddleScore and Algae", oneCoralAlgae());
+
 
         SmartDashboard.putData("Auto choices", autoChooser);
         tab1.add("Auto Chooser", autoChooser);
@@ -181,10 +195,12 @@ public class RobotContainer {
         
         // PARALLEL COMMANDS
 
-        buttonBoard.getButton(4).onTrue(coralSystem.setSystemPositions(Constants.ArmConstants.ShoulderConstants.bargePlacePosition, Constants.ElevatorConstants.bargePlacePosition));
-        buttonBoard.getButton(3).onTrue(coralSystem.setSystemPositions(.168, -17.129)); //.192 -.0712
-        buttonBoard.getButton(2).onTrue(coralSystem.setSystemPositions(.168, Constants.ElevatorConstants.l2Position)); //.191 -.0712
-        buttonBoard.getButton(12).onTrue(coralSystem.setSystemPositions(.23 -.0712, Constants.ElevatorConstants.zeroPosition));
+        buttonBoard.getButton(4).onTrue(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.bargePlacePosition, Constants.ElevatorConstants.bargePlacePosition));
+        buttonBoard.getButton(3).onTrue(coralSystem.setCoralSystemLevel(.260, -25.76)); //.192 -.0712
+
+        buttonBoard.getButton(2).onTrue(coralSystem.setCoralSystemLevel(.260, -16.0)); //.168, Constants.ElevatorConstants.l2Position
+
+        buttonBoard.getButton(12).onTrue(coralSystem.setCoralSystemLevel(.214, Constants.ElevatorConstants.zeroPosition));
 
         buttonBoard.getButton(4).whileTrue(claw.setClawIntakeHalfSpeed());
         buttonBoard.getButton(4).onFalse(claw.setClawStop());
@@ -193,15 +209,15 @@ public class RobotContainer {
         buttonBoard.getButton(12).onFalse(claw.setClawStop());
         
         buttonBoard.getButton(11).onTrue(coralSystem.setTrough()); 
-        buttonBoard.getButton(6).onTrue(coralSystem.setSystemPositions(Constants.ArmConstants.ShoulderConstants.l2Position, Constants.ElevatorConstants.l2Position));
-        buttonBoard.getButton(10).onTrue(coralSystem.setSystemPositions(Constants.ArmConstants.ShoulderConstants.l3Position, Constants.ElevatorConstants.l3Position)); 
-        buttonBoard.getButton(7).onTrue(coralSystem.setSystemPositions(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ElevatorConstants.l4Position));
+        buttonBoard.getButton(6).onTrue(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l2Position, Constants.ElevatorConstants.l2Position));
+        buttonBoard.getButton(10).onTrue(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l3Position, Constants.ElevatorConstants.l3Position)); 
+        buttonBoard.getButton(7).onTrue(coralSystem.setCoralSystemLevel(Constants.ArmConstants.ShoulderConstants.l4Position, Constants.ElevatorConstants.l4Position));
 
         buttonBoard.getButton(8).whileTrue(wrist.moveWristHorizontal());
         buttonBoard.getButton(9).whileTrue(wrist.moveWristVertical());
 
-        buttonBoard.getButton(1).onTrue(coralSystem.setSystemPositions(.283, Constants.ElevatorConstants.zeroPosition)); // Algae Pickup
-        buttonBoard.getButton(5).onTrue(coralSystem.setSystemPositions(.071, Constants.ElevatorConstants.zeroPosition)); // Verticle Trough
+        buttonBoard.getButton(1).onTrue(coralSystem.setCoralSystemLevel(.283, Constants.ElevatorConstants.zeroPosition)); // Algae Pickup
+        buttonBoard.getButton(5).onTrue(coralSystem.setCoralSystemLevel(.071, Constants.ElevatorConstants.zeroPosition)); // Verticle Trough
 
 
         // USB Button Board 2
@@ -229,6 +245,7 @@ public class RobotContainer {
 
         joystickButtons.getButton(12).whileTrue(claw.setClawIntakeHalfSpeed());
         joystickButtons.getButton(12).onFalse(claw.setClawStop());
+        joystickButtons.getButton(10).onTrue(elevator.zeroElevatorPosition());
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -327,6 +344,18 @@ public class RobotContainer {
 
     }
 
+    public Command oneCoralWithAlgaeAutoNew() {
+        return 
+        new SequentialCommandGroup(
+            new WaitCommand(3),
+            LeftVisionSubsystem.alignRight().withTimeout(2.0), 
+            autoLFourDropStop(),
+            stopIfCoralHeld(),
+            new PathPlannerAuto("oneCoralAlgae")
+        );
+
+    }
+
     public Command rightAuto() {
         return new PathPlannerAuto("RightAuto");
     }
@@ -339,6 +368,12 @@ public class RobotContainer {
     }
     // Tried and it was probably too much acceleration still
     public Command ac_3Coral_R() {
-        return new PathPlannerAuto("Ac_3Coral_R");
+        return new PathPlannerAuto("newThreeCoralLeft");
+    }
+    public Command newThreeCoralRight() {
+        return new PathPlannerAuto("newThreeCoralRight");
+    }
+    public Command oneCoralAlgae() {
+        return new PathPlannerAuto("oneCoralAlgae");
     }
 }

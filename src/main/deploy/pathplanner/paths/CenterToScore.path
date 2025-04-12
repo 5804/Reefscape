@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.227,
-        "y": 5.014
+        "x": 7.152226027397259,
+        "y": 4.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.00954851636911,
-        "y": 4.959515463264935
+        "x": 6.357043962146421,
+        "y": 3.9920981320027153
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.25,
-        "y": 4.983
+        "x": 6.1905821917808215,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 6.366611447624016,
-        "y": 4.915610467065757
+        "x": 7.083430679880421,
+        "y": 3.987481306066865
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.5,
+    "maxVelocity": 3.911,
     "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -120.5102374061155
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Three Coral Paths",
+  "folder": "AlgaeAuto",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

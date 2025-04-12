@@ -1,0 +1,100 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterToScore"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CoralAlignRightLong"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LFourUp"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopIfHeld"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CenterBackUp"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "BottomAlgae"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeTOF"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "CoralAlignRight"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "SlowIntake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "AlgaeToBarge"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": false,
+  "folder": "Center Auto",
+  "choreoAuto": false
+}

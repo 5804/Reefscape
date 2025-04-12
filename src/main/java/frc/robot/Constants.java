@@ -20,10 +20,10 @@ public final class Constants {
         // Still need to tune these. Changing them made a difference in accuracy
         public static final double visionOrthogonalSpeedScale = 2.25;
         public static final double visionRotationalSpeedScale = 0.95;
-        public static final double reefLeftOffsetMagnitudeX = 0.36; // 0.35 home
+        public static final double reefLeftOffsetMagnitudeX = 0.35; // 0.36 home
         public static final double reefLeftOffsetMagnitudeY = 0.09; // 0.10 home
-        public static final double reefRightOffsetMagnitudeX = 0.36; // 0.35 home
-        public static final double reefRightOffsetMagnitudeY = 0.11; // 0.10 home
+        public static final double reefRightOffsetMagnitudeX = 0.35; // 0.36 home
+        public static final double reefRightOffsetMagnitudeY = 0.09; // 0.10 home
 
         public static final double reefLowRightOffsetMagnitudeX = 0.25; // 0.10 home
         public static final double reefLowLeftOffsetMagnitudeX = 0.25; // 0.10 home
@@ -61,6 +61,7 @@ public final class Constants {
         public static final double groundPickupPosition = -1.652; // -2.14826
         public static final double hopperIntakePosition = zeroPosition;
         public static final double bargePlacePosition   = -39.49;
+       // public static final double bottomAlgaePosition = -16.0; //Check with Robot Container to make sure this is correct
         
         public static final double softwareLimitSafetyThreshold = 5;
         public static final double forwardSoftLimitThreshold = 0;
@@ -98,6 +99,7 @@ public final class Constants {
             public static final double groundPostpickupPosition = 0.25 - .0712;
             public static final double hopperIntakePosition     = .0712 - .0712;
             public static final double bargePlacePosition       = 0.06;//0.072 - .0712;
+        //  public static final double bottomAlgaePosition      = 0.260;  //Check with Robot Container to make sure this is correct
 
             public static final double manualTravelSpeedVoltage = 5;
             public static final double supplyCurrentLimit = 70;
@@ -165,7 +167,7 @@ public final class Constants {
 
         public static final double tolerance = 0.1;
 
-        public static final double downClimberPosition  = 260;
+        public static final double downClimberPosition  = 251.27;
         public static final double climbClimberPosition = 1;
         public static final double stowClimberPosition  = 0.5;
     }
