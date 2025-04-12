@@ -119,17 +119,17 @@ public class RobotContainer {
         NamedCommands.registerCommand("PlayerStationAlign", backVisionSubsystem.alignBack().withTimeout(1.0));
 
         autoChooser.setDefaultOption("Default Auto", oneMeter());
-        autoChooser.addOption("1 Coral Center", oneCoralAuto());
-        autoChooser.addOption("1 Coral Center with Algae", oneCoralWithAlgaeAuto());
-        autoChooser.addOption("2 Coral Left - Error driven", leftAuto());
-        autoChooser.addOption("2 Coral Right - Error driven", rightAuto());
+        // autoChooser.addOption("1 Coral Center", oneCoralAuto());
+        autoChooser.addOption("1 Coral Center with Algae", oneCoralWithAlgaeAutoNew());
+        // autoChooser.addOption("2 Coral Left - Error driven", leftAuto());
+        // autoChooser.addOption("2 Coral Right - Error driven", rightAuto());
         autoChooser.addOption("3 Coral Left", threeCoralLeft());
         autoChooser.addOption("3 Coral Right", threeCoralRight());
-        autoChooser.addOption("3 Coral Left New Start", ac_3Coral_R());
-        autoChooser.addOption("3 Coral Right New Start", newThreeCoralRight());
+        // autoChooser.addOption("3 Coral Left New Start", ac_3Coral_R());
+        // autoChooser.addOption("3 Coral Right New Start", newThreeCoralRight());
 
 
-        autoChooser.addOption("MiddleScore and Algae", oneCoralAlgae());
+        // autoChooser.addOption("MiddleScore and Algae", oneCoralAlgae());
 
 
         SmartDashboard.putData("Auto choices", autoChooser);
@@ -345,14 +345,8 @@ public class RobotContainer {
     }
 
     public Command oneCoralWithAlgaeAutoNew() {
-        return 
-        new SequentialCommandGroup(
-            new WaitCommand(3),
-            LeftVisionSubsystem.alignRight().withTimeout(2.0), 
-            autoLFourDropStop(),
-            stopIfCoralHeld(),
-            new PathPlannerAuto("oneCoralAlgae")
-        );
+        return
+            new PathPlannerAuto("oneCoralAgaeNoAlign");
 
     }
 

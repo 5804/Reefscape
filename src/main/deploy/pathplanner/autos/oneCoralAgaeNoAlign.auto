@@ -1,0 +1,106 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterToScoreNoAlign"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CoralAlignRight"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LFourUp"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LFourScore"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopIfHeld"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "BottomAlgae"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CenterBackUpNoAlign"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeTOF"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CenterToAlgae"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "SlowIntake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "AlgaeToBargeNoAlign"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": false,
+  "folder": "Center Auto",
+  "choreoAuto": false
+}
