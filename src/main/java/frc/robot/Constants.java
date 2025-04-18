@@ -11,7 +11,7 @@ public final class Constants {
     }
 
     public final class PhotonVisionConstants {
-        public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark); // SWITCH AT WORLDS, IF WE MAKE IT
+        public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded); // SWITCH AT WORLDS, IF WE MAKE IT
 
         public static final int backCameraID = 0;
         public static final int leftCameraID = 1;
@@ -97,7 +97,7 @@ public final class Constants {
             public static final double l1Position               = 0.316 - .0712;
             public static final double groundPosition           = 0.4922 - .0712; 
             public static final double groundPostpickupPosition = 0.25 - .0712;
-            public static final double hopperIntakePosition     = .0712 - .0712;
+            public static final double hopperIntakePosition     = .0712 - .0712; // .014
             public static final double bargePlacePosition       = 0.06;//0.072 - .0712;
         //  public static final double bottomAlgaePosition      = 0.260;  //Check with Robot Container to make sure this is correct
 
@@ -123,7 +123,7 @@ public final class Constants {
 
             public static final double tolerance = 0.1;
 
-            public static final double verticalPosition   = 0;
+            public static final double verticalPosition   = -0.00293;
             public static final double horizontalPosition = 0.25;
         }
 

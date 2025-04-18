@@ -4,24 +4,24 @@
     {
       "anchor": {
         "x": 7.227,
-        "y": 5.014
+        "y": 2.991
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.009218891769443,
-        "y": 4.959500711594047
+        "x": 6.340500283450303,
+        "y": 2.439588853433932
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.25,
-        "y": 4.983
+        "x": 5.263,
+        "y": 3.004
       },
       "prevControl": {
-        "x": 6.366611447624016,
-        "y": 4.915610467065757
+        "x": 5.827939467740093,
+        "y": 2.441814623287353
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -120.5102374061155
+    "rotation": 120.50999999999999
   },
   "reversed": false,
   "folder": "Three Coral Paths",

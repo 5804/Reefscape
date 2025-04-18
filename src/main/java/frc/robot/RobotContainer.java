@@ -119,15 +119,11 @@ public class RobotContainer {
         // NamedCommands.registerCommand("PlayerStationAlign", backVisionSubsystem.alignBack().withTimeout(1.0));
 
         autoChooser.setDefaultOption("Default Auto", oneMeter());
-        // autoChooser.addOption("1 Coral Center", oneCoralAuto());
         autoChooser.addOption("1 Coral Center with Algae", oneCoralWithAlgaeAutoNew());
-        // autoChooser.addOption("2 Coral Left - Error driven", leftAuto());
-        // autoChooser.addOption("2 Coral Right - Error driven", rightAuto());
         autoChooser.addOption("3 Coral Left", threeCoralLeft());
         autoChooser.addOption("3 Coral Right", threeCoralRight());
-        // autoChooser.addOption("3 Coral Left New Start", ac_3Coral_R());
-        // autoChooser.addOption("3 Coral Right New Start", newThreeCoralRight());
-
+        autoChooser.addOption("Curved 3 Coral Left", curvedThreeCoralLeft());
+        autoChooser.addOption("Curved 3 Coral Right", curvedThreeCoralRight());
 
         // autoChooser.addOption("MiddleScore and Algae", oneCoralAlgae());
 
@@ -312,13 +308,13 @@ public class RobotContainer {
         return claw.setClawStopInf().until(() -> {return !claw.sensorSeesCoral();});
     }
 
-    public Command oneCoralAuto() {
-        // return new PathPlannerAuto("OneCoralAuto");
-        return new SequentialCommandGroup(
-        new WaitCommand(5),
-        LeftVisionSubsystem.alignRight().withTimeout(2.0), 
-        autoLFourDrop());
-        }
+    // public Command oneCoralAuto() {
+    //     // return new PathPlannerAuto("OneCoralAuto");
+    //     return new SequentialCommandGroup(
+    //     new WaitCommand(5),
+    //     LeftVisionSubsystem.alignRight().withTimeout(2.0), 
+    //     autoLFourDrop());
+    //     }
 
     public Command oneCoralWithAlgaeAuto() {
         return 
@@ -337,37 +333,25 @@ public class RobotContainer {
         .withVelocityY(-2)
         .withRotationalRate(0)).withTimeout(0.5)
         );
-
-        // new SequentialCommandGroup(
-        //     stopIfCoralHeld(),
-        //     claw.setClawIntake().withTimeout(3));
-
     }
 
     public Command oneCoralWithAlgaeAutoNew() {
-        return
-            new PathPlannerAuto("oneCoralAgaeNoAlign");
-
-    }
-
-    public Command rightAuto() {
-        return new PathPlannerAuto("RightAuto");
+        return new PathPlannerAuto("oneCoralAgaeNoAlign");
     }
     
     public Command threeCoralLeft() {
         return new PathPlannerAuto("threeCoralLeft");
     }
+    
     public Command threeCoralRight() {
         return new PathPlannerAuto("threeCoralRight");
     }
-    // Tried and it was probably too much acceleration still
-    public Command ac_3Coral_R() {
-        return new PathPlannerAuto("newThreeCoralLeft");
+
+    public Command curvedThreeCoralLeft() {
+        return new PathPlannerAuto("curvedThreeCoralLeft");
     }
-    public Command newThreeCoralRight() {
-        return new PathPlannerAuto("newThreeCoralRight");
-    }
-    public Command oneCoralAlgae() {
-        return new PathPlannerAuto("oneCoralAlgae");
+    
+    public Command curvedThreeCoralRight() {
+        return new PathPlannerAuto("curvedThreeCoralRight");
     }
 }
