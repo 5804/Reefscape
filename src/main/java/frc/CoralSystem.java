@@ -103,9 +103,9 @@ public class CoralSystem extends SubsystemBase {
                       .finallyDo(() -> { elevator.leftElevatorMotor.setVoltage(0); });
     }
     public Command setTrough() {
-        return new ParallelCommandGroup(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.l1Position, Constants.ArmConstants.ShoulderConstants.tolerance),
-                  elevator.setElevatorPosition(-7.706, Constants.ElevatorConstants.tolerance)
-                  .andThen(wrist.setWristHorizontal()));
+        return arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.l1Position, Constants.ArmConstants.ShoulderConstants.tolerance)
+                  .andThen(new ParallelCommandGroup(elevator.setElevatorPosition(-7.706, Constants.ElevatorConstants.tolerance),
+                  wrist.setWristHorizontal()));
     }
     public Command setSystemPositions(double shoulderPosition, double elevatorPosition){
         return new ParallelCommandGroup(arm.setShoulderPosition(Constants.ArmConstants.ShoulderConstants.minSafeValue, Constants.ArmConstants.ShoulderConstants.tolerance),

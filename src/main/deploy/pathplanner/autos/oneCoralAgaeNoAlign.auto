@@ -93,6 +93,12 @@
                 "data": {
                   "pathName": "AlgaeToBargeNoAlign"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Stow"
+                }
               }
             ]
           }
