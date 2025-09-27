@@ -51,7 +51,7 @@ import frc.robot.subsystems.Climber;
 public class RobotContainer {
     private static final double maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);               // kSpeedAt12Volts desired top speed
     private static final double maxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
-    private double speedMultiplier = 0.5;
+    private double speedMultiplier = 1;
 
     public static final SwerveRequest.FieldCentric driveFieldCentric = new SwerveRequest.FieldCentric()
             .withDeadband(maxSpeed * 0.005).withRotationalDeadband(maxAngularRate * 0.005) // Add a 20% deadband
@@ -174,7 +174,7 @@ public class RobotContainer {
         driveController.a().onTrue(coralSystem.setStowPositions());
 
         driveController.povUp().onTrue(new InstantCommand(() -> { speedMultiplier = 1; }));
-        driveController.povDown().onTrue(new InstantCommand(() -> { speedMultiplier = 0.25; }));
+        driveController.povDown().onTrue(new InstantCommand(() -> { speedMultiplier = 0.5; }));
         
         driveController.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 

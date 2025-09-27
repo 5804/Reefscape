@@ -123,8 +123,8 @@ public final class Constants {
 
             public static final double tolerance = 0.1;
 
-            public static final double verticalPosition   = -0.00293;
-            public static final double horizontalPosition = 0.25;
+            public static final double verticalPosition   = -0.1687;
+            public static final double horizontalPosition = 0.08276;
         }
 
         public final class ClawConstants {

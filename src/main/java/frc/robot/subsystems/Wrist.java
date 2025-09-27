@@ -70,13 +70,13 @@ public class Wrist extends SubsystemBase {
   public Command setWristHorizontal() {
     MotionMagicVoltage request = new MotionMagicVoltage(0);
     return run(() -> { wristMotor.setControl(request.withPosition(Constants.ArmConstants.WristConstants.horizontalPosition));})
-          .until(() -> { return getWristPosition() > Constants.ArmConstants.WristConstants.horizontalPosition - 0.1; });
+          .until(() -> { return getWristPosition() > Constants.ArmConstants.WristConstants.horizontalPosition - 0.05; });
   }
 
   public Command setWristVertical() {
     MotionMagicVoltage request = new MotionMagicVoltage(0);
     return run(() -> { wristMotor.setControl(request.withPosition(Constants.ArmConstants.WristConstants.verticalPosition));})
-          .until(() -> { return getWristPosition() < Constants.ArmConstants.WristConstants.verticalPosition + 0.1; });
+          .until(() -> { return getWristPosition() < Constants.ArmConstants.WristConstants.verticalPosition + 0.05; });
   }
 
   public Command moveWristHorizontal() {
