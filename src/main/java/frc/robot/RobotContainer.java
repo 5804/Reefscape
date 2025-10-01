@@ -6,6 +6,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.spi.CurrencyNameProvider;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.fasterxml.jackson.databind.util.Named;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -124,6 +126,9 @@ public class RobotContainer {
         autoChooser.addOption("3 Coral Right", threeCoralRight());
         autoChooser.addOption("Curved 3 Coral Left", curvedThreeCoralLeft());
         autoChooser.addOption("Curved 3 Coral Right", curvedThreeCoralRight());
+        autoChooser.addOption("Current Limit Change", currentLimitChange());
+        autoChooser.addOption("threeCoralLeftMovement", threeCoralLeftMovement());
+
 
         // autoChooser.addOption("MiddleScore and Algae", oneCoralAlgae());
 
@@ -306,6 +311,14 @@ public class RobotContainer {
 
     public Command stopIfCoralHeld() {
         return claw.setClawStopInf().until(() -> {return !claw.sensorSeesCoral();});
+    }
+
+    public Command currentLimitChange() {
+        return new PathPlannerAuto("currentLimitChange");
+    }
+
+    public Command threeCoralLeftMovement() {
+        return new PathPlannerAuto("threeCoralLeftMovement");
     }
 
     // public Command oneCoralAuto() {
