@@ -111,13 +111,14 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("SlowIntake", claw.setClawIntakeHalfSpeed());
 
-        NamedCommands.registerCommand("BottomAlgae", coralSystem.setSystemPositions(.260, -16.0));
+        NamedCommands.registerCommand("BottomAlgae", coralSystem.setSystemPositions(.260, -14.885));
 
         NamedCommands.registerCommand("CoralAlignRightLong", LeftVisionSubsystem.alignRight().withTimeout(2.0));
         NamedCommands.registerCommand("DropAndStop", autoLFourDropStop());
 
         NamedCommands.registerCommand("CoralAlignRight", LeftVisionSubsystem.alignRight().withTimeout(1.0));
         NamedCommands.registerCommand("CoralAlignLeft", rightVisionSubsystem.alignLeft().withTimeout(1.0));
+        NamedCommands.registerCommand("ScoreBarge", coralSystem.setSystemPositions(Constants.ArmConstants.ShoulderConstants.bargePlacePosition, Constants.ElevatorConstants.bargePlacePosition));
         // NamedCommands.registerCommand("PlayerStationAlign", backVisionSubsystem.alignBack().withTimeout(1.0));
 
         autoChooser.setDefaultOption("Default Auto", oneMeter());
@@ -128,6 +129,7 @@ public class RobotContainer {
         autoChooser.addOption("Curved 3 Coral Right", curvedThreeCoralRight());
         autoChooser.addOption("Current Limit Change", currentLimitChange());
         autoChooser.addOption("threeCoralLeftMovement", threeCoralLeftMovement());
+        autoChooser.addOption("setBarge", setBarge());
 
 
         // autoChooser.addOption("MiddleScore and Algae", oneCoralAlgae());
@@ -320,7 +322,9 @@ public class RobotContainer {
     public Command threeCoralLeftMovement() {
         return new PathPlannerAuto("threeCoralLeftMovement");
     }
-
+    public Command setBarge() {
+        return new PathPlannerAuto("setBarge");
+    }
     // public Command oneCoralAuto() {
     //     // return new PathPlannerAuto("OneCoralAuto");
     //     return new SequentialCommandGroup(

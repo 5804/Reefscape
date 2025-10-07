@@ -1,0 +1,25 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "ScoreBarge"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "OneMeter"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Center Auto",
+  "choreoAuto": false
+}

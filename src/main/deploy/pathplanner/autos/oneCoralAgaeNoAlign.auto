@@ -85,7 +85,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SlowIntake"
+                  "name": "Stow"
                 }
               },
               {
@@ -93,11 +93,75 @@
                 "data": {
                   "pathName": "AlgaeToBargeNoAlign"
                 }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "bargeScore"
+                }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Stow"
+                  "name": "ScoreBarge"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Ejectintake"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Ejectintake"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.0
+                      }
+                    },
+                    {
+                      "type": "parallel",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "leaveBarge"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Stow"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
                 }
               }
             ]

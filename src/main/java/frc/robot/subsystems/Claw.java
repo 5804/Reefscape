@@ -57,7 +57,7 @@ public class Claw extends SubsystemBase {
   }
 
   public Command setClawIntakeHalfSpeed() {
-    return run(() -> { clawMotor.set(Constants.ArmConstants.ClawConstants.motorIntakeSpeed*.1); })
+    return run(() -> { clawMotor.set(Constants.ArmConstants.ClawConstants.motorIntakeSpeed*.25); })
           .until(() -> { return getClawVelocity() > 150; });
   }
 
