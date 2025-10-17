@@ -36,7 +36,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "FirstScoreToHP_R"
+                  "pathName": "FirstScoreToHP_RUnfudged"
                 }
               },
               {
@@ -71,7 +71,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "HPToLeftScore_R"
+                        "pathName": "HPToLeftScore_RUnfudged"
                       }
                     }
                   ]

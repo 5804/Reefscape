@@ -122,13 +122,15 @@ public class RobotContainer {
         // NamedCommands.registerCommand("PlayerStationAlign", backVisionSubsystem.alignBack().withTimeout(1.0));
 
         autoChooser.setDefaultOption("Default Auto", oneMeter());
+        autoChooser.addOption("threeCoralLeftUnfudged", threeCoralLeft());
+        autoChooser.addOption("threeCoralRightUnfudged", threeCoralRightUnfudged());
         autoChooser.addOption("1 Coral Center with Algae", oneCoralWithAlgaeAutoNew());
-        autoChooser.addOption("3 Coral Left", threeCoralLeft());
-        autoChooser.addOption("3 Coral Right", threeCoralRight());
+        //autoChooser.addOption("3 Coral Right", threeCoralRight());
         autoChooser.addOption("Curved 3 Coral Left", curvedThreeCoralLeft());
         autoChooser.addOption("Curved 3 Coral Right", curvedThreeCoralRight());
         autoChooser.addOption("Current Limit Change", currentLimitChange());
-        autoChooser.addOption("threeCoralLeftMovement", threeCoralLeftMovement());
+       // autoChooser.addOption("threeCoralLeftMovement", threeCoralLeftMovement());
+       // autoChooser.addOption("pathThreeCoralLeft", paththreeCoralLeft());
         autoChooser.addOption("setBarge", setBarge());
 
 
@@ -357,7 +359,11 @@ public class RobotContainer {
     }
     
     public Command threeCoralLeft() {
-        return new PathPlannerAuto("threeCoralLeft");
+        return new PathPlannerAuto("threeCoralLeftUnfudged");
+    }
+
+    public Command paththreeCoralLeft() {
+        return new PathPlannerAuto("pathThreeCoralLeft");
     }
     
     public Command threeCoralRight() {
@@ -370,5 +376,9 @@ public class RobotContainer {
     
     public Command curvedThreeCoralRight() {
         return new PathPlannerAuto("curvedThreeCoralRight");
+    }
+
+    public Command threeCoralRightUnfudged() {
+        return new PathPlannerAuto("threeCoralRightUnfudged");
     }
 }

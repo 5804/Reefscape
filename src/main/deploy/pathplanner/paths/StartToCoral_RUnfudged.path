@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.242380136986301,
-        "y": 3.0107662671232878
+        "x": 7.227,
+        "y": 2.566
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.118656642464609,
-        "y": 3.08043227027132
+        "x": 5.352141686115505,
+        "y": 2.8861723018285423
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.394220890410959,
-        "y": 2.439790239726027
+        "x": 5.334,
+        "y": 2.936
       },
       "prevControl": {
-        "x": 5.852831941420541,
-        "y": 2.748146638564391
+        "x": 6.926085438494828,
+        "y": 2.5820202961744307
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.911,
-    "maxAcceleration": 3.9,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 122.90524292298791
+    "rotation": 120.50999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Three Coral Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.24615166692925
+    "rotation": 180.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
